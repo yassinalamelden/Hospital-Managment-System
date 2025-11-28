@@ -1,3 +1,6 @@
+import os
+
+
 class InvoiceItem:
     '''
     InvoiceItem class is used to represent one service or product in the bill
@@ -46,6 +49,12 @@ class Invoice:
         """
         Saves the bill to a text file.
         """
+        # Create folder if it doesn't exist
+        os.makedirs("invoices", exist_ok=True)
+
+        # File path
+        filename = f"invoices/invoice_{self.invoice_id}.txt"
+        
         with open(filename, "w") as f:
             f.write("---------BILL-------\n")
             f.write(f"Invoice ID : {self.invoice_id}\n")
