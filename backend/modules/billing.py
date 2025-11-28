@@ -15,7 +15,7 @@ class InvoiceItem:
     
 
 class Invoice:
-    
+
     def __init__(self, invoice_id, patient_name):
         self.invoice_id = invoice_id
         self.patient_name = patient_name
@@ -41,3 +41,17 @@ class Invoice:
             print(f" - {item.description} x{item.quantity} = {item.get_subtotal()}")
         print(f"Total bill: {self.get_total()}")
         print("----------------------")
+
+    def save_to_file(self, filename):
+        """
+        Saves the bill to a text file.
+        """
+        with open(filename, "w") as f:
+            f.write("---------BILL-------\n")
+            f.write(f"Invoice ID : {self.invoice_id}\n")
+            f.write(f"Patient: {self.patient_name}\n")
+            f.write("Items:\n")
+            for item in self.items:
+                f.write(f" - {item.description} x{item.quantity} = {item.get_subtotal()}\n")
+            f.write(f"Total bill: {self.get_total()}\n")
+            f.write("----------------------\n")
