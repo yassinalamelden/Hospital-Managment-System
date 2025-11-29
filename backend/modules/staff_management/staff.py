@@ -75,15 +75,15 @@ class Staff:
             f.write(f"Dept: {self.department}\n")
             f.write(f"Password: {self.__password}\n") # Saving pass for simple login
             
-            # Save extra details if it's a Doctor or Nurse
-            if isinstance(self, Doctor):
+            # Save extra details if it's a doctor or nurse
+            if isinstance(self, doctor):
                 f.write(f"Specialization: {self.specialization}\n")
-            elif isinstance(self, Nurse):
+            elif isinstance(self, nurse):
                 f.write(f"Shift: {self.shift}\n")
                 
         print(f"--> Saved {self.name} to {filename}")
 
-class Doctor(Staff):   ##inheritance#
+class doctor(Staff):   ##inheritance#
     
     def __init__(self, id, name, age, password, department, salary, specialization):
     
@@ -94,7 +94,7 @@ class Doctor(Staff):   ##inheritance#
 
     def view_dashboard(self):      # POLYMORPHISM Overriding the parent method
                                                     
-        print(f"\n=== DOCTOR PORTAL ===")
+        print(f"\n=== doctor PORTAL ===")
         print(f"Dr. {self.name} ({self.specialization})")
         print(f"Assigned Patients: {len(self.patient_list)}")
         print("1. View Schedule")
@@ -111,7 +111,7 @@ class Doctor(Staff):   ##inheritance#
             print(f"Error: {patient_name} is not your patient.")
 
 
-class Nurse(Staff):   
+class nurse(Staff):   
    
     def __init__(self, id, name, age, password, department, salary, shift):
         super().__init__(id, name, age, password, department, salary)
@@ -120,20 +120,20 @@ class Nurse(Staff):
 
     def view_dashboard(self):
         # POLYMORPHISM##
-        print(f"\n=== NURSE STATION ===")
-        print(f"Nurse {self.name} | Shift: {self.shift}")
+        print(f"\n=== nurse ===")
+        print(f"nurse {self.name} | Shift: {self.shift}")
         print(f"Assigned Rooms: {', '.join(self.rooms)}")
 
     def assign_room(self, room_number):
         self.rooms.append(room_number)
-        print(f"Nurse {self.name} assigned to Room {room_number}.")
+        print(f"nurse {self.name} assigned to Room {room_number}.")
 
 
-class Admin(Staff):
+class admin(Staff):
 
     def view_dashboard(self):
-        print(f"\n=== ADMINISTRATOR CONTROL ===")
-        print(f"Admin: {self.name}")
+        print(f"\n=== adminISTRATOR CONTROL ===")
+        print(f"admin: {self.name}")
         print("1. View All Staff")
         print("2. Payroll System")
 
