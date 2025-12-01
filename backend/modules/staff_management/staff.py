@@ -1,5 +1,6 @@
 import os
-
+from backend.modules.staff_management import doctor
+from backend.modules.staff_management import nurse
 
 class Staff:
 
@@ -82,62 +83,3 @@ class Staff:
                 f.write(f"Shift: {self.shift}\n")
                 
         print(f"--> Saved {self.name} to {filename}")
-
-class doctor(Staff):   ##inheritance#
-    
-    def __init__(self, id, name, age, password, department, salary, specialization):
-    
-        super().__init__(id, name, age, password, department, salary)
-
-        self.specialization = specialization
-        self.patient_list = []
-
-    def view_dashboard(self):      # POLYMORPHISM Overriding the parent method
-                                                    
-        print(f"\n=== doctor PORTAL ===")
-        print(f"Dr. {self.name} ({self.specialization})")
-        print(f"Assigned Patients: {len(self.patient_list)}")
-        print("1. View Schedule")
-        print("2. Prescribe Medication")
-
-    def add_patient(self, patient_name):
-        self.patient_list.append(patient_name)
-        print(f"Patient {patient_name} added to Dr. {self.name}'s list.")
-
-    def prescribe_medication(self, patient_name, medicine):
-        if patient_name in self.patient_list:
-            print(f"Prescribed {medicine} to {patient_name}.")
-        else:
-            print(f"Error: {patient_name} is not your patient.")
-
-
-class nurse(Staff):   
-   
-    def __init__(self, id, name, age, password, department, salary, shift):
-        super().__init__(id, name, age, password, department, salary)
-        self.shift = shift  
-        self.rooms = []
-
-    def view_dashboard(self):
-        # POLYMORPHISM##
-        print(f"\n=== nurse ===")
-        print(f"nurse {self.name} | Shift: {self.shift}")
-        print(f"Assigned Rooms: {', '.join(self.rooms)}")
-
-    def assign_room(self, room_number):
-        self.rooms.append(room_number)
-        print(f"nurse {self.name} assigned to Room {room_number}.")
-
-
-class admin(Staff):
-
-    def view_dashboard(self):
-        print(f"\n=== adminISTRATOR CONTROL ===")
-        print(f"admin: {self.name}")
-        print("1. View All Staff")
-        print("2. Payroll System")
-
-    def update_salary(self, staff_member, new_amount):
-        print(f"Updating salary for {staff_member.name}")
-        staff_member.salary = new_amount
-        print(f"New salary set to: {staff_member.salary}")

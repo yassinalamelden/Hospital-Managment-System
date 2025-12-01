@@ -24,10 +24,12 @@ class Invoice:
         self.patient_name = patient_name
         self.items = []
 
+    # Add new item
     def add_item(self, description, quantity, price):
         item = InvoiceItem(description, quantity, price)
         self.items.append(item)
 
+    # get the total of the bill
     def get_total(self):
         total = 0
         for item in self.items:
@@ -45,6 +47,7 @@ class Invoice:
         print(f"Total bill: {self.get_total()}")
         print("----------------------")
 
+    # Saving the bill in a seperate file in .txt to print it for the user
     def save_to_file(self, filename):
         """
         Saves the bill to a text file.
