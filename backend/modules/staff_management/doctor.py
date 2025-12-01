@@ -1,6 +1,6 @@
 from backend.modules.staff_management import Staff
 
-class Doctor(Staff):   ##inheritance#
+class doctor(Staff):   ##inheritance#
     
     def __init__(self, id, name, age, password, department, salary, specialization):
     
@@ -26,4 +26,3 @@ class Doctor(Staff):   ##inheritance#
             print(f"Prescribed {medicine} to {patient_name}.")
         else:
             print(f"Error: {patient_name} is not your patient.")
-            
