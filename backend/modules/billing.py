@@ -101,10 +101,10 @@ class Invoice:
             f.write(f"Patient: {self.patient_name}\n")
 
             if self.insurance_company:
-                f.write(f"Insurance: {self.insurance_company}")
-                f.write(f"Coverage: {self.coverage_percent}")
+                f.write(f"Insurance: {self.insurance_company}\n")
+                f.write(f"Coverage: {self.coverage_percent}\n")
             else:
-                f.write("Insurance: None")
+                f.write("Insurance: None\n")
             
             f.write("Items:\n")
             for item in self.items:
@@ -116,6 +116,6 @@ class Invoice:
 
             f.write(f"Total bill: {self.get_total()}\n")
             if self.insurance_company:
-                f.write(f"Covered by insurance: {insurance_part}")
-                f.write(f"Patient must pay: {patient_part}")
+                f.write(f"Covered by insurance: {insurance_part}\n")
+                f.write(f"Patient must pay: {patient_part}\n")
             f.write("----------------------\n")
