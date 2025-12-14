@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h1 class="display-4">Dashboard</h1>
+        <p class="lead">Welcome to the Hospital Management System</p>
+    </div>
+</div>
+
+<div class="row text-center">
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-primary h-100">
+            <div class="card-body">
+                <h5 class="card-title">Total Patients</h5>
+                <h2 class="display-3">{{ total_patients }}</h2>
+                <a href="{% url 'patient-list' %}" class="btn btn-light btn-sm mt-3">View Patients</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-success h-100">
+            <div class="card-body">
+                <h5 class="card-title">Available Rooms</h5>
+                <h2 class="display-3">{{ available_rooms }}</h2>
+                <a href="{% url 'room-list' %}" class="btn btn-light btn-sm mt-3">View Rooms</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-warning h-100">
+            <div class="card-body">
+                <h5 class="card-title">Scheduled Appts</h5>
+                <h2 class="display-3">{{ pending_appointments }}</h2>
+                <a href="{% url 'appointment-list' %}" class="btn btn-light btn-sm mt-3">View Schedule</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-danger h-100">
+            <div class="card-body">
+                <h5 class="card-title">Unpaid Bills</h5>
+                <h2 class="display-3">{{ unpaid_bills }}</h2>
+                <a href="{% url 'bill-list' %}" class="btn btn-light btn-sm mt-3">View Billing</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
