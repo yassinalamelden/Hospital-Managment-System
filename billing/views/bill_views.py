@@ -11,7 +11,7 @@ class BillCreateView(CreateView):
 
 class BillDetailView(DetailView):
     model = Bill
-    template_name = 'billing/bill_detail.html'
+    template_name = 'billing/invoice.html'
     context_object_name = 'bill'
 
 class BillListView(ListView):

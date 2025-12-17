@@ -17,6 +17,7 @@ class Room(models.Model):
         blank=True, 
         related_name='room'
     )
+    admission_date = models.DateField(null=True, blank=True)
 
     @property
     def is_occupied(self):

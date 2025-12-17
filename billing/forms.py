@@ -4,7 +4,7 @@ from .models import Bill
 class BillForm(forms.ModelForm):
     class Meta:
         model = Bill
-        fields = ['patient', 'room_charges', 'doctor_fees', 'medicine_cost', 'is_paid']
+        fields = ['patient', 'payment_method', 'payment_status', 'room_charges', 'doctor_fees', 'medicine_cost']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
