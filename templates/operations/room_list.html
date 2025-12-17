@@ -25,6 +25,7 @@
                 {% else %}
                 <p class="card-text text-success"><strong>Available</strong></p>
                 {% endif %}
+                <a href="{% url 'room-update' room.pk %}" class="btn btn-outline-secondary btn-sm mt-2">Edit</a>
             </div>
         </div>
     </div>
