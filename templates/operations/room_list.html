@@ -28,6 +28,7 @@
                 </form>
                 {% else %}
                 <p class="card-text text-success"><strong>Available</strong></p>
+                <a href="{% url 'room-assign' room.pk %}" class="btn btn-success btn-sm w-100">Assign Patient</a>
                 {% endif %}
                 <div class="btn-group mt-2">
                     <a href="{% url 'room-update' room.pk %}" class="btn btn-outline-secondary btn-sm">Edit</a>

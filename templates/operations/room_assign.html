@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0">Assign Patient to Room {{ object.room_number }}</h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label class="form-label">Patient</label>
+                        {{ form.current_patient }}
+                        <div class="form-text">Select a patient (only showing unassigned patients).</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Admission Date</label>
+                        {{ form.admission_date }}
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-success">Assign Patient</button>
+                        <a href="{% url 'room-list' %}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Basic styling for form inputs */
+    select,
+    input[type="date"] {
+        width: 100%;
+        padding: 0.375rem 0.75rem;
+        font-size: 1rem;
+        border: 1px solid #ced4da;
+        border-radius: 0.375rem;
+    }
+</style>
+{% endblock %}

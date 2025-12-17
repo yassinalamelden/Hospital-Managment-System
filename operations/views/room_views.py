@@ -1,5 +1,6 @@
 from django.shortcuts import redirect, get_object_or_404
 from django.contrib import messages
+from django.utils import timezone
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, View
 from django.urls import reverse_lazy
 from operations.models import Room
@@ -53,3 +54,23 @@ class RoomVacateView(View):
 
         messages.success(request, "Room vacated successfully.")
         return redirect("room-list")
+
+from operations.forms import RoomAssignForm
+
+
+class RoomVacateView(View):
+    def post(self, request, pk, *args, **kwargs):
+        room.vacate()
+
+        messages.success(request, "Room vacated successfully.")
+        return redirect("room-list")
+
+class RoomAssignView(UpdateView):
+    model = Room
+    form_class = RoomAssignForm
+    template_name = 'operations/room_assign.html'
+    success_url = reverse_lazy('room-list')
+
+    def form_valid(self, form):
+        messages.success(self.request, f"Room assigned to {form.cleaned_data['current_patient']}.")
+        return super().form_valid(form)

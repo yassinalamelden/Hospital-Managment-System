@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import AppointmentListView, AppointmentCreateView, RoomListView, RoomCreateView, RoomUpdateView, RoomDeleteView, RoomVacateView
+from .views import AppointmentListView, AppointmentCreateView, RoomListView, RoomCreateView, RoomUpdateView, RoomDeleteView, RoomVacateView, RoomAssignView
 
 urlpatterns = [
     path('appointments/', AppointmentListView.as_view(), name='appointment-list'),
@@ -9,4 +9,6 @@ urlpatterns = [
     path('rooms/<int:pk>/edit/', RoomUpdateView.as_view(), name='room-update'),
     path('rooms/<int:pk>/delete/', RoomDeleteView.as_view(), name='room-delete'),
     path("rooms/<int:pk>/vacate/", RoomVacateView.as_view(), name="room-vacate"),
+    path("rooms/<int:pk>/assign/", RoomAssignView.as_view(), name="room-assign"),
+
 ]
