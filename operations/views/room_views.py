@@ -4,6 +4,7 @@ from django.utils import timezone
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, View
 from django.urls import reverse_lazy
 from operations.models import Room
+from operations.forms import RoomAssignForm
 
 class RoomListView(ListView):
     model = Room
@@ -49,17 +50,6 @@ class RoomVacateView(View):
             messages.info(request, "Room is already available.")
             return redirect("room-list")
 
-        # Vacate using model method
-        room.vacate()
-
-        messages.success(request, "Room vacated successfully.")
-        return redirect("room-list")
-
-from operations.forms import RoomAssignForm
-
-
-class RoomVacateView(View):
-    def post(self, request, pk, *args, **kwargs):
         room.vacate()
 
         messages.success(request, "Room vacated successfully.")
