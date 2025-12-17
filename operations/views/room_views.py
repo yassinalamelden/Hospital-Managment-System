@@ -1,6 +1,6 @@
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 from django.contrib import messages
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView, View
 from django.urls import reverse_lazy
 from operations.models import Room
 
@@ -8,6 +8,8 @@ class RoomListView(ListView):
     model = Room
     template_name = 'operations/room_list.html'
     context_object_name = 'rooms'
+    
+    # ... (other classes remain same)
 
 class RoomCreateView(CreateView):
     model = Room
@@ -36,3 +38,18 @@ class RoomDeleteView(DeleteView):
 
         messages.success(request, "Room deleted successfully.")
         return super().post(request, *args, **kwargs)
+
+class RoomVacateView(View):
+    def post(self, request, pk, *args, **kwargs):
+        room = get_object_or_404(Room, pk=pk)
+
+        # If already empty, just inform user
+        if room.current_patient is None:
+            messages.info(request, "Room is already available.")
+            return redirect("room-list")
+
+        # Vacate using model method
+        room.vacate()
+
+        messages.success(request, "Room vacated successfully.")
+        return redirect("room-list")

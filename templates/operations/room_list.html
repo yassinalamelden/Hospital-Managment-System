@@ -22,6 +22,10 @@
                 <p class="card-text"><strong>Price:</strong> ${{ room.price_per_night }}</p>
                 {% if room.is_occupied %}
                 <p class="card-text text-danger"><strong>Occupied by:</strong> {{ room.current_patient.name }}</p>
+                <form method="post" action="{% url 'room-vacate' room.pk %}" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-warning btn-sm w-100">Vacate Room</button>
+                </form>
                 {% else %}
                 <p class="card-text text-success"><strong>Available</strong></p>
                 {% endif %}
