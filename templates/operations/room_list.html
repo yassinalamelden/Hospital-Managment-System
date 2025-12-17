@@ -25,7 +25,10 @@
                 {% else %}
                 <p class="card-text text-success"><strong>Available</strong></p>
                 {% endif %}
-                <a href="{% url 'room-update' room.pk %}" class="btn btn-outline-secondary btn-sm mt-2">Edit</a>
+                <div class="btn-group mt-2">
+                    <a href="{% url 'room-update' room.pk %}" class="btn btn-outline-secondary btn-sm">Edit</a>
+                    <a href="{% url 'room-delete' room.pk %}" class="btn btn-outline-danger btn-sm">Delete</a>
+                </div>
             </div>
         </div>
     </div>
