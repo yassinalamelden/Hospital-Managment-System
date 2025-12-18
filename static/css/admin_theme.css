@@ -1,11 +1,7 @@
 /* Import project variables */
 @import url('partials/_variables.css');
 
-/* ========================================
-   DJANGO ADMIN LUXURY MEDICAL THEME
-   ======================================== */
 
-/* Global Admin Styles */
 body {
     font-family: var(--font-body) !important;
     background-color: #f4f6f8 !important;

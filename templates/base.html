@@ -32,13 +32,12 @@
         <!-- Main Navbar -->
         <nav class="navbar navbar-expand-lg bg-white shadow-sm sticky-top">
             <div class="container">
-                <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'home' %}">
-                    <span class="display-6 text-accent mb-0" style="line-height: 1;">⚕️</span>
-                    <div class="d-flex flex-column">
+                <img class="navbar-brand d-flex align-items-center gap-2" src="{% static 'images/logo.png' %}" height="100px" width="100px">
+                <div class="d-flex flex-column">
                         <span class="fw-bold text-dark" style="font-family: var(--font-heading); letter-spacing: 1px; line-height: 1;">HOSPITAL</span>
                         <span class="text-muted small text-uppercase" style="font-size: 0.6rem; letter-spacing: 2px;">Management System</span>
                     </div>
-                </a>
+                </img>
 
                 <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
                     <span class="navbar-toggler-icon"></span>
