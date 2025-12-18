@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-5 animate-fade-in">
+    <div class="text-center mb-5">
+        <h1 class="display-5 fw-bold">Find Your <span class="text-accent">Specialist</span></h1>
+        <p class="lead text-muted">Connect with world-class doctors close to you.</p>
+    </div>
+
+    <div class="row justify-content-center mb-5">
+        <div class="col-md-8">
+            <div class="magic-card p-4">
+                <form method="get" class="row g-3 align-items-end">
+                    <div class="col-md-9">
+                        <label for="specialty" class="form-label text-uppercase small fw-bold text-muted">Filter by Specialty</label>
+                        <select name="specialty" id="specialty" class="form-control-custom w-100 border-0 bg-light">
+                            <option value="">All Specialties</option>
+                            <!-- Would ideally iterate over distinct specialties from backend, for now assume context has it or simple input -->
+                            <option value="Cardiology">Cardiology</option>
+                            <option value="Neurology">Neurology</option>
+                            <option value="General Surgery">General Surgery</option>
+                            <option value="Pediatrics">Pediatrics</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn-gradient w-100">Search</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for doctor in doctors %}
+            <div class="col">
+                <div class="magic-card h-100 text-center">
+                    <div class="mb-3 d-inline-block bg-purple-light rounded-circle p-3 text-accent display-6">
+                        👨‍⚕️
+                    </div>
+                    <h5 class="fw-bold mb-1">Dr. {{ doctor.name }}</h5>
+                    <p class="text-accent mb-3">{{ doctor.specialty }}</p>
+                    
+                    <div class="text-start bg-light p-3 rounded-3 mb-4">
+                        <div class="d-flex justify-content-between mb-2">
+                             <small class="text-muted">Consultation Fee</small>
+                             <span class="fw-bold">${{ doctor.consultation_fee }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                             <small class="text-muted">Location</small>
+                             <span class="fw-bold text-end">{{ doctor.address|truncatechars:20 }}</span>
+                        </div>
+                    </div>
+
+                    <a href="{% url 'book-appointment' %}?doctor={{ doctor.id }}" class="btn-gradient w-100">Book Appointment</a>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12 text-center py-5">
+                <div class="magic-card d-inline-block px-5 py-4">
+                    <p class="mb-0 text-muted">No specialists found matching your criteria.</p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

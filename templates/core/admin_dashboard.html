@@ -1,0 +1,167 @@
+{% extends 'layouts/admin_base.html' %}
+
+{% block title %}Admin Dashboard{% endblock %}
+{% block page_title %}Dashboard Overview{% endblock %}
+{% block page_subtitle %}Monitor system performance and key metrics{% endblock %}
+
+{% block header_actions %}
+<a href="{% url 'admin:index' %}" class="btn btn-outline-secondary rounded-pill btn-sm" target="_blank">
+    <i class="fas fa-cog me-1"></i> Django Admin
+</a>
+{% endblock %}
+
+{% block content %}
+<!-- Stats Grid -->
+<div class="row g-4 mb-5">
+    <div class="col-lg-3 col-md-6">
+        <div class="magic-card text-center">
+            <div class="mb-2">
+                <i class="fas fa-user-injured fa-2x text-accent"></i>
+            </div>
+            <div class="display-5 fw-bold text-accent mb-1">{{ total_patients }}</div>
+            <div class="text-muted small text-uppercase">Total Patients</div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="magic-card text-center">
+            <div class="mb-2">
+                <i class="fas fa-user-md fa-2x text-primary"></i>
+            </div>
+            <div class="display-5 fw-bold text-primary mb-1">{{ total_doctors }}</div>
+            <div class="text-muted small text-uppercase">Active Doctors</div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="magic-card text-center">
+            <div class="mb-2">
+                <i class="fas fa-calendar-check fa-2x text-warning"></i>
+            </div>
+            <div class="display-5 fw-bold text-warning mb-1">{{ pending_appointments }}</div>
+            <div class="text-muted small text-uppercase">Pending Appointments</div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="magic-card text-center">
+            <div class="mb-2">
+                <i class="fas fa-file-invoice-dollar fa-2x text-danger"></i>
+            </div>
+            <div class="display-5 fw-bold text-danger mb-1">{{ unpaid_bills }}</div>
+            <div class="text-muted small text-uppercase">Unpaid Bills</div>
+        </div>
+    </div>
+</div>
+
+<!-- Secondary Stats -->
+<div class="row g-4 mb-5">
+    <div class="col-md-4">
+        <div class="magic-card">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-muted small text-uppercase mb-1">Total Users</div>
+                    <div class="fs-3 fw-bold">{{ total_users }}</div>
+                </div>
+                <i class="fas fa-users fa-2x text-accent opacity-50"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="magic-card">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-muted small text-uppercase mb-1">Total Rooms</div>
+                    <div class="fs-3 fw-bold">{{ total_rooms }}</div>
+                </div>
+                <i class="fas fa-bed fa-2x text-info opacity-50"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="magic-card">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-muted small text-uppercase mb-1">Occupied Rooms</div>
+                    <div class="fs-3 fw-bold">{{ occupied_rooms }}</div>
+                </div>
+                <i class="fas fa-door-closed fa-2x text-success opacity-50"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="magic-card">
+            <h5 class="mb-4" style="font-family: var(--font-heading); color: var(--primary-dark);">
+                <i class="fas fa-bolt text-accent me-2"></i> Quick Actions
+            </h5>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <a href="{% url 'doctor-create' %}" class="btn btn-outline-primary w-100 rounded-pill py-3">
+                        <i class="fas fa-user-md d-block fs-3 mb-2"></i>
+                        Add Doctor
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <a href="{% url 'patient-create' %}" class="btn btn-outline-success w-100 rounded-pill py-3">
+                        <i class="fas fa-user-plus d-block fs-3 mb-2"></i>
+                        Register Patient
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <a href="/operations/appointments/add/" class="btn btn-outline-warning w-100 rounded-pill py-3">
+                        <i class="fas fa-calendar-plus d-block fs-3 mb-2"></i>
+                        Schedule Appointment
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <a href="/operations/rooms/add/" class="btn btn-outline-info w-100 rounded-pill py-3">
+                        <i class="fas fa-bed d-block fs-3 mb-2"></i>
+                        Add Room
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <a href="/billing/bills/add/" class="btn btn-outline-danger w-100 rounded-pill py-3">
+                        <i class="fas fa-file-invoice d-block fs-3 mb-2"></i>
+                        Create Bill
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <a href="{% url 'manage-users' %}" class="btn btn-outline-secondary w-100 rounded-pill py-3">
+                        <i class="fas fa-users-cog d-block fs-3 mb-2"></i>
+                        Manage Users
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="magic-card">
+            <h5 class="mb-4" style="font-family: var(--font-heading); color: var(--primary-dark);">
+                <i class="fas fa-link text-accent me-2"></i> System Links
+            </h5>
+            <div class="d-grid gap-2">
+                <a href="{% url 'doctor-list' %}" class="btn btn-light text-start rounded-pill">
+                    <i class="fas fa-user-md me-2 text-primary"></i> View All Doctors
+                </a>
+                <a href="{% url 'patient-list' %}" class="btn btn-light text-start rounded-pill">
+                    <i class="fas fa-user-injured me-2 text-success"></i> View All Patients
+                </a>
+                <a href="/operations/appointments/" class="btn btn-light text-start rounded-pill">
+                    <i class="fas fa-calendar-alt me-2 text-warning"></i> All Appointments
+                </a>
+                <a href="/operations/rooms/" class="btn btn-light text-start rounded-pill">
+                    <i class="fas fa-door-open me-2 text-info"></i> Room Management
+                </a>
+                <a href="/billing/bills/" class="btn btn-light text-start rounded-pill">
+                    <i class="fas fa-receipt me-2 text-danger"></i> Billing Records
+                </a>
+                <a href="{% url 'manage-reviews' %}" class="btn btn-light text-start rounded-pill">
+                    <i class="fas fa-star me-2 text-accent"></i> Review Management
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

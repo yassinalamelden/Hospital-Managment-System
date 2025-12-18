@@ -1,0 +1,376 @@
+/* Import project variables */
+@import url('partials/_variables.css');
+
+/* ========================================
+   DJANGO ADMIN LUXURY MEDICAL THEME
+   ======================================== */
+
+/* Global Admin Styles */
+body {
+    font-family: var(--font-body) !important;
+    background-color: #f4f6f8 !important;
+}
+
+/* Header Styling */
+#header {
+    background: var(--gradient-primary) !important;
+    color: white !important;
+    padding: 15px 20px !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1) !important;
+}
+
+#site-name {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+#site-name a {
+    color: white !important;
+    text-decoration: none !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    font-family: var(--font-heading) !important;
+    font-size: 1.8rem !important;
+    font-weight: 700 !important;
+}
+
+#site-name .hospital-icon {
+    font-size: 2rem !important;
+}
+
+#site-name .hospital-title {
+    letter-spacing: 1px !important;
+}
+
+#site-name a:hover {
+    opacity: 0.9 !important;
+}
+
+/* User Tools */
+.user-tools {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    color: white !important;
+}
+
+.user-tools a,
+.user-tools button {
+    color: white !important;
+    text-decoration: none !important;
+    padding: 8px 15px !important;
+    border-radius: 20px !important;
+    background: rgba(255, 255, 255, 0.15) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    transition: all 0.3s ease !important;
+    font-size: 0.9rem !important;
+    cursor: pointer !important;
+}
+
+.user-tools a:hover,
+.user-tools button:hover {
+    background: rgba(255, 255, 255, 0.25) !important;
+    transform: translateY(-2px) !important;
+}
+
+.user-tools .separator {
+    display: none !important;
+}
+
+.custom-dashboard-link {
+    background: rgba(255, 255, 255, 0.25) !important;
+    font-weight: 600 !important;
+}
+
+#logout-form {
+    display: inline !important;
+    margin: 0 !important;
+}
+
+/* Breadcrumbs */
+.breadcrumbs {
+    background: white !important;
+    padding: 15px 20px !important;
+    border-bottom: 1px solid #e0e0e0 !important;
+    font-size: 0.9rem !important;
+}
+
+.breadcrumbs a {
+    color: var(--primary-color) !important;
+    text-decoration: none !important;
+}
+
+.breadcrumbs a:hover {
+    text-decoration: underline !important;
+}
+
+/* Page Titles */
+#content h1,
+.dashboard h1 {
+    font-family: var(--font-heading) !important;
+    color: var(--primary-dark) !important;
+    font-size: 2rem !important;
+    margin-bottom: 20px !important;
+    font-weight: 700 !important;
+}
+
+/* Module Styling (Magic Card Effect) */
+.module,
+.model-group {
+    background: white !important;
+    border-radius: 15px !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08) !important;
+    border: none !important;
+    margin-bottom: 20px !important;
+    overflow: hidden !important;
+    position: relative !important;
+}
+
+.module::before {
+    content: '' !important;
+    position: absolute !important;
+    inset: 0 !important;
+    border-radius: 15px !important;
+    padding: 2px !important;
+    background: var(--gradient-primary) !important;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
+    -webkit-mask-composite: xor !important;
+    mask-composite: exclude !important;
+    opacity: 0.3 !important;
+    pointer-events: none !important;
+}
+
+.module h2,
+.module caption {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--turquoise) 100%) !important;
+    color: white !important;
+    padding: 15px 20px !important;
+    font-family: var(--font-heading) !important;
+    font-size: 1.2rem !important;
+    font-weight: 600 !important;
+    margin: 0 !important;
+    border: none !important;
+}
+
+/* Tables */
+table {
+    border: none !important;
+}
+
+thead th {
+    background: #f8f9fa !important;
+    color: var(--primary-dark) !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    font-size: 0.85rem !important;
+    letter-spacing: 0.5px !important;
+    padding: 12px !important;
+    border-bottom: 2px solid var(--primary-color) !important;
+}
+
+tbody tr {
+    transition: all 0.2s ease !important;
+}
+
+tbody tr:hover {
+    background: #f8f9fa !important;
+}
+
+tbody td {
+    padding: 12px !important;
+    border-bottom: 1px solid #e0e0e0 !important;
+}
+
+/* Buttons - Gradient Style */
+.button,
+.submit-row input,
+input[type="submit"],
+input[type="button"],
+.object-tools a {
+    background: var(--gradient-primary) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 25px !important;
+    padding: 10px 25px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    text-decoration: none !important;
+    display: inline-block !important;
+    font-family: var(--font-body) !important;
+}
+
+.button:hover,
+.submit-row input:hover,
+input[type="submit"]:hover,
+input[type="button"]:hover,
+.object-tools a:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 5px 15px rgba(139, 92, 246, 0.3) !important;
+}
+
+.button.default,
+.submit-row input[type="submit"] {
+    background: var(--gradient-primary) !important;
+}
+
+/* Delete Button */
+.deletelink,
+.deletelink-box a {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+}
+
+.deletelink:hover,
+.deletelink-box a:hover {
+    box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3) !important;
+}
+
+/* Links */
+a,
+.module a {
+    color: var(--primary-color) !important;
+    transition: color 0.2s ease !important;
+}
+
+a:hover,
+.module a:hover {
+    color: var(--turquoise) !important;
+}
+
+/* Form Fields */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="url"],
+input[type="number"],
+input[type="date"],
+input[type="time"],
+textarea,
+select {
+    border: 1px solid #d1d5db !important;
+    border-radius: 8px !important;
+    padding: 10px 15px !important;
+    font-family: var(--font-body) !important;
+    transition: all 0.2s ease !important;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus,
+input[type="url"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus,
+input[type="time"]:focus,
+textarea:focus,
+select:focus {
+    border-color: var(--primary-color) !important;
+    outline: none !important;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1) !important;
+}
+
+/* Dashboard Modules */
+#content-main {
+    padding: 20px !important;
+}
+
+.dashboard .module table th {
+    background: transparent !important;
+    color: var(--primary-dark) !important;
+    font-weight: 600 !important;
+}
+
+/* Sidebar */
+#content-related {
+    background: transparent !important;
+}
+
+#content-related .module {
+    background: white !important;
+}
+
+/* Pagination */
+.paginator {
+    padding: 15px !important;
+    background: white !important;
+    border-radius: 10px !important;
+    margin-top: 20px !important;
+}
+
+.paginator a {
+    padding: 8px 12px !important;
+    border-radius: 8px !important;
+    background: #f3f4f6 !important;
+    margin: 0 3px !important;
+    display: inline-block !important;
+}
+
+.paginator a:hover {
+    background: var(--primary-color) !important;
+    color: white !important;
+}
+
+/* Messages/Alerts */
+.messagelist li {
+    border-radius: 10px !important;
+    padding: 15px 20px !important;
+    margin-bottom: 10px !important;
+    font-weight: 500 !important;
+}
+
+.messagelist .success {
+    background: #d1fae5 !important;
+    color: #065f46 !important;
+    border-left: 4px solid #10b981 !important;
+}
+
+.messagelist .warning {
+    background: #fef3c7 !important;
+    color: #92400e !important;
+    border-left: 4px solid #f59e0b !important;
+}
+
+.messagelist .error {
+    background: #fee2e2 !important;
+    color: #991b1b !important;
+    border-left: 4px solid #ef4444 !important;
+}
+
+/* Change List Filters */
+#changelist-filter {
+    background: white !important;
+    border-radius: 15px !important;
+    padding: 20px !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08) !important;
+}
+
+#changelist-filter h2 {
+    font-family: var(--font-heading) !important;
+    color: var(--primary-dark) !important;
+    font-size: 1.2rem !important;
+    margin-bottom: 15px !important;
+}
+
+#changelist-filter h3 {
+    color: var(--primary-color) !important;
+    font-weight: 600 !important;
+    margin-top: 15px !important;
+}
+
+/* Object Tools */
+.object-tools {
+    margin-bottom: 20px !important;
+}
+
+.object-tools li {
+    margin-left: 10px !important;
+}
+
+/* Footer */
+#footer {
+    background: var(--primary-dark) !important;
+    color: white !important;
+    padding: 15px !important;
+    text-align: center !important;
+    margin-top: 40px !important;
+}

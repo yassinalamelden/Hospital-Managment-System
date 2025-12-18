@@ -20,3 +20,19 @@ class PatientForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
+
+from operations.models import Appointment
+
+class AppointmentForm(forms.ModelForm):
+    class Meta:
+        model = Appointment
+        fields = ['doctor', 'date_time', 'reason']
+        widgets = {
+            'date_time': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+            'reason': forms.Textarea(attrs={'rows': 3}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'form-control'

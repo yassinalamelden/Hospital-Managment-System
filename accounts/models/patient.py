@@ -1,7 +1,9 @@
 from django.db import models
+from django.contrib.auth.models import User
 from .person import Person
 
 class Patient(Person):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
     BLOOD_TYPE_CHOICES = [
         ('A+', 'A+'), ('A-', 'A-'),
         ('B+', 'B+'), ('B-', 'B-'),

@@ -1,0 +1,29 @@
+/* _variables.css - Color Palette & Typography */
+
+:root {
+    /* --- Modern Medical Palette --- */
+    --primary-dark: #0e1a24;  /* Deep Navy (Base Text/Headings) */
+    --purple: #8e44ad;        /* Medical Purple (Primary Brand) */
+    --turquoise: #01a5c6;     /* Soft Teal (Secondary Accent) */
+    --white: #ffffff;
+    --light-bg: #fcfcfc;      /* Clean Background */
+    --danger: #dc3545;
+    
+    /* --- Gradients --- */
+    --gradient-primary: linear-gradient(135deg, var(--purple), var(--turquoise));
+    --gradient-sidebar: linear-gradient(180deg, var(--primary-dark) 0%, #1c2e3e 100%);
+    
+    /* --- Fonts --- */
+    --font-heading: 'Playfair Display', serif;
+    --font-body: 'Poppins', sans-serif;
+    --font-accent: 'Dancing Script', cursive;
+    
+    /* --- Layout Dimensions --- */
+    --sidebar-width: 260px;
+    --header-height: 70px;
+    --border-radius: 20px;
+    
+    /* --- Effects --- */
+    --shadow-soft: 0 10px 30px rgba(0,0,0,0.05);
+    --shadow-hover: 0 20px 40px rgba(142, 68, 173, 0.15);
+}

@@ -1,0 +1,178 @@
+{% extends 'layouts/admin_base.html' %}
+
+{% block title %}User Management{% endblock %}
+{% block page_title %}User Management{% endblock %}
+{% block page_subtitle %}Manage system users, roles, and permissions{% endblock %}
+
+{% block header_actions %}
+<a href="{% url 'admin-dashboard' %}" class="btn btn-outline-primary rounded-pill btn-sm">
+    <i class="fas fa-arrow-left me-1"></i> Back to Dashboard
+</a>
+{% endblock %}
+
+{% block content %}
+<!-- Statistics Cards -->
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="magic-card text-center">
+            <div class="fs-1 text-accent mb-2">{{ total_users }}</div>
+            <div class="text-muted small text-uppercase">Total Users</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="magic-card text-center">
+            <div class="fs-1 text-primary mb-2">{{ staff_count }}</div>
+            <div class="text-muted small text-uppercase">Staff Members</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="magic-card text-center">
+            <div class="fs-1 text-success mb-2">{{ patient_count }}</div>
+            <div class="text-muted small text-uppercase">Patients</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="magic-card text-center">
+            <div class="fs-1 text-danger mb-2">{{ inactive_count }}</div>
+            <div class="text-muted small text-uppercase">Inactive</div>
+        </div>
+    </div>
+</div>
+
+<!-- Filters & Search -->
+<div class="magic-card mb-4">
+    <form method="get" class="row g-3 align-items-end">
+        <div class="col-md-6">
+            <label class="form-label small text-uppercase fw-bold text-muted">Search Users</label>
+            <input type="text" name="search" class="form-control-custom" placeholder="Username or email..." value="{{ request.GET.search }}">
+        </div>
+        <div class="col-md-4">
+            <label class="form-label small text-uppercase fw-bold text-muted">Filter by Role</label>
+            <select name="role" class="form-control-custom">
+                <option value="">All Users</option>
+                <option value="staff" {% if request.GET.role == 'staff' %}selected{% endif %}>Staff Only</option>
+                <option value="patient" {% if request.GET.role == 'patient' %}selected{% endif %}>Patients Only</option>
+                <option value="inactive" {% if request.GET.role == 'inactive' %}selected{% endif %}>Inactive</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn-gradient w-100">
+                <i class="fas fa-search me-1"></i> Filter
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- Users Table -->
+<div class="magic-card">
+    <div class="table-responsive">
+        <table class="medical-table">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Status</th>
+                    <th>Joined</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user_item in users %}
+                <tr>
+                    <td>
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="avatar bg-purple-light text-accent rounded-circle d-flex align-items-center justify-content-center" style="width: 35px; height: 35px; font-size: 0.9rem;">
+                                {{ user_item.username|slice:":1"|upper }}
+                            </div>
+                            <strong>{{ user_item.username }}</strong>
+                        </div>
+                    </td>
+                    <td>{{ user_item.email|default:"No email" }}</td>
+                    <td>
+                        {% if user_item.is_superuser %}
+                            <span class="badge bg-danger rounded-pill">Superuser</span>
+                        {% elif user_item.is_staff %}
+                            <span class="badge bg-primary rounded-pill">Staff</span>
+                        {% else %}
+                            <span class="badge bg-success rounded-pill">Patient</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if user_item.is_active %}
+                            <span class="badge bg-success rounded-pill">Active</span>
+                        {% else %}
+                            <span class="badge bg-secondary rounded-pill">Inactive</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ user_item.date_joined|date:"M d, Y" }}</td>
+                    <td>
+                        <div class="d-flex gap-2 justify-content-center">
+                            {% if user_item != user %}
+                                <!-- Promote/Demote Button -->
+                                <form method="post" action="{% url 'promote-user' user_item.id %}" class="d-inline">
+                                    {% csrf_token %}
+                                    {% if user_item.is_staff %}
+                                        <button type="submit" class="btn btn-outline-warning btn-sm rounded-pill" title="Remove Admin">
+                                            <i class="fas fa-user-minus"></i>
+                                        </button>
+                                    {% else %}
+                                        <button type="submit" class="btn btn-outline-primary btn-sm rounded-pill" title="Promote to Admin">
+                                            <i class="fas fa-user-shield"></i>
+                                        </button>
+                                    {% endif %}
+                                </form>
+                                
+                                <!-- Activate/Deactivate Button -->
+                                <form method="post" action="{% url 'deactivate-user' user_item.id %}" class="d-inline">
+                                    {% csrf_token %}
+                                    {% if user_item.is_active %}
+                                        <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill" title="Deactivate">
+                                            <i class="fas fa-ban"></i>
+                                        </button>
+                                    {% else %}
+                                        <button type="submit" class="btn btn-outline-success btn-sm rounded-pill" title="Activate">
+                                            <i class="fas fa-check-circle"></i>
+                                        </button>
+                                    {% endif %}
+                                </form>
+                            {% else %}
+                                <span class="badge bg-info rounded-pill">You</span>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center text-muted py-5">
+                        <i class="fas fa-users fa-3x mb-3 d-block"></i>
+                        No users found matching your criteria.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- Pagination -->
+    {% if is_paginated %}
+    <div class="d-flex justify-content-center mt-4">
+        <nav>
+            <ul class="pagination">
+                {% if page_obj.has_previous %}
+                    <li class="page-item"><a class="page-link rounded-pill me-1" href="?page=1">First</a></li>
+                    <li class="page-item"><a class="page-link rounded-pill me-1" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
+                {% endif %}
+                
+                <li class="page-item active"><span class="page-link rounded-pill mx-1">{{ page_obj.number }}</span></li>
+                
+                {% if page_obj.has_next %}
+                    <li class="page-item"><a class="page-link rounded-pill ms-1" href="?page={{ page_obj.next_page_number }}">Next</a></li>
+                    <li class="page-item"><a class="page-link rounded-pill ms-1" href="?page={{ page_obj.paginator.num_pages }}">Last</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

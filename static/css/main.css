@@ -1,0 +1,12 @@
+/* 
+    Hospital Management System - Main Stylesheet
+    Luxury Medical Theme ('Morshed' Design Migration)
+*/
+
+/* Imports */
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Poppins:wght@300;400;500;600;700&display=swap');
+
+@import 'partials/_variables.css';
+@import 'partials/_base.css';
+@import 'partials/_layout.css';
+@import 'partials/_components.css';

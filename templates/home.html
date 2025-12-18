@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container col-xxl-8 px-4 py-5">
+    <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
+        <div class="col-10 col-sm-8 col-lg-6">
+            <!-- Ideally an image here, using a placeholder for now -->
+            <div class="magic-card p-4 bg-light text-center" style="min-height: 300px; display: flex; align-items: center; justify-content: center;">
+                <h3 class="text-muted">Hospital Image</h3>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <h1 class="display-5 fw-bold lh-1 mb-3">World-Class Healthcare, <span class="text-accent">Redefined.</span></h1>
+            <p class="lead">Experience the future of medical care with our state-of-the-art facilities and compassionate staff. Your health is our priority.</p>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-start mt-4">
+                {% if not user.is_authenticated %}
+                    <a href="{% url 'signup' %}" class="btn-gradient btn-lg px-4 me-md-2">Get Started</a>
+                    <a href="{% url 'login' %}" class="btn btn-outline-dark rounded-pill btn-lg px-4">Login</a>
+                {% else %}
+                    {% if user.is_staff %}
+                         <a href="{% url 'admin-dashboard' %}" class="btn-gradient btn-lg px-4">Go to Dashboard</a>
+                    {% else %}
+                         <a href="{% url 'client-portal' %}" class="btn-gradient btn-lg px-4">My Portal</a>
+                         <a href="{% url 'book-appointment' %}" class="btn btn-outline-dark rounded-pill btn-lg px-4">Book Appt</a>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container py-5">
+    <div class="row g-4 text-center">
+        <div class="col-md-4">
+            <div class="magic-card">
+                <div class="mb-3 text-accent display-6">⚕️</div>
+                <h3>Expert Doctors</h3>
+                <p class="text-muted">Access a network of top-tier specialists dedicated to your well-being.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="magic-card">
+                 <div class="mb-3 text-accent display-6">🏥</div>
+                <h3>Modern Facilities</h3>
+                <p class="text-muted">State-of-the-art equipment and comfortable rooms for the best recovery.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="magic-card">
+                 <div class="mb-3 text-accent display-6">🚑</div>
+                <h3>24/7 Support</h3>
+                <p class="text-muted">Our emergency team and support staff are always here for you.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
