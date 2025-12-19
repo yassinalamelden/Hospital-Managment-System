@@ -12,32 +12,37 @@
 
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
         {% for room in rooms %}
-            <div class="col">
-                <div class="magic-card h-100 d-flex flex-column">
-                    <div class="d-flex justify-content-between align-items-start mb-3">
-                        <h5 class="fw-bold">Room {{ room.room_number }}</h5>
-                        {% if room.is_occupied %}
-                            <span class="badge bg-danger rounded-pill">Occupied</span>
-                        {% else %}
-                            <span class="badge bg-success rounded-pill">Available</span>
-                        {% endif %}
-                    </div>
-                    
-                    <div class="mb-4 flex-grow-1">
-                        <p class="mb-1 text-muted small text-uppercase">Type</p>
-                        <p class="fw-medium">{{ room.room_type }}</p>
-                        
-                        <p class="mb-1 text-muted small text-uppercase mt-2">Rate</p>
-                        <p class="fw-medium text-accent fs-5">${{ room.price_per_night }} <span class="fs-6 text-muted">/ night</span></p>
-                    </div>
-
-                    {% if not room.is_occupied %}
-                        <button class="btn btn-outline-success w-100 rounded-pill mt-auto">Book This Room</button>
+        <div class="col">
+            <div class="magic-card h-100 d-flex flex-column">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <h5 class="fw-bold">Room {{ room.room_number }}</h5>
+                    {% if room.is_occupied %}
+                    <span class="badge bg-danger rounded-pill">Occupied</span>
                     {% else %}
-                        <button class="btn btn-light w-100 rounded-pill mt-auto" disabled>Unavailable</button>
+                    <span class="badge bg-success rounded-pill">Available</span>
                     {% endif %}
                 </div>
+
+                <div class="mb-4 flex-grow-1">
+                    <p class="mb-1 text-muted small text-uppercase">Type</p>
+                    <p class="fw-medium">{{ room.room_type }}</p>
+
+                    <p class="mb-1 text-muted small text-uppercase mt-2">Rate</p>
+                    <p class="fw-medium text-accent fs-5">${{ room.price_per_night }} <span class="fs-6 text-muted">/
+                            night</span></p>
+                </div>
+
+                {% if not room.is_occupied %}
+                <form method="post" action="{% url 'book-room' room.pk %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-success w-100 rounded-pill mt-auto">Book This
+                        Room</button>
+                </form>
+                {% else %}
+                <button class="btn btn-light w-100 rounded-pill mt-auto" disabled>Unavailable</button>
+                {% endif %}
             </div>
+        </div>
         {% endfor %}
     </div>
 </div>

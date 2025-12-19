@@ -2,7 +2,8 @@ from django.views import View
 from django.views.generic import TemplateView, CreateView, ListView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import PasswordChangeView
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
+from django.utils import timezone
 from django.urls import reverse_lazy, reverse
 from django.contrib import messages
 from django.utils.html import strip_tags
@@ -134,6 +135,32 @@ class PatientAppointmentListView(LoginRequiredMixin, ListView):
             return Appointment.objects.filter(patient=self.request.user.patient).order_by('-date_time')
         return Appointment.objects.none()
 
+
+class PatientBookRoomView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        if not hasattr(request.user, 'patient'):
+            messages.error(request, "You must have a patient profile to book a room. Please contact administration.")
+            return redirect('client-portal')
+        
+        room = get_object_or_404(Room, pk=pk)
+        
+        if room.is_occupied:
+            messages.error(request, f"Room {room.room_number} is already occupied.")
+            return redirect('room-availability')
+        
+        # Check if patient already has a room
+        patient = request.user.patient
+        if hasattr(patient, 'room') and patient.room:
+            messages.error(request, f"You are already assigned to Room {patient.room.room_number}. Please vacate it first.")
+            return redirect('room-availability')
+
+        # Book the room
+        room.current_patient = patient
+        room.admission_date = timezone.now().date()
+        room.save()
+        
+        messages.success(request, f"Room {room.room_number} has been successfully booked for you!")
+        return redirect('client-portal')
 
 class RoomAvailabilityListView(LoginRequiredMixin, ListView):
     model = Room

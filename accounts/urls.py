@@ -8,7 +8,8 @@ from .views.client_views import (
     ClientPortalView, PatientBookAppointmentView, 
     RoomAvailabilityListView, DoctorSearchView,
     PatientAppointmentListView, AccountSettingsView, 
-    AccountPasswordChangeView, VerifyPasswordView
+    AccountPasswordChangeView, VerifyPasswordView,
+    PatientBookRoomView
 )
 
 urlpatterns = [
@@ -23,6 +24,7 @@ urlpatterns = [
     # Client Actions
     path('book-appointment/', PatientBookAppointmentView.as_view(), name='book-appointment'),
     path('find-room/', RoomAvailabilityListView.as_view(), name='room-availability'),
+    path('rooms/<int:pk>/book/', PatientBookRoomView.as_view(), name='book-room'),
     path('find-doctor/', DoctorSearchView.as_view(), name='doctor-search'),
     path('account/verify/', VerifyPasswordView.as_view(), name='verify-password'),
     path('account/settings/', AccountSettingsView.as_view(), name='account-settings'),
