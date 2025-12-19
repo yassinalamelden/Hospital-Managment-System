@@ -40,8 +40,8 @@ class Bill(models.Model):
         # Update is_paid based on status
         if self.payment_status == 'PAID':
             self.is_paid = True
-        elif self.payment_status == 'PENDING':
-             self.is_paid = False
+        else:
+            self.is_paid = False
 
         super().save(*args, **kwargs)
 

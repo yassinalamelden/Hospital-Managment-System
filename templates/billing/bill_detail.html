@@ -21,6 +21,24 @@
                         <span class="me-2">🖨️</span>Print Invoice
                     </button>
                     {% if user.is_staff %}
+                    {% if bill.payment_status != 'PAID' %}
+                    <form action="{% url 'bill-status-update' bill.pk %}" method="post" class="d-inline">
+                        {% csrf_token %}
+                        <input type="hidden" name="status" value="PAID">
+                        <button type="submit" class="btn btn-success rounded-pill px-4 transition-all hover-scale">
+                            Mark as Paid
+                        </button>
+                    </form>
+                    {% endif %}
+                    {% if bill.payment_status == 'PENDING' %}
+                    <form action="{% url 'bill-status-update' bill.pk %}" method="post" class="d-inline">
+                        {% csrf_token %}
+                        <input type="hidden" name="status" value="PARTIAL">
+                        <button type="submit" class="btn btn-warning rounded-pill px-4 transition-all hover-scale">
+                            Partial Payment
+                        </button>
+                    </form>
+                    {% endif %}
                     <a href="{% url 'bill-list' %}" class="btn btn-outline-secondary rounded-pill px-4">Back to
                         Registry</a>
                     {% else %}

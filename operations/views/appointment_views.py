@@ -10,6 +10,34 @@ class AppointmentCreateView(CreateView):
     template_name = 'operations/appointment_form.html'
     success_url = reverse_lazy('appointment-list')
 
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        
+        # Billing Logic integration (Feature C)
+        from billing.models import Bill, BillItem
+        payment_loc = form.cleaned_data.get('payment_location')
+        method = 'CARD' if payment_loc == 'platform' else 'CASH'
+        
+        # Create the bill for the selected patient
+        bill = Bill.objects.create(
+            patient=self.object.patient,
+            payment_method=method,
+            payment_status='PENDING'
+        )
+        
+        # Create bill item for consultation
+        BillItem.objects.create(
+            bill=bill,
+            item_name=f"Consultation: Dr. {self.object.doctor.name} ({self.object.doctor.specialty})",
+            unit_price=self.object.doctor.consultation_fee,
+            quantity=1
+        )
+        
+        from django.contrib import messages
+        messages.success(self.request, f"Appointment booked and bill for ${bill.total_amount} generated.")
+        
+        return response
+
 class AppointmentListView(ListView):
     model = Appointment
     template_name = 'operations/appointment_list.html'
