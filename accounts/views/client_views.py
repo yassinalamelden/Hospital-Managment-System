@@ -37,11 +37,16 @@ class PatientBookAppointmentView(LoginRequiredMixin, CreateView):
             initial['doctor'] = doctor_id
         return initial
 
+    def dispatch(self, request, *args, **kwargs):
+        if not hasattr(request.user, 'patient'):
+            from django.contrib import messages
+            messages.error(request, "You must have a patient profile to book an appointment. Please contact administration.")
+            return redirect('home')
+        return super().dispatch(request, *args, **kwargs)
+
     def form_valid(self, form):
-        if hasattr(self.request.user, 'patient'):
-            form.instance.patient = self.request.user.patient
-            return super().form_valid(form)
-        return redirect('home')
+        form.instance.patient = self.request.user.patient
+        return super().form_valid(form)
 
 class RoomAvailabilityListView(LoginRequiredMixin, ListView):
     model = Room

@@ -39,9 +39,19 @@ class SignUpView(CreateView):
     success_url = reverse_lazy('login')
 
     def form_valid(self, form):
-        response = super().form_valid(form)
+        user = form.save()
+        from accounts.models import Patient
+        Patient.objects.get_or_create(
+            user=user,
+            defaults={
+                'name': user.username,
+                'age': 0,  # Default or ask to update later
+                'gender': 'Not specified',
+                'phone': 'None'
+            }
+        )
         messages.success(self.request, 'Account created successfully! Please log in.')
-        return response
+        return redirect(self.success_url)
 
 class CustomLogoutView(LogoutView):
     """Custom logout with redirect to home"""
