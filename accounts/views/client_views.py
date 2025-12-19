@@ -5,8 +5,6 @@ from django.contrib.auth.views import PasswordChangeView
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy, reverse
 from django.contrib import messages
-from django.core.mail import send_mail
-from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.contrib.auth import authenticate
 from operations.models import Appointment, Room
@@ -43,9 +41,36 @@ class ClientPortalView(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         if hasattr(self.request.user, 'patient'):
             patient = self.request.user.patient
+            # Current data
             context['appointments'] = patient.appointments.all().order_by('-date_time')
             context['bills'] = patient.bills.all().order_by('-issued_date')
             context['patient'] = patient
+
+            # Summary Metrics (Feature C & D)
+            from django.utils import timezone
+            from django.db.models import Sum
+            
+            # 1. Upcoming Appointments
+            context['upcoming_count'] = patient.appointments.filter(
+                date_time__gte=timezone.now(),
+                status='Scheduled'
+            ).count()
+
+            # 2. Total Unpaid Balance
+            unpaid_total = patient.bills.filter(
+                payment_status__in=['PENDING', 'PARTIAL']
+            ).aggregate(Sum('total_amount'))['total_amount__sum'] or 0
+            context['unpaid_total'] = unpaid_total
+
+            # 3. Latest Visit
+            last_visit = patient.appointments.filter(
+                status='Completed'
+            ).order_by('-date_time').first()
+            context['last_visit'] = last_visit.date_time if last_visit else None
+
+            # 4. Stay Status
+            context['current_room'] = patient.room if hasattr(patient, 'room') else None
+
         return context
 
 class PatientBookAppointmentView(LoginRequiredMixin, CreateView):
@@ -155,24 +180,6 @@ class AccountSettingsView(LoginRequiredMixin, TemplateView):
             u_form.save()
             p_form.save()
             
-            # Send Notification Email
-            try:
-                html_message = render_to_string('emails/account_changed.html', {
-                    'user': request.user,
-                    'portal_url': request.build_absolute_uri(reverse_lazy('client-portal'))
-                })
-                plain_message = strip_tags(html_message)
-                send_mail(
-                    'Account Profile Updated - Aetheria Sanctuary',
-                    plain_message,
-                    None,  # Uses DEFAULT_FROM_EMAIL
-                    [request.user.email],
-                    html_message=html_message,
-                    fail_silently=True
-                )
-            except Exception:
-                pass
-
             messages.success(request, "Your account has been updated!")
             return redirect('account-settings')
         
@@ -185,23 +192,5 @@ class AccountPasswordChangeView(LoginRequiredMixin, PasswordChangeView):
     def form_valid(self, form):
         response = super().form_valid(form)
         
-        # Send Security Notification Email
-        try:
-            html_message = render_to_string('emails/password_changed.html', {
-                'user': self.request.user,
-                'settings_url': self.request.build_absolute_uri(reverse_lazy('account-settings'))
-            })
-            plain_message = strip_tags(html_message)
-            send_mail(
-                'SECURITY ALERT: Password Changed - Aetheria Sanctuary',
-                plain_message,
-                None,
-                [self.request.user.email],
-                html_message=html_message,
-                fail_silently=True
-            )
-        except Exception:
-            pass
-
         messages.success(self.request, "Your password has been changed successfully!")
         return response

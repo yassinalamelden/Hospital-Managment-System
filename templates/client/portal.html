@@ -17,6 +17,50 @@
         </div>
     </div>
 
+    <!-- Summary Dashboard -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-3">
+            <div class="magic-card p-4 text-center border-0 h-100 shadow-sm transition-all hover-scale">
+                <div class="bg-primary-subtle text-primary p-3 rounded-circle d-inline-block mb-3">
+                    <span class="fs-4">📅</span>
+                </div>
+                <h6 class="text-muted small text-uppercase tracking-wider">Upcoming Visits</h6>
+                <h2 class="fw-bold mb-0 text-dark">{{ upcoming_count }}</h2>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="magic-card p-4 text-center border-0 h-100 shadow-sm transition-all hover-scale">
+                <div class="bg-danger-subtle text-danger p-3 rounded-circle d-inline-block mb-3">
+                    <span class="fs-4">💳</span>
+                </div>
+                <h6 class="text-muted small text-uppercase tracking-wider">Unpaid Balance</h6>
+                <h2 class="fw-bold mb-0 text-dark">${{ unpaid_total }}</h2>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="magic-card p-4 text-center border-0 h-100 shadow-sm transition-all hover-scale">
+                <div class="bg-success-subtle text-success p-3 rounded-circle d-inline-block mb-3">
+                    <span class="fs-4">🕒</span>
+                </div>
+                <h6 class="text-muted small text-uppercase tracking-wider">Latest Visit</h6>
+                <h2 class="fw-bold mb-0 text-dark" style="font-size: 1.25rem;">
+                    {% if last_visit %}{{ last_visit|date:"M d" }}{% else %}None{% endif %}
+                </h2>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="magic-card p-4 text-center border-0 h-100 shadow-sm transition-all hover-scale">
+                <div class="bg-info-subtle text-info p-3 rounded-circle d-inline-block mb-3">
+                    <span class="fs-4">🏥</span>
+                </div>
+                <h6 class="text-muted small text-uppercase tracking-wider">Stay Status</h6>
+                <h2 class="fw-bold mb-0 text-dark" style="font-size: 1.1rem;">
+                    {% if current_room %}Room {{ current_room.room_number }}{% else %}Outpatient{% endif %}
+                </h2>
+            </div>
+        </div>
+    </div>
+
     <!-- Tab Navigation -->
     <div class="row g-4 mb-4">
         <div class="col-md-12">
