@@ -1,15 +1,34 @@
+from django.views import View
 from django.views.generic import TemplateView, CreateView, ListView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import PasswordChangeView
 from django.shortcuts import redirect, render
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
+from django.contrib.auth import authenticate
 from operations.models import Appointment, Room
 from accounts.models import Doctor, Patient
 from accounts.forms import AppointmentForm, UserUpdateForm, PatientForm
+
+class VerifyPasswordView(LoginRequiredMixin, View):
+    template_name = 'accounts/verify_password.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
+
+    def post(self, request):
+        password = request.POST.get('password')
+        user = authenticate(username=request.user.username, password=password)
+        
+        if user is not None:
+            request.session['account_verified'] = True
+            return redirect('account-settings')
+        else:
+            messages.error(request, "Incorrect password. Access denied.")
+            return render(request, self.template_name)
 
 class ClientPortalView(LoginRequiredMixin, TemplateView):
     template_name = 'client/portal.html'
@@ -114,6 +133,12 @@ class DoctorSearchView(LoginRequiredMixin, ListView):
 
 class AccountSettingsView(LoginRequiredMixin, TemplateView):
     template_name = 'accounts/account_settings.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        # Require password verification before accessing this view
+        if not request.session.get('account_verified'):
+            return redirect('verify-password')
+        return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
