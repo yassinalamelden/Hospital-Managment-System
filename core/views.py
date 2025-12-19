@@ -9,7 +9,9 @@ from accounts.views.auth_views import StaffRequiredMixin
 from operations.models import Appointment, Room
 from accounts.models import Patient, Doctor
 from billing.models import Bill
-from django.db.models import Sum
+from django.db.models import Sum, Count, Avg
+from django.utils import timezone
+from datetime import timedelta
 
 
 class HomeView(TemplateView):
@@ -26,19 +28,46 @@ class AdminDashboardView(StaffRequiredMixin, TemplateView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        
+        # Basic Counts
         context['total_patients'] = Patient.objects.count()
         context['total_doctors'] = Doctor.objects.count()
-        
-        context['pending_appointments'] = Appointment.objects.filter(status='Pending').count()
-        context['unpaid_bills'] = Bill.objects.filter(payment_status='Unpaid').count()
-        
+        context['pending_appointments'] = Appointment.objects.filter(status='Scheduled').count() # Renamed to Scheduled to match model status
+        context['unpaid_bills'] = Bill.objects.filter(payment_status='PENDING').count()
         context['total_users'] = User.objects.count()
         context['total_rooms'] = Room.objects.count()
-
         context['occupied_rooms'] = Room.objects.filter(current_patient__isnull=False).count()
         
-        revenue_data = Bill.objects.filter(payment_status='Paid').aggregate(Sum('total_amount'))
+        # Revenue
+        revenue_data = Bill.objects.filter(payment_status='PAID').aggregate(Sum('total_amount'))
         context['total_revenue'] = revenue_data['total_amount__sum'] or 0
+
+        # Gender Distribution for Chart
+        gender_data = Patient.objects.values('gender').annotate(count=Count('gender'))
+        context['gender_labels'] = [item['gender'] for item in gender_data]
+        context['gender_counts'] = [item['count'] for item in gender_data]
+
+        # Appointment Status for Chart
+        appointment_status_data = Appointment.objects.values('status').annotate(count=Count('status'))
+        context['appointment_labels'] = [item['status'] for item in appointment_status_data]
+        context['appointment_counts'] = [item['count'] for item in appointment_status_data]
+
+        # Recent Activity
+        context['recent_appointments'] = Appointment.objects.select_related('doctor', 'patient').order_by('-date_time')[:5]
+        context['recent_bills'] = Bill.objects.select_related('patient').order_by('-issued_date')[:5]
+        context['recent_patients'] = Patient.objects.order_by('-created_at')[:5]
+
+        # Monthly Revenue (Last 6 months)
+        six_months_ago = timezone.now().date().replace(day=1) - timedelta(days=150)
+        monthly_revenue = Bill.objects.filter(
+            payment_status='PAID', 
+            issued_date__gte=six_months_ago
+        ).values('issued_date__month').annotate(total=Sum('total_amount')).order_by('issued_date__month')
+        
+        # Mapper for month names
+        import calendar
+        context['monthly_revenue_labels'] = [calendar.month_name[item['issued_date__month']] for item in monthly_revenue]
+        context['monthly_revenue_data'] = [float(item['total']) for item in monthly_revenue]
 
         return context
 

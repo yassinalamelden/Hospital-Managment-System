@@ -4,6 +4,40 @@
 {% block page_title %}Dashboard Overview{% endblock %}
 {% block page_subtitle %}Monitor system performance and key metrics{% endblock %}
 
+{% block extra_css %}
+<style>
+    .activity-card {
+        height: 100%;
+        transition: transform 0.2s;
+    }
+
+    .activity-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .table-responsive {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+
+    .chart-container {
+        position: relative;
+        height: 300px;
+        width: 100%;
+    }
+
+    .action-btn {
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+    }
+
+    .action-btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+</style>
+{% endblock %}
+
 {% block header_actions %}
 <a href="{% url 'admin:index' %}" class="btn btn-outline-secondary rounded-pill btn-sm" target="_blank">
     <i class="fas fa-cog me-1"></i> Django Admin
@@ -11,14 +45,14 @@
 {% endblock %}
 
 {% block content %}
-<!-- Stats Grid -->
-<div class="row g-4 mb-5">
+<!-- Top Stats Row -->
+<div class="row g-4 mb-4">
     <div class="col-lg-3 col-md-6">
         <div class="magic-card text-center">
             <div class="mb-2">
                 <i class="fas fa-user-injured fa-2x text-accent"></i>
             </div>
-            <div class="display-5 fw-bold text-accent mb-1">{{ total_patients }}</div>
+            <div class="display-6 fw-bold text-accent mb-1">{{ total_patients }}</div>
             <div class="text-muted small text-uppercase">Total Patients</div>
         </div>
     </div>
@@ -27,107 +61,101 @@
             <div class="mb-2">
                 <i class="fas fa-user-md fa-2x text-primary"></i>
             </div>
-            <div class="display-5 fw-bold text-primary mb-1">{{ total_doctors }}</div>
+            <div class="display-6 fw-bold text-primary mb-1">{{ total_doctors }}</div>
             <div class="text-muted small text-uppercase">Active Doctors</div>
         </div>
     </div>
     <div class="col-lg-3 col-md-6">
-        <div class="magic-card text-center">
+        <div class="magic-card text-center border-start border-warning border-4">
             <div class="mb-2">
                 <i class="fas fa-calendar-check fa-2x text-warning"></i>
             </div>
-            <div class="display-5 fw-bold text-warning mb-1">{{ pending_appointments }}</div>
-            <div class="text-muted small text-uppercase">Pending Appointments</div>
+            <div class="display-6 fw-bold text-warning mb-1">{{ pending_appointments }}</div>
+            <div class="text-muted small text-uppercase">Pending Apps</div>
         </div>
     </div>
     <div class="col-lg-3 col-md-6">
-        <div class="magic-card text-center">
+        <div class="magic-card text-center border-start border-success border-4">
             <div class="mb-2">
-                <i class="fas fa-file-invoice-dollar fa-2x text-danger"></i>
+                <i class="fas fa-dollar-sign fa-2x text-success"></i>
             </div>
-            <div class="display-5 fw-bold text-danger mb-1">{{ unpaid_bills }}</div>
-            <div class="text-muted small text-uppercase">Unpaid Bills</div>
+            <div class="display-6 fw-bold text-success mb-1">${{ total_revenue|floatformat:0 }}</div>
+            <div class="text-muted small text-uppercase">Total Revenue</div>
         </div>
     </div>
 </div>
 
-<!-- Secondary Stats -->
+<!-- Charts Row -->
 <div class="row g-4 mb-5">
-    <div class="col-md-4">
-        <div class="magic-card">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <div class="text-muted small text-uppercase mb-1">Total Users</div>
-                    <div class="fs-3 fw-bold">{{ total_users }}</div>
-                </div>
-                <i class="fas fa-users fa-2x text-accent opacity-50"></i>
+    <div class="col-lg-4">
+        <div class="magic-card h-100">
+            <h5 class="card-title mb-4"><i class="fas fa-venus-mars text-accent me-2"></i>Patient Gender</h5>
+            <div class="chart-container">
+                <canvas id="genderChart"></canvas>
             </div>
         </div>
     </div>
-    <div class="col-md-4">
-        <div class="magic-card">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <div class="text-muted small text-uppercase mb-1">Total Rooms</div>
-                    <div class="fs-3 fw-bold">{{ total_rooms }}</div>
-                </div>
-                <i class="fas fa-bed fa-2x text-info opacity-50"></i>
+    <div class="col-lg-4">
+        <div class="magic-card h-100">
+            <h5 class="card-title mb-4"><i class="fas fa-tasks text-primary me-2"></i>Appointment Status</h5>
+            <div class="chart-container">
+                <canvas id="statusChart"></canvas>
             </div>
         </div>
     </div>
-    <div class="col-md-4">
-        <div class="magic-card">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <div class="text-muted small text-uppercase mb-1">Occupied Rooms</div>
-                    <div class="fs-3 fw-bold">{{ occupied_rooms }}</div>
-                </div>
-                <i class="fas fa-door-closed fa-2x text-success opacity-50"></i>
+    <div class="col-lg-4">
+        <div class="magic-card h-100">
+            <h5 class="card-title mb-4"><i class="fas fa-chart-line text-success me-2"></i>Monthly Revenue</h5>
+            <div class="chart-container">
+                <canvas id="revenueChart"></canvas>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Quick Actions -->
-<div class="row g-4">
+<!-- Quick Actions & Links -->
+<div class="row g-4 mb-5">
     <div class="col-lg-8">
         <div class="magic-card">
             <h5 class="mb-4" style="font-family: var(--font-heading); color: var(--primary-dark);">
-                <i class="fas fa-bolt text-accent me-2"></i> Quick Actions
+                <i class="fas fa-bolt text-accent me-2"></i> Quick Management
             </h5>
             <div class="row g-3">
                 <div class="col-md-4">
-                    <a href="{% url 'doctor-create' %}" class="btn btn-outline-primary w-100 rounded-pill py-3">
+                    <a href="{% url 'doctor-create' %}" class="btn btn-outline-primary w-100 rounded-4 py-3 action-btn">
                         <i class="fas fa-user-md d-block fs-3 mb-2"></i>
                         Add Doctor
                     </a>
                 </div>
                 <div class="col-md-4">
-                    <a href="{% url 'patient-create' %}" class="btn btn-outline-success w-100 rounded-pill py-3">
+                    <a href="{% url 'patient-create' %}"
+                        class="btn btn-outline-success w-100 rounded-4 py-3 action-btn">
                         <i class="fas fa-user-plus d-block fs-3 mb-2"></i>
                         Register Patient
                     </a>
                 </div>
                 <div class="col-md-4">
-                    <a href="/operations/appointments/add/" class="btn btn-outline-warning w-100 rounded-pill py-3">
+                    <a href="/operations/appointments/add/"
+                        class="btn btn-outline-warning w-100 rounded-4 py-3 action-btn">
                         <i class="fas fa-calendar-plus d-block fs-3 mb-2"></i>
-                        Schedule Appointment
+                        Schedule Appt
                     </a>
                 </div>
                 <div class="col-md-4">
-                    <a href="/operations/rooms/add/" class="btn btn-outline-info w-100 rounded-pill py-3">
+                    <a href="/operations/rooms/add/" class="btn btn-outline-info w-100 rounded-4 py-3 action-btn">
                         <i class="fas fa-bed d-block fs-3 mb-2"></i>
                         Add Room
                     </a>
                 </div>
                 <div class="col-md-4">
-                    <a href="/billing/bills/add/" class="btn btn-outline-danger w-100 rounded-pill py-3">
+                    <a href="/billing/bills/add/" class="btn btn-outline-danger w-100 rounded-4 py-3 action-btn">
                         <i class="fas fa-file-invoice d-block fs-3 mb-2"></i>
                         Create Bill
                     </a>
                 </div>
                 <div class="col-md-4">
-                    <a href="{% url 'manage-users' %}" class="btn btn-outline-secondary w-100 rounded-pill py-3">
+                    <a href="{% url 'manage-users' %}"
+                        class="btn btn-outline-secondary w-100 rounded-4 py-3 action-btn">
                         <i class="fas fa-users-cog d-block fs-3 mb-2"></i>
                         Manage Users
                     </a>
@@ -135,33 +163,204 @@
             </div>
         </div>
     </div>
-    
+
     <div class="col-lg-4">
-        <div class="magic-card">
+        <div class="magic-card h-100">
             <h5 class="mb-4" style="font-family: var(--font-heading); color: var(--primary-dark);">
-                <i class="fas fa-link text-accent me-2"></i> System Links
+                <i class="fas fa-link text-primary me-2"></i> Resource Links
             </h5>
-            <div class="d-grid gap-2">
-                <a href="{% url 'doctor-list' %}" class="btn btn-light text-start rounded-pill">
-                    <i class="fas fa-user-md me-2 text-primary"></i> View All Doctors
+            <div class="list-group list-group-flush">
+                <a href="{% url 'doctor-list' %}"
+                    class="list-group-item list-group-item-action d-flex justify-content-between align-items-center px-0 bg-transparent">
+                    <span><i class="fas fa-user-md me-2 text-primary"></i> Doctors</span>
+                    <span class="badge bg-primary rounded-pill">{{ total_doctors }}</span>
                 </a>
-                <a href="{% url 'patient-list' %}" class="btn btn-light text-start rounded-pill">
-                    <i class="fas fa-user-injured me-2 text-success"></i> View All Patients
+                <a href="{% url 'patient-list' %}"
+                    class="list-group-item list-group-item-action d-flex justify-content-between align-items-center px-0 bg-transparent">
+                    <span><i class="fas fa-user-injured me-2 text-success"></i> Patients</span>
+                    <span class="badge bg-success rounded-pill">{{ total_patients }}</span>
                 </a>
-                <a href="/operations/appointments/" class="btn btn-light text-start rounded-pill">
-                    <i class="fas fa-calendar-alt me-2 text-warning"></i> All Appointments
+                <a href="/operations/appointments/"
+                    class="list-group-item list-group-item-action d-flex justify-content-between align-items-center px-0 bg-transparent">
+                    <span><i class="fas fa-calendar-alt me-2 text-warning"></i> Appointments</span>
+                    <i class="fas fa-chevron-right small text-muted"></i>
                 </a>
-                <a href="/operations/rooms/" class="btn btn-light text-start rounded-pill">
-                    <i class="fas fa-door-open me-2 text-info"></i> Room Management
+                <a href="/operations/rooms/"
+                    class="list-group-item list-group-item-action d-flex justify-content-between align-items-center px-0 bg-transparent">
+                    <span><i class="fas fa-door-open me-2 text-info"></i> Rooms</span>
+                    <span class="badge bg-info rounded-pill">{{ total_rooms }}</span>
                 </a>
-                <a href="/billing/bills/" class="btn btn-light text-start rounded-pill">
-                    <i class="fas fa-receipt me-2 text-danger"></i> Billing Records
-                </a>
-                <a href="{% url 'manage-reviews' %}" class="btn btn-light text-start rounded-pill">
-                    <i class="fas fa-star me-2 text-accent"></i> Review Management
+                <a href="/billing/bills/"
+                    class="list-group-item list-group-item-action d-flex justify-content-between align-items-center px-0 bg-transparent">
+                    <span><i class="fas fa-receipt me-2 text-danger"></i> Billing</span>
+                    <i class="fas fa-chevron-right small text-muted"></i>
                 </a>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Recent Activity Tables -->
+<div class="row g-4">
+    <!-- Recent Appointments -->
+    <div class="col-lg-6">
+        <div class="magic-card">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5 class="mb-0"><i class="fas fa-clock text-warning me-2"></i>Recent Appointments</h5>
+                <a href="/operations/appointments/" class="btn btn-sm btn-link">View All</a>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Patient</th>
+                            <th>Doctor</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for appt in recent_appointments %}
+                        <tr>
+                            <td>{{ appt.patient.name }}</td>
+                            <td>Dr. {{ appt.doctor.name }}</td>
+                            <td>{{ appt.date_time|date:"M d, H:i" }}</td>
+                            <td>
+                                <span
+                                    class="badge {% if appt.status == 'Scheduled' %}bg-info{% elif appt.status == 'Completed' %}bg-success{% else %}bg-secondary{% endif %}">
+                                    {{ appt.status }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center text-muted">No recent appointments</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Latest Bills -->
+    <div class="col-lg-6">
+        <div class="magic-card">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5 class="mb-0"><i class="fas fa-file-invoice-dollar text-danger me-2"></i>Latest Invoices</h5>
+                <a href="/billing/bills/" class="btn btn-sm btn-link">View All</a>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Patient</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for bill in recent_bills %}
+                        <tr>
+                            <td>{{ bill.patient.name }}</td>
+                            <td class="fw-bold">${{ bill.total_amount }}</td>
+                            <td>
+                                <span
+                                    class="badge {% if bill.payment_status == 'PAID' %}bg-success{% elif bill.payment_status == 'PARTIAL' %}bg-warning{% else %}bg-danger{% endif %}">
+                                    {{ bill.payment_status }}
+                                </span>
+                            </td>
+                            <td><a href="/billing/bills/{{ bill.id }}/" class="btn btn-sm btn-outline-primary"><i
+                                        class="fas fa-eye"></i></a></td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center text-muted">No recent bills</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Gender Chart
+    const genderCtx = document.getElementById('genderChart').getContext('2d');
+    new Chart(genderCtx, {
+        type: 'doughnut',
+        data: {
+            labels: {{ gender_labels| safe }},
+        datasets: [{
+            data: {{ gender_counts| safe }},
+        backgroundColor: ['#6f42c1', '#007bff', '#e83e8c', '#fd7e14'],
+        borderWidth: 0
+            }]
+        },
+        options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { position: 'bottom' }
+        }
+    }
+    });
+
+    // Appointment Status Chart
+    const statusCtx = document.getElementById('statusChart').getContext('2d');
+    new Chart(statusCtx, {
+        type: 'bar',
+        data: {
+            labels: {{ appointment_labels| safe }},
+        datasets: [{
+            label: 'Appointments',
+            data: {{ appointment_counts| safe }},
+        backgroundColor: '#0dcaf0',
+        borderRadius: 5
+            }]
+        },
+        options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            y: { beginAtZero: true, grid: { display: false } },
+            x: { grid: { display: false } }
+        }
+    }
+    });
+
+    // Revenue Trend Chart
+    const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+    new Chart(revenueCtx, {
+        type: 'line',
+        data: {
+            labels: {{ monthly_revenue_labels| safe }},
+        datasets: [{
+            label: 'Revenue',
+            data: {{ monthly_revenue_data| safe }},
+        borderColor: '#198754',
+        backgroundColor: 'rgba(25, 135, 84, 0.1)',
+        fill: true,
+        tension: 0.4
+            }]
+        },
+        options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { display: false }
+        },
+        scales: {
+            y: { beginAtZero: true },
+            x: { grid: { display: false } }
+        }
+    }
+    });
+</script>
 {% endblock %}
