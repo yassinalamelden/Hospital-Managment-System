@@ -6,8 +6,8 @@
         <div class="magic-card">
             <div class="row g-0 align-items-center mb-5">
                 <div class="col">
-                     <h2 class="display-6">Book an <span class="text-accent">Appointment</span></h2>
-                     <p class="text-muted">Schedule your visit with our specialists.</p>
+                    <h2 class="display-6">Book an <span class="text-accent">Appointment</span></h2>
+                    <p class="text-muted">Schedule your visit with our specialists.</p>
                 </div>
                 <div class="col-auto">
                     <a href="{% url 'client-portal' %}" class="btn btn-outline-dark rounded-pill">Back to Portal</a>
@@ -17,49 +17,52 @@
             <form method="post">
                 {% csrf_token %}
                 {% for field in form %}
-                    <div class="mb-4">
-                        <label class="form-label fw-bold text-uppercase small text-muted">{{ field.label }}</label>
-                        {% if field.field.widget.input_type == 'select' %}
-                            <select name="{{ field.name }}" class="form-control-custom w-100 form-select border-0 bg-light">
-                                {% for group_name, group_choices, group_index in field.field.widget.optgroups %}
-                                    {% if group_name %}
-                                        <optgroup label="{{ group_name }}">
-                                    {% endif %}
-                                    {% for option in group_choices %}
-                                        <option value="{{ option.value }}" {% if option.selected %}selected{% endif %}>{{ option.label }}</option>
-                                    {% endfor %}
-                                    {% if group_name %}
-                                        </optgroup>
-                                    {% endif %}
-                                {% endfor %}
-                            </select>
-                        {% elif field.field.widget.attrs.class == 'vDateField' %}
-                             <!-- Adjusting for date inputs if necessary -->
-                             <input type="date" name="{{ field.name }}" class="form-control-custom w-100">
-                        {% elif field.field.widget.attrs.class == 'vTimeField' %}
-                             <input type="time" name="{{ field.name }}" class="form-control-custom w-100">
-                        {% else %}
-                             {{ field }}
-                             <!-- We might need to manually apply class if {{ field }} renders raw HTML, but let's try wrapping/scripting if needed. 
+                <div class="mb-4">
+                    <label class="form-label fw-bold text-uppercase small text-muted">{{ field.label }}</label>
+                    {% if field.widget_type == 'select' %}
+                    <select name="{{ field.name }}" id="{{ field.id_for_label }}"
+                        class="form-control-custom w-100 form-select border-0 bg-light">
+                        {% for group_name, group_choices, group_index in field.field.widget.optgroups %}
+                        {% if group_name %}
+                        <optgroup label="{{ group_name }}">
+                            {% endif %}
+                            {% for option in group_choices %}
+                            <option value="{{ option.value }}" {% if option.selected %}selected{% endif %}>{{
+                                option.label }}</option>
+                            {% endfor %}
+                            {% if group_name %}
+                        </optgroup>
+                        {% endif %}
+                        {% endfor %}
+                    </select>
+                    {% elif field.field.widget.attrs.class == 'vDateField' %}
+                    <!-- Adjusting for date inputs if necessary -->
+                    <input type="date" name="{{ field.name }}" class="form-control-custom w-100">
+                    {% elif field.field.widget.attrs.class == 'vTimeField' %}
+                    <input type="time" name="{{ field.name }}" class="form-control-custom w-100">
+                    {% else %}
+                    {{ field }}
+                    <!-- We might need to manually apply class if {{ field }} renders raw HTML, but let's try wrapping/scripting if needed. 
                                   Ideally, we iterate widgets or simply style parent div. 
                                   For simplicity in Django templates without widget tweaking, we rely on CSS targeting or manual input rendering. 
                                   Let's stick to manual rendering if we want precise control, otherwise we assume widgets have defaults.
                              -->
-                        {% endif %}
-                        
-                        <!-- Simple hack to apply class to rendered widget via JS or CSS pattern matching if unable to change widget attrs in view.
+                    {% endif %}
+
+                    <!-- Simple hack to apply class to rendered widget via JS or CSS pattern matching if unable to change widget attrs in view.
                              However, standard Django form rendering is rigid. Let's assume standard rendering for now but wrapped nicely.
                         -->
-                    </div>
+                </div>
                 {% endfor %}
-                
+
                 <div class="alert alert-light border-0 bg-purple-light mt-4">
                     <small>ℹ️ Please arrive 15 minutes before your scheduled time.</small>
                 </div>
 
                 <div class="d-grid gap-2 mt-4">
                     <button type="submit" class="btn-gradient">Confirm Booking</button>
-                    <a href="{% url 'client-portal' %}" class="btn btn-link text-muted text-decoration-none text-center">Cancel</a>
+                    <a href="{% url 'client-portal' %}"
+                        class="btn btn-link text-muted text-decoration-none text-center">Cancel</a>
                 </div>
             </form>
         </div>

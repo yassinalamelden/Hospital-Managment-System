@@ -30,6 +30,13 @@ class PatientBookAppointmentView(LoginRequiredMixin, CreateView):
     template_name = 'client/book_appointment.html'
     success_url = reverse_lazy('client-portal')
 
+    def get_initial(self):
+        initial = super().get_initial()
+        doctor_id = self.request.GET.get('doctor')
+        if doctor_id:
+            initial['doctor'] = doctor_id
+        return initial
+
     def form_valid(self, form):
         if hasattr(self.request.user, 'patient'):
             form.instance.patient = self.request.user.patient
