@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-5 animate-fade-in">
+    <div class="row mb-5 align-items-center">
+        <div class="col-md-6">
+            <h1 class="display-4">My <span class="text-accent">Appointments</span></h1>
+            <p class="lead text-muted">Manage your scheduled visits and interactions.</p>
+        </div>
+        <div class="col-md-6 text-md-end">
+            <div class="d-flex gap-2 justify-content-md-end">
+                <a href="{% url 'book-appointment' %}" class="btn-gradient">Book New Appointment</a>
+                <a href="{% url 'client-portal' %}" class="btn btn-outline-dark rounded-pill px-4">Portal Dashboard</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="magic-card">
+        {% if appointments %}
+        <div class="table-responsive">
+            <table class="medical-table">
+                <thead>
+                    <tr>
+                        <th>Doctor</th>
+                        <th>Date & Time</th>
+                        <th>Reason</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for appt in appointments %}
+                    <tr>
+                        <td>
+                            <strong>Dr. {{ appt.doctor.name }}</strong><br>
+                            <small class="text-muted">{{ appt.doctor.specialty }}</small>
+                        </td>
+                        <td>{{ appt.date_time|date:"F j, Y, P" }}</td>
+                        <td>{{ appt.reason|default:"Regular Checkup" }}</td>
+                        <td>
+                            {% if appt.status == 'Completed' %}
+                            <span class="badge bg-success">Completed</span>
+                            {% elif appt.status == 'Cancelled' %}
+                            <span class="badge bg-danger">Cancelled</span>
+                            {% else %}
+                            <span class="badge bg-primary">Scheduled</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <div class="mb-4 display-1 text-muted opacity-25">📅</div>
+            <h4 class="text-muted">No appointments found</h4>
+            <p>You haven't scheduled any visits yet.</p>
+            <a href="{% url 'book-appointment' %}" class="btn-gradient mt-3">Book Your First Appointment</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

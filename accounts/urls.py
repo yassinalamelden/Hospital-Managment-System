@@ -6,7 +6,8 @@ from .views import (
 from .views.auth_views import CustomLoginView, SignUpView, CustomLogoutView
 from .views.client_views import (
     ClientPortalView, PatientBookAppointmentView, 
-    RoomAvailabilityListView, DoctorSearchView
+    RoomAvailabilityListView, DoctorSearchView,
+    PatientAppointmentListView
 )
 
 urlpatterns = [
@@ -15,6 +16,7 @@ urlpatterns = [
     path('signup/', SignUpView.as_view(), name='signup'),
     
     path('my-portal/', ClientPortalView.as_view(), name='client-portal'),
+    path('my-appointments/', PatientAppointmentListView.as_view(), name='patient-appointments'),
     path('dashboard/', PatientListView.as_view(), name='dashboard'),  # Admin Dashboard alias
 
     # Client Actions

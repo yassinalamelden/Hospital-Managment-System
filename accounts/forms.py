@@ -24,9 +24,20 @@ class PatientForm(forms.ModelForm):
 from operations.models import Appointment
 
 class AppointmentForm(forms.ModelForm):
+    PAYMENT_LOCATION_CHOICES = [
+        ('platform', 'Pay on the Platform'),
+        ('counter', 'Pay at the Counter'),
+    ]
+    
+    payment_location = forms.ChoiceField(
+        choices=PAYMENT_LOCATION_CHOICES, 
+        widget=forms.Select(attrs={'class': 'form-control-custom w-100'}),
+        label="Where would you like to pay?"
+    )
+
     class Meta:
         model = Appointment
-        fields = ['doctor', 'date_time', 'reason']
+        fields = ['doctor', 'date_time', 'reason', 'payment_location']
         widgets = {
             'date_time': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
             'reason': forms.Textarea(attrs={'rows': 3}),

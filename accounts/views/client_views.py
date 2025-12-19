@@ -28,7 +28,7 @@ class PatientBookAppointmentView(LoginRequiredMixin, CreateView):
     model = Appointment
     form_class = AppointmentForm
     template_name = 'client/book_appointment.html'
-    success_url = reverse_lazy('client-portal')
+    success_url = reverse_lazy('patient-appointments')
 
     def get_initial(self):
         initial = super().get_initial()
@@ -45,8 +45,47 @@ class PatientBookAppointmentView(LoginRequiredMixin, CreateView):
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
-        form.instance.patient = self.request.user.patient
-        return super().form_valid(form)
+        # Save appointment first
+        self.object = form.save(commit=False)
+        self.object.patient = self.request.user.patient
+        self.object.save()
+        
+        # Billing Logic integration
+        from billing.models import Bill, BillItem
+        payment_loc = form.cleaned_data.get('payment_location')
+        method = 'CARD' if payment_loc == 'platform' else 'CASH'
+        
+        # Create the bill
+        bill = Bill.objects.create(
+            patient=self.request.user.patient,
+            payment_method=method,
+            payment_status='PENDING',
+            doctor_fees=self.object.doctor.consultation_fee
+        )
+        
+        # Create exact bill item for transparency
+        BillItem.objects.create(
+            bill=bill,
+            item_name=f"Consultation: Dr. {self.object.doctor.name} ({self.object.doctor.specialty})",
+            unit_price=self.object.doctor.consultation_fee,
+            quantity=1
+        )
+        
+        from django.contrib import messages
+        messages.success(self.request, f"Appointment successfully booked! A bill for ${self.object.doctor.consultation_fee} has been generated.")
+        
+        return redirect(self.get_success_url())
+
+class PatientAppointmentListView(LoginRequiredMixin, ListView):
+    model = Appointment
+    template_name = 'client/appointment_list.html'
+    context_object_name = 'appointments'
+
+    def get_queryset(self):
+        if hasattr(self.request.user, 'patient'):
+            return Appointment.objects.filter(patient=self.request.user.patient).order_by('-date_time')
+        return Appointment.objects.none()
+
 
 class RoomAvailabilityListView(LoginRequiredMixin, ListView):
     model = Room

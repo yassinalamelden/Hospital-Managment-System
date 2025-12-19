@@ -23,10 +23,10 @@ class Bill(models.Model):
     payment_status = models.CharField(max_length=10, choices=PAYMENT_STATUS_CHOICES, default='PENDING')
 
     # Kept for backward compatibility, but ideally derived from items
-    room_charges = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
-    doctor_fees = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
-    medicine_cost = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
-    total_amount = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+    room_charges = models.DecimalField(max_digits=10, decimal_places=2, default='0.00')
+    doctor_fees = models.DecimalField(max_digits=10, decimal_places=2, default='0.00')
+    medicine_cost = models.DecimalField(max_digits=10, decimal_places=2, default='0.00')
+    total_amount = models.DecimalField(max_digits=12, decimal_places=2, default='0.00')
 
     def save(self, *args, **kwargs):
         # Auto-calculate total from items if saved instance (to access ManyToMany/Reverse FK)
