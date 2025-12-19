@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        .email-container {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            border: 1px solid #eee;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .header {
+            background: #212529;
+            color: #ffffff;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .body {
+            padding: 40px;
+            color: #444;
+            line-height: 1.6;
+        }
+
+        .footer {
+            background: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #888;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #6a11cb;
+            color: #ffffff !important;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        .brand {
+            letter-spacing: 4px;
+            font-weight: 800;
+            margin: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="email-container">
+        <div class="header">
+            <h1 class="brand">AETHERIA</h1>
+            <p style="letter-spacing: 2px; font-size: 10px; text-transform: uppercase; margin: 5px 0 0;">Medical
+                Sanctuary</p>
+        </div>
+        <div class="body">
+            <h2>Profile Updated Successfully</h2>
+            <p>Hello <strong>{{ user.patient.name }}</strong>,</p>
+            <p>This is an automated notification to let you know that your account profile information has been recently
+                updated.</p>
+            <p>If you made these changes, you can safely ignore this email. If you did <strong>not</strong> authorize
+                these changes, please contact our support team immediately.</p>
+            <a href="{{ portal_url }}" class="btn">View My Portal</a>
+        </div>
+        <div class="footer">
+            <p>&copy; 2025 Aetheria Medical Sanctuary. All rights reserved.</p>
+            <p>123 Medical Plaza, Cairo | +20 221 121 573</p>
+        </div>
+    </div>
+</body>
+
+</html>

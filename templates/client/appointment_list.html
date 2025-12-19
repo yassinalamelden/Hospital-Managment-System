@@ -48,7 +48,9 @@
                         </td>
                         <td>
                             <a href="{% url 'appointment-detail' appt.pk %}"
-                                class="btn btn-sm btn-outline-dark rounded-pill">View</a>
+                                class="btn btn-sm btn-outline-dark rounded-pill px-3">
+                                <span class="me-1">📅</span> View Details
+                            </a>
                         </td>
                     </tr>
                     {% endfor %}

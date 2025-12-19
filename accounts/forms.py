@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.auth.models import User
 from .models import Doctor, Patient
 
 class DoctorForm(forms.ModelForm):
@@ -11,15 +12,26 @@ class DoctorForm(forms.ModelForm):
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
 
+class UserUpdateForm(forms.ModelForm):
+    email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control-custom w-100'}))
+
+    class Meta:
+        model = User
+        fields = ['email']
+
 class PatientForm(forms.ModelForm):
     class Meta:
         model = Patient
         fields = ['name', 'age', 'gender', 'phone', 'address', 'medical_history', 'blood_type']
+        widgets = {
+            'address': forms.Textarea(attrs={'rows': 2}),
+            'medical_history': forms.Textarea(attrs={'rows': 2}),
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
-            field.widget.attrs['class'] = 'form-control'
+            field.widget.attrs['class'] = 'form-control-custom w-100'
 
 from operations.models import Appointment
 

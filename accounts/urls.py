@@ -7,7 +7,8 @@ from .views.auth_views import CustomLoginView, SignUpView, CustomLogoutView
 from .views.client_views import (
     ClientPortalView, PatientBookAppointmentView, 
     RoomAvailabilityListView, DoctorSearchView,
-    PatientAppointmentListView
+    PatientAppointmentListView, AccountSettingsView, 
+    AccountPasswordChangeView
 )
 
 urlpatterns = [
@@ -23,6 +24,8 @@ urlpatterns = [
     path('book-appointment/', PatientBookAppointmentView.as_view(), name='book-appointment'),
     path('find-room/', RoomAvailabilityListView.as_view(), name='room-availability'),
     path('find-doctor/', DoctorSearchView.as_view(), name='doctor-search'),
+    path('account/settings/', AccountSettingsView.as_view(), name='account-settings'),
+    path('account/password/', AccountPasswordChangeView.as_view(), name='password-change'),
 
     path('doctors/', DoctorListView.as_view(), name='doctor-list'),
     path('doctors/add/', DoctorCreateView.as_view(), name='doctor-create'),

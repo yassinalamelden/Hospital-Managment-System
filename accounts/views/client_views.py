@@ -1,10 +1,15 @@
-from django.views.generic import TemplateView, CreateView, ListView
+from django.views.generic import TemplateView, CreateView, ListView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import redirect
+from django.contrib.auth.views import PasswordChangeView
+from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
+from django.contrib import messages
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 from operations.models import Appointment, Room
-from accounts.models import Doctor
-from accounts.forms import AppointmentForm
+from accounts.models import Doctor, Patient
+from accounts.forms import AppointmentForm, UserUpdateForm, PatientForm
 
 class ClientPortalView(LoginRequiredMixin, TemplateView):
     template_name = 'client/portal.html'
@@ -106,3 +111,72 @@ class DoctorSearchView(LoginRequiredMixin, ListView):
         if specialty:
             queryset = queryset.filter(specialty=specialty)
         return queryset
+
+class AccountSettingsView(LoginRequiredMixin, TemplateView):
+    template_name = 'accounts/account_settings.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if hasattr(self.request.user, 'patient'):
+            context['u_form'] = UserUpdateForm(instance=self.request.user)
+            context['p_form'] = PatientForm(instance=self.request.user.patient)
+        return context
+
+    def post(self, request, *args, **kwargs):
+        u_form = UserUpdateForm(request.POST, instance=request.user)
+        p_form = PatientForm(request.POST, instance=request.user.patient)
+
+        if u_form.is_valid() and p_form.is_valid():
+            u_form.save()
+            p_form.save()
+            
+            # Send Notification Email
+            try:
+                html_message = render_to_string('emails/account_changed.html', {
+                    'user': request.user,
+                    'portal_url': request.build_absolute_uri(reverse_lazy('client-portal'))
+                })
+                plain_message = strip_tags(html_message)
+                send_mail(
+                    'Account Profile Updated - Aetheria Sanctuary',
+                    plain_message,
+                    None,  # Uses DEFAULT_FROM_EMAIL
+                    [request.user.email],
+                    html_message=html_message,
+                    fail_silently=True
+                )
+            except Exception:
+                pass
+
+            messages.success(request, "Your account has been updated!")
+            return redirect('account-settings')
+        
+        return render(request, self.template_name, {'u_form': u_form, 'p_form': p_form})
+
+class AccountPasswordChangeView(LoginRequiredMixin, PasswordChangeView):
+    template_name = 'accounts/password_change.html'
+    success_url = reverse_lazy('account-settings')
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        
+        # Send Security Notification Email
+        try:
+            html_message = render_to_string('emails/password_changed.html', {
+                'user': self.request.user,
+                'settings_url': self.request.build_absolute_uri(reverse_lazy('account-settings'))
+            })
+            plain_message = strip_tags(html_message)
+            send_mail(
+                'SECURITY ALERT: Password Changed - Aetheria Sanctuary',
+                plain_message,
+                None,
+                [self.request.user.email],
+                html_message=html_message,
+                fail_silently=True
+            )
+        except Exception:
+            pass
+
+        messages.success(self.request, "Your password has been changed successfully!")
+        return response

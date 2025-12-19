@@ -4,28 +4,30 @@
 <div class="container py-5 animate-fade-in">
     <div class="row mb-5 align-items-center">
         <div class="col-md-6">
-            <h1 class="display-4">My Portal</h1>
-            <p class="lead text-muted">Welcome back, <span class="text-accent">{{ patient.name }}</span></p>
+            <h1 class="display-4">My <span class="text-accent">Portal</span></h1>
+            <p class="lead text-muted">Welcome back, {{ patient.name }}. Manage your health records here.</p>
         </div>
         <div class="col-md-6 text-md-end">
             <div class="d-flex gap-2 justify-content-md-end">
-                <a href="{% url 'book-appointment' %}" class="btn-gradient">Book Appointment</a>
-                <a href="{% url 'room-availability' %}" class="btn btn-outline-dark rounded-pill px-4">Find Room</a>
+                <a href="{% url 'book-appointment' %}" class="btn-gradient px-4">Book New Appointment</a>
+                <a href="{% url 'account-settings' %}" class="btn btn-outline-dark rounded-pill px-4">Manage Account</a>
+                <a href="{% url 'room-availability' %}" class="btn btn-outline-secondary rounded-pill px-4">Find
+                    Room</a>
             </div>
         </div>
     </div>
 
-    <!-- Stats / Info -->
-    <div class="row g-4 mb-5">
+    <!-- Tab Navigation -->
+    <div class="row g-4 mb-4">
         <div class="col-md-12">
-            <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+            <ul class="nav nav-pills mb-3 bg-light p-2 rounded-pill d-inline-flex border" id="pills-tab" role="tablist">
                 <li class="nav-item" role="presentation">
                     <button class="nav-link active rounded-pill px-4" id="pills-appt-tab" data-bs-toggle="pill"
-                        data-bs-target="#pills-appt" type="button" role="tab">Appointments</button>
+                        data-bs-target="#pills-appt" type="button" role="tab">📅 Appointments</button>
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link rounded-pill px-4" id="pills-bills-tab" data-bs-toggle="pill"
-                        data-bs-target="#pills-bills" type="button" role="tab">Bills & Payments</button>
+                        data-bs-target="#pills-bills" type="button" role="tab">💳 Bills & Payments</button>
                 </li>
             </ul>
         </div>
@@ -34,7 +36,7 @@
     <div class="tab-content" id="pills-tabContent">
         <!-- Appointments Tab -->
         <div class="tab-pane fade show active" id="pills-appt" role="tabpanel">
-            <div class="magic-card">
+            <div class="magic-card p-4">
                 {% if appointments %}
                 <div class="table-responsive">
                     <table class="medical-table">
@@ -42,15 +44,20 @@
                             <tr>
                                 <th>Doctor</th>
                                 <th>Date & Time</th>
+                                <th>Reason</th>
+                                <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for appt in appointments %}
                             <tr>
-                                <td><strong>Dr. {{ appt.doctor.name }}</strong><br><small class="text-muted">{{
-                                        appt.doctor.specialty }}</small></td>
+                                <td>
+                                    <strong>Dr. {{ appt.doctor.name }}</strong><br>
+                                    <small class="text-muted">{{ appt.doctor.specialty }}</small>
+                                </td>
                                 <td>{{ appt.date_time|date:"F j, Y, P" }}</td>
+                                <td>{{ appt.reason|default:"Regular Checkup" }}</td>
                                 <td>
                                     {% if appt.status == 'Completed' %}
                                     <span class="badge bg-success">Completed</span>
@@ -60,8 +67,12 @@
                                     <span class="badge bg-primary">Scheduled</span>
                                     {% endif %}
                                 </td>
-                                <td><a href="{% url 'appointment-detail' appt.pk %}"
-                                        class="btn btn-sm btn-outline-dark rounded-pill">View</a></td>
+                                <td>
+                                    <a href="{% url 'appointment-detail' appt.pk %}"
+                                        class="btn btn-sm btn-outline-dark rounded-pill px-3">
+                                        <span class="me-1">📅</span> View Details
+                                    </a>
+                                </td>
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -69,8 +80,10 @@
                 </div>
                 {% else %}
                 <div class="text-center py-5">
+                    <div class="mb-4 display-1 text-muted opacity-25">📅</div>
                     <h4 class="text-muted">No appointments scheduled</h4>
-                    <a href="{% url 'book-appointment' %}" class="btn btn-link">Book your first appointment</a>
+                    <p class="small text-muted mb-4">You haven't booked any visits yet.</p>
+                    <a href="{% url 'book-appointment' %}" class="btn-gradient px-4">Book Your First Appointment</a>
                 </div>
                 {% endif %}
             </div>
@@ -78,14 +91,15 @@
 
         <!-- Bills Tab -->
         <div class="tab-pane fade" id="pills-bills" role="tabpanel">
-            <div class="magic-card">
+            <div class="magic-card p-4">
                 {% if bills %}
                 <div class="table-responsive">
                     <table class="medical-table">
                         <thead>
                             <tr>
-                                <th>Date</th>
+                                <th>Issued Date</th>
                                 <th>Amount</th>
+                                <th>Method</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
@@ -93,8 +107,12 @@
                         <tbody>
                             {% for bill in bills %}
                             <tr>
-                                <td>{{ bill.issued_date|date:"M d, Y" }}</td>
-                                <td>${{ bill.total_amount }}</td>
+                                <td>{{ bill.issued_date|date:"F j, Y" }}</td>
+                                <td class="fw-bold text-dark">${{ bill.total_amount }}</td>
+                                <td>
+                                    <span class="small text-muted text-uppercase">{{ bill.get_payment_method_display
+                                        }}</span>
+                                </td>
                                 <td>
                                     {% if bill.payment_status == 'PAID' %}
                                     <span class="badge bg-success">PAID</span>
@@ -102,8 +120,12 @@
                                     <span class="badge bg-warning text-dark">PENDING</span>
                                     {% endif %}
                                 </td>
-                                <td><a href="{% url 'bill-detail' bill.pk %}"
-                                        class="btn btn-sm btn-outline-dark rounded-pill">View</a></td>
+                                <td>
+                                    <a href="{% url 'bill-detail' bill.pk %}"
+                                        class="btn btn-sm btn-outline-dark rounded-pill px-3">
+                                        <span class="me-1">💳</span> View Invoice
+                                    </a>
+                                </td>
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -111,7 +133,9 @@
                 </div>
                 {% else %}
                 <div class="text-center py-5">
+                    <div class="mb-4 display-1 text-muted opacity-25">💳</div>
                     <h4 class="text-muted">No billing history found</h4>
+                    <p class="small text-muted">A record of your payments will appear here.</p>
                 </div>
                 {% endif %}
             </div>
