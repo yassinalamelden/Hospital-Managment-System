@@ -18,12 +18,14 @@
     <!-- Stats / Info -->
     <div class="row g-4 mb-5">
         <div class="col-md-12">
-             <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+            <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link active rounded-pill px-4" id="pills-appt-tab" data-bs-toggle="pill" data-bs-target="#pills-appt" type="button" role="tab">Appointments</button>
+                    <button class="nav-link active rounded-pill px-4" id="pills-appt-tab" data-bs-toggle="pill"
+                        data-bs-target="#pills-appt" type="button" role="tab">Appointments</button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link rounded-pill px-4" id="pills-bills-tab" data-bs-toggle="pill" data-bs-target="#pills-bills" type="button" role="tab">Bills & Payments</button>
+                    <button class="nav-link rounded-pill px-4" id="pills-bills-tab" data-bs-toggle="pill"
+                        data-bs-target="#pills-bills" type="button" role="tab">Bills & Payments</button>
                 </li>
             </ul>
         </div>
@@ -34,39 +36,42 @@
         <div class="tab-pane fade show active" id="pills-appt" role="tabpanel">
             <div class="magic-card">
                 {% if appointments %}
-                    <div class="table-responsive">
-                        <table class="medical-table">
-                            <thead>
-                                <tr>
-                                    <th>Doctor</th>
-                                    <th>Date & Time</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for appt in appointments %}
-                                    <tr>
-                                        <td><strong>Dr. {{ appt.doctor.name }}</strong><br><small class="text-muted">{{ appt.doctor.specialty }}</small></td>
-                                        <td>{{ appt.date_time|date:"F j, Y, P" }}</td>
-                                        <td>
-                                            {% if appt.status == 'Completed' %}
-                                                <span class="badge bg-success">Completed</span>
-                                            {% elif appt.status == 'Cancelled' %}
-                                                <span class="badge bg-danger">Cancelled</span>
-                                            {% else %}
-                                                <span class="badge bg-primary">Scheduled</span>
-                                            {% endif %}
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="table-responsive">
+                    <table class="medical-table">
+                        <thead>
+                            <tr>
+                                <th>Doctor</th>
+                                <th>Date & Time</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for appt in appointments %}
+                            <tr>
+                                <td><strong>Dr. {{ appt.doctor.name }}</strong><br><small class="text-muted">{{
+                                        appt.doctor.specialty }}</small></td>
+                                <td>{{ appt.date_time|date:"F j, Y, P" }}</td>
+                                <td>
+                                    {% if appt.status == 'Completed' %}
+                                    <span class="badge bg-success">Completed</span>
+                                    {% elif appt.status == 'Cancelled' %}
+                                    <span class="badge bg-danger">Cancelled</span>
+                                    {% else %}
+                                    <span class="badge bg-primary">Scheduled</span>
+                                    {% endif %}
+                                </td>
+                                <td><a href="{% url 'appointment-detail' appt.pk %}"
+                                        class="btn btn-sm btn-outline-dark rounded-pill">View</a></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
                 {% else %}
-                    <div class="text-center py-5">
-                        <h4 class="text-muted">No appointments scheduled</h4>
-                        <a href="{% url 'book-appointment' %}" class="btn btn-link">Book your first appointment</a>
-                    </div>
+                <div class="text-center py-5">
+                    <h4 class="text-muted">No appointments scheduled</h4>
+                    <a href="{% url 'book-appointment' %}" class="btn btn-link">Book your first appointment</a>
+                </div>
                 {% endif %}
             </div>
         </div>
@@ -74,39 +79,40 @@
         <!-- Bills Tab -->
         <div class="tab-pane fade" id="pills-bills" role="tabpanel">
             <div class="magic-card">
-                 {% if bills %}
-                    <div class="table-responsive">
-                        <table class="medical-table">
-                             <thead>
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Amount</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                             <tbody>
-                                {% for bill in bills %}
-                                    <tr>
-                                        <td>{{ bill.issued_date|date:"M d, Y" }}</td>
-                                        <td>${{ bill.total_amount }}</td>
-                                        <td>
-                                            {% if bill.payment_status == 'PAID' %}
-                                                <span class="badge bg-success">PAID</span>
-                                            {% else %}
-                                                <span class="badge bg-warning text-dark">PENDING</span>
-                                            {% endif %}
-                                        </td>
-                                        <td><button class="btn btn-sm btn-outline-dark rounded-pill">View</button></td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                {% if bills %}
+                <div class="table-responsive">
+                    <table class="medical-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for bill in bills %}
+                            <tr>
+                                <td>{{ bill.issued_date|date:"M d, Y" }}</td>
+                                <td>${{ bill.total_amount }}</td>
+                                <td>
+                                    {% if bill.payment_status == 'PAID' %}
+                                    <span class="badge bg-success">PAID</span>
+                                    {% else %}
+                                    <span class="badge bg-warning text-dark">PENDING</span>
+                                    {% endif %}
+                                </td>
+                                <td><a href="{% url 'bill-detail' bill.pk %}"
+                                        class="btn btn-sm btn-outline-dark rounded-pill">View</a></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
                 {% else %}
-                     <div class="text-center py-5">
-                        <h4 class="text-muted">No billing history found</h4>
-                    </div>
+                <div class="text-center py-5">
+                    <h4 class="text-muted">No billing history found</h4>
+                </div>
                 {% endif %}
             </div>
         </div>

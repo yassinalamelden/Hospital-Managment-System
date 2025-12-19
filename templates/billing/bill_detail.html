@@ -1,43 +1,193 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-8">
-        <div class="card mt-4">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h4 class="mb-0">Bill #{{ bill.id }}</h4>
-                {% if bill.is_paid %}
-                <span class="badge bg-success">Paid</span>
-                {% else %}
-                <span class="badge bg-danger">Unpaid</span>
-                {% endif %}
+<div class="container py-5 animate-fade-in">
+    <div class="row justify-content-center">
+        <div class="col-md-9">
+            <div class="d-flex justify-content-between align-items-center mb-4 no-print">
+                <h1 class="h2 mb-0">Financial <span class="text-accent">Statement</span></h1>
+                <div class="d-flex gap-2">
+                    <button onclick="window.print()" class="btn btn-outline-dark rounded-pill px-4">🖨️ Print
+                        Invoice</button>
+                    {% if user.is_staff %}
+                    <a href="{% url 'bill-list' %}" class="btn btn-outline-secondary rounded-pill px-4">Back to
+                        Bills</a>
+                    {% else %}
+                    <a href="{% url 'client-portal' %}" class="btn btn-outline-secondary rounded-pill px-4">Back to
+                        Portal</a>
+                    {% endif %}
+                </div>
             </div>
-            <div class="card-body">
-                <h5 class="card-title">Patient: {{ bill.patient.name }}</h5>
-                <h6 class="card-subtitle mb-3 text-muted">Issued Date: {{ bill.issued_date }}</h6>
-                
-                <ul class="list-group list-group-flush mb-3">
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        Room Charges
-                        <span>${{ bill.room_charges }}</span>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        Doctor Fees
-                        <span>${{ bill.doctor_fees }}</span>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        Medicine Costs
-                        <span>${{ bill.medicine_cost }}</span>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center bg-light fw-bold">
-                        Total Amount
-                        <span>${{ bill.total_amount }}</span>
-                    </li>
-                </ul>
 
-                <a href="{% url 'bill-list' %}" class="btn btn-primary">Back to List</a>
+            <div class="magic-card p-0 overflow-hidden shadow-lg border-0">
+                <!-- Invoice Header -->
+                <div class="bg-dark text-white p-5 d-flex justify-content-between align-items-start">
+                    <div>
+                        <h2 class="h1 mb-0">INVOICE</h2>
+                        <p class="opacity-75 mb-0">#HMS-BILL-{{ bill.id|stringformat:"05d" }}</p>
+                    </div>
+                    <div class="text-end">
+                        <h4 class="mb-1">Aetheria Medical</h4>
+                        <p class="small opacity-75 mb-0">World-Class Healthcare Redefined</p>
+                    </div>
+                </div>
+
+                <!-- Invoice Body -->
+                <div class="p-5">
+                    <div class="row mb-5 g-4">
+                        <div class="col-sm-6">
+                            <h6 class="text-muted text-uppercase small fw-bold mb-3 font-letter-spacing">Bill To</h6>
+                            <h4 class="mb-1 text-dark">{{ bill.patient.name }}</h4>
+                            <p class="text-muted mb-0 small">{{ bill.patient.user.email }}</p>
+                            <p class="text-muted mb-0 small">Patient ID: #PAT-{{ bill.patient.id|stringformat:"04d" }}
+                            </p>
+                        </div>
+                        <div class="col-sm-6 text-sm-end">
+                            <h6 class="text-muted text-uppercase small fw-bold mb-3 font-letter-spacing">Details</h6>
+                            <p class="mb-1 small"><strong>Date Issued:</strong> {{ bill.issued_date|date:"F j, Y" }}</p>
+                            <p class="mb-1 small"><strong>Payment Method:</strong> {{ bill.get_payment_method_display }}
+                            </p>
+                            <div class="mt-2 text-sm-end">
+                                {% if bill.payment_status == 'PAID' %}
+                                <span
+                                    class="badge bg-success-light text-success rounded-pill px-3 py-2 small fw-bold">Status:
+                                    PAID</span>
+                                {% else %}
+                                <span
+                                    class="badge bg-warning-light text-warning rounded-pill px-3 py-2 small fw-bold">Status:
+                                    PENDING</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive mb-5">
+                        <table class="medical-table transparent">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th class="py-3">Description of Services</th>
+                                    <th class="text-end py-3">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if bill.doctor_fees > 0 %}
+                                <tr>
+                                    <td class="py-3">
+                                        <div class="fw-bold">Consultation Fees</div>
+                                        <small class="text-muted">Professional services and evaluation</small>
+                                    </td>
+                                    <td class="text-end font-monospace py-3">${{ bill.doctor_fees }}</td>
+                                </tr>
+                                {% endif %}
+                                {% if bill.room_charges > 0 %}
+                                <tr>
+                                    <td class="py-3">
+                                        <div class="fw-bold">Room & Facility Charges</div>
+                                        <small class="text-muted">Inpatient accommodation and nursing care</small>
+                                    </td>
+                                    <td class="text-end font-monospace py-3">${{ bill.room_charges }}</td>
+                                </tr>
+                                {% endif %}
+                                {% if bill.medicine_cost > 0 %}
+                                <tr>
+                                    <td class="py-3">
+                                        <div class="fw-bold">Pharmacy & Medication</div>
+                                        <small class="text-muted">Prescribed drugs and medical supplies</small>
+                                    </td>
+                                    <td class="text-end font-monospace py-3">${{ bill.medicine_cost }}</td>
+                                </tr>
+                                {% endif %}
+
+                                {% for item in bill.items.all %}
+                                <tr>
+                                    <td class="py-3">
+                                        <div class="fw-bold">{{ item.item_name }}</div>
+                                        <small class="text-muted">Quantity: {{ item.quantity }}</small>
+                                    </td>
+                                    <td class="text-end font-monospace py-3">${{ item.total_price }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot>
+                                <tr class="border-top-2 border-dark">
+                                    <td class="h4 fw-bold py-4">Total Payable Amount</td>
+                                    <td class="h4 fw-bold text-end py-4 text-accent font-monospace">${{
+                                        bill.total_amount }}</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                    <div class="row align-items-end mt-5">
+                        <div class="col-8">
+                            <div class="p-3 bg-light rounded-4 small text-muted border-start border-4 border-accent">
+                                <p class="mb-1"><strong>Terms & Conditions:</strong></p>
+                                <ul class="mb-0 ps-3">
+                                    <li>This is a computer-generated document and does not require a physical signature.
+                                    </li>
+                                    <li>Payment is due within 7 days of the issuance date.</li>
+                                    <li>Please keep this invoice for your medical insurance claims.</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-4 text-center">
+                            <div class="mb-2 opacity-50">
+                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=HMS-BILL-{{ bill.id }}"
+                                    alt="QR Code" width="80" height="80">
+                            </div>
+                            <p class="tiny-text text-muted mb-0">Scan to Verify</p>
+                            <div class="mt-3 border-top pt-2">
+                                <p class="small fw-bold mb-0">Certified Digital Invoice</p>
+                                <p class="tiny-text text-muted">Aetheria Health Group</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-5 pt-4 text-center border-top">
+                        <p class="small text-muted mb-0">
+                            Aetheria Medical Sanctuary • 123 Medical Plaza, Cairo • support@hospital-sys.com • +20 221
+                            121 573
+                        </p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    @media print {
+        .no-print {
+            display: none !important;
+        }
+
+        .magic-card {
+            box-shadow: none !important;
+            border: 1px solid #eee !important;
+        }
+
+        .bg-dark {
+            background-color: #212529 !important;
+            color: white !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+    }
+
+    .bg-success-light {
+        background-color: rgba(40, 167, 69, 0.1);
+    }
+
+    .bg-warning-light {
+        background-color: rgba(255, 193, 7, 0.1);
+    }
+
+    .font-letter-spacing {
+        letter-spacing: 0.1em;
+    }
+
+    .border-top-2 {
+        border-top: 2px solid !important;
+    }
+</style>
 {% endblock %}

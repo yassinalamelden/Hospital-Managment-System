@@ -10,6 +10,36 @@
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <style>
+        @media print {
+
+            .no-print,
+            header,
+            footer,
+            .navbar,
+            .alert {
+                display: none !important;
+            }
+
+            body {
+                padding: 0 !important;
+                margin: 0 !important;
+                background: white !important;
+            }
+
+            .container {
+                max-width: 100% !important;
+                width: 100% !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+
+            .magic-card {
+                border: 1px solid #eee !important;
+                box-shadow: none !important;
+            }
+        }
+    </style>
 </head>
 
 <body>

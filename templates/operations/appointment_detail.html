@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-5 animate-fade-in">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h2 mb-0">Appointment <span class="text-accent">Details</span></h1>
+                {% if user.is_staff %}
+                <a href="{% url 'appointment-list' %}" class="btn btn-outline-dark rounded-pill px-4">Back to All</a>
+                {% else %}
+                <a href="{% url 'patient-appointments' %}" class="btn btn-outline-dark rounded-pill px-4">My
+                    Appointments</a>
+                {% endif %}
+            </div>
+
+            <div class="magic-card p-5">
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <label class="text-muted small text-uppercase fw-bold mb-1">Doctor</label>
+                        <h4 class="mb-0">Dr. {{ appointment.doctor.name }}</h4>
+                        <p class="text-accent">{{ appointment.doctor.specialty }}</p>
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        <label class="text-muted small text-uppercase fw-bold mb-1">Status</label>
+                        <div>
+                            {% if appointment.status == 'Completed' %}
+                            <span class="badge bg-success rounded-pill px-3">Completed</span>
+                            {% elif appointment.status == 'Cancelled' %}
+                            <span class="badge bg-danger rounded-pill px-3">Cancelled</span>
+                            {% else %}
+                            <span class="badge bg-primary rounded-pill px-3">Scheduled</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="col-12 mt-4 divider-light"></div>
+
+                    <div class="col-md-6">
+                        <label class="text-muted small text-uppercase fw-bold mb-1">Date & Time</label>
+                        <p class="h5">{{ appointment.date_time|date:"F j, Y, P" }}</p>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="text-muted small text-uppercase fw-bold mb-1">Consultation Fee</label>
+                        <p class="h5 text-success">${{ appointment.doctor.consultation_fee }}</p>
+                    </div>
+
+                    <div class="col-12 mt-2">
+                        <label class="text-muted small text-uppercase fw-bold mb-1">Reason for Visit</label>
+                        <div class="bg-light p-3 rounded-4 mt-2">
+                            {{ appointment.reason|default:"No specific reason provided." }}
+                        </div>
+                    </div>
+
+                    <div class="col-12 mt-5 text-center">
+                        <button onclick="window.print()" class="btn btn-outline-secondary rounded-pill px-4 me-2">
+                            <span class="me-2">🖨️</span> Print Details
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

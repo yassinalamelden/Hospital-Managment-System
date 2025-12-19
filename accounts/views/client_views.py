@@ -59,8 +59,7 @@ class PatientBookAppointmentView(LoginRequiredMixin, CreateView):
         bill = Bill.objects.create(
             patient=self.request.user.patient,
             payment_method=method,
-            payment_status='PENDING',
-            doctor_fees=self.object.doctor.consultation_fee
+            payment_status='PENDING'
         )
         
         # Create exact bill item for transparency

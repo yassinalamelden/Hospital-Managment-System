@@ -1,4 +1,5 @@
 from django.db import models
+from decimal import Decimal
 from .person import Person
 
 class Doctor(Person):
@@ -12,7 +13,7 @@ class Doctor(Person):
     ]
 
     specialty = models.CharField(max_length=50, choices=SPECIALTY_CHOICES)
-    consultation_fee = models.DecimalField(max_digits=10, decimal_places=2, default='50.00')
+    consultation_fee = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('50.00'))
 
     is_active = models.BooleanField(default=True)
 
