@@ -53,33 +53,11 @@ class RoomVacateView(View):
         patient = room.current_patient
         admission_date = room.admission_date
         
-        # Calculate Stay and Generate Bill (Feature C - Billing Enhancements)
-        from billing.models import Bill, BillItem
-        
-        if admission_date:
-            days = (timezone.now().date() - admission_date).days
-            if days <= 0: days = 1 # Minimum 1 day charge
-        else:
-            days = 1
-
-        # Create the bill
-        bill = Bill.objects.create(
-            patient=patient,
-            payment_status='PENDING'
-        )
-        
-        # Create the bill item
-        # Note: BillItem.save() automatically updates bill.total_amount
-        BillItem.objects.create(
-            bill=bill,
-            item_name=f"Room Stay: {room.room_number} ({room.room_type}) - {days} nights",
-            unit_price=room.price_per_night,
-            quantity=days
-        )
-
+        # The billing logic is handled by the pre_save signal in operations/signals.py
+        # when room.vacate() calls room.save()
         room.vacate()
 
-        messages.success(request, f"Room vacated. An automated bill for ${bill.total_amount} ({days} nights @ ${room.price_per_night}) has been generated for {patient.name}.")
+        messages.success(request, f"Room {room.room_number} vacated successfully. An automated bill has been generated for {patient.name}.")
         return redirect("room-list")
 
 class RoomAssignView(UpdateView):

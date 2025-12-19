@@ -20,12 +20,18 @@ def create_consultation_bill(sender, instance, created, **kwargs):
         patient = instance.patient
         doctor = instance.doctor
         
-        # specific logic: find pending bill or create new
-        bill, _ = Bill.objects.get_or_create(
+        # Find the latest pending bill or create a new one
+        bill = Bill.objects.filter(
             patient=patient,
-            payment_status='PENDING',
-            defaults={'payment_method': 'CASH'} # Default
-        )
+            payment_status='PENDING'
+        ).order_by('-id').first()
+
+        if not bill:
+            bill = Bill.objects.create(
+                patient=patient,
+                payment_status='PENDING',
+                payment_method='CASH'
+            )
         
         item_name = f"Consultation with {doctor}"
         price = doctor.consultation_fee
@@ -64,11 +70,18 @@ def charge_room_on_discharge(sender, instance, **kwargs):
                 if days < 1:
                     days = 1 # Minimum 1 day charge
                 
-                bill, _ = Bill.objects.get_or_create(
+                # Find latest pending bill or create
+                bill = Bill.objects.filter(
                     patient=patient,
-                    payment_status='PENDING',
-                     defaults={'payment_method': 'CASH'}
-                )
+                    payment_status='PENDING'
+                ).order_by('-id').first()
+                
+                if not bill:
+                    bill = Bill.objects.create(
+                        patient=patient,
+                        payment_status='PENDING',
+                        payment_method='CASH'
+                    )
                 
                 item_name = f"Room Charge: {old_instance.room_number} ({old_instance.room_type})"
                 price_per_day = old_instance.price_per_night

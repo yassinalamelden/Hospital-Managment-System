@@ -12,6 +12,11 @@ from billing.models import Bill
 from django.db.models import Sum, Count, Avg
 from django.utils import timezone
 from datetime import timedelta
+import base64
+import io
+import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.use('Agg')  # Use non-interactive backend
 
 
 class HomeView(TemplateView):
@@ -66,10 +71,55 @@ class AdminDashboardView(StaffRequiredMixin, TemplateView):
         
         # Mapper for month names
         import calendar
-        context['monthly_revenue_labels'] = [calendar.month_name[item['issued_date__month']] for item in monthly_revenue]
-        context['monthly_revenue_data'] = [float(item['total']) for item in monthly_revenue]
+        monthly_labels = [calendar.month_name[item['issued_date__month']] for item in monthly_revenue]
+        monthly_data = [float(item['total']) for item in monthly_revenue]
+
+        # Generate Matplotlib Charts
+        context['gender_chart'] = self.generate_gender_chart(
+            [item['gender'] for item in gender_data],
+            [item['count'] for item in gender_data]
+        )
+        context['status_chart'] = self.generate_status_chart(
+            [item['status'] for item in appointment_status_data],
+            [item['count'] for item in appointment_status_data]
+        )
+        context['revenue_chart'] = self.generate_revenue_chart(
+            monthly_labels,
+            monthly_data
+        )
 
         return context
+
+    def generate_chart_base64(self, fig):
+        buf = io.BytesIO()
+        fig.savefig(buf, format='png', bbox_inches='tight', transparent=True)
+        buf.seek(0)
+        string = base64.b64encode(buf.read()).decode('utf-8')
+        plt.close(fig)
+        return f"data:image/png;base64,{string}"
+
+    def generate_gender_chart(self, labels, counts):
+        if not labels: return None
+        fig, ax = plt.subplots(figsize=(4, 4))
+        colors = ['#6f42c1', '#007bff', '#e83e8c', '#fd7e14']
+        ax.pie(counts, labels=labels, autopct='%1.1f%%', startangle=90, colors=colors[:len(labels)])
+        ax.axis('equal')
+        return self.generate_chart_base64(fig)
+
+    def generate_status_chart(self, labels, counts):
+        if not labels: return None
+        fig, ax = plt.subplots(figsize=(5, 3))
+        ax.bar(labels, counts, color='#0dcaf0')
+        ax.set_title('Appointment Status')
+        return self.generate_chart_base64(fig)
+
+    def generate_revenue_chart(self, labels, data):
+        if not labels: return None
+        fig, ax = plt.subplots(figsize=(5, 3))
+        ax.plot(labels, data, marker='o', color='#198754', linewidth=2)
+        ax.fill_between(labels, data, color='#198754', alpha=0.1)
+        ax.set_title('Monthly Revenue')
+        return self.generate_chart_base64(fig)
 
 
 class ManageUsersView(StaffRequiredMixin, ListView):
