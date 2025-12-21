@@ -1,7 +1,8 @@
 from django.urls import path
 from .views import (
     HomeView, AdminDashboardView, ManageUsersView,
-    PromoteUserView, DeactivateUserView, ManageReviewsView
+    PromoteUserView, DeactivateUserView, ManageReviewsView,
+    DeleteReviewView, AddDoctorView, AddPatientView, AddRoomView
 )
 
 urlpatterns = [
@@ -15,4 +16,10 @@ urlpatterns = [
     
     # Review Management
     path('admin/reviews/', ManageReviewsView.as_view(), name='manage-reviews'),
+    path('admin/reviews/<int:pk>/delete/', DeleteReviewView.as_view(), name='delete-review'),
+    
+    # Custom Admin Add Forms
+    path('admin/doctors/add/', AddDoctorView.as_view(), name='add-doctor'),
+    path('admin/patients/add/', AddPatientView.as_view(), name='add-patient'),
+    path('admin/rooms/add/', AddRoomView.as_view(), name='add-room'),
 ]

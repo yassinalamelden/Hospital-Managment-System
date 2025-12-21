@@ -30,49 +30,6 @@
                 </div>
             </div>
         </div>
-    </div>
-
-    <div class="row justify-content-center">
-        <div class="col-md-10">
-            <!-- Professional Confirmation Card -->
-            <div class="invoice-container overflow-hidden p-0">
-                <!-- Watermark for Authenticity -->
-                <div class="print-watermark">CONFIRMED VISIT</div>
-
-                <!-- Modern Header -->
-                <div class="invoice-header d-flex justify-content-between align-items-center">
-                    <div class="brand-section">
-                        <div class="d-flex align-items-center gap-3 mb-2">
-                            <span class="fs-1">⚕️</span>
-                            <div class="brand-text">
-                                <h1 class="mb-0">AETHERIA</h1>
-                                <p class="text-uppercase tracking-widest">Medical Sanctuary</p>
-                            </div>
-                        </div>
-                        <div class="contact-info-strip opacity-75">
-                            <span>123 Medical Plaza, Cairo</span> • <span>+20 221 121 573</span>
-                        </div>
-                    </div>
-                    <div class="invoice-status-section text-end">
-                        <h2 class="display-6 fw-bold mb-0">VISIT TICKET</h2>
-                        <div class="mt-2">
-                            {% if appointment.status == 'Completed' %}
-                            <span class="status-seal status-paid">COMPLETED</span>
-                            {% elif appointment.status == 'Cancelled' %}
-                            <span class="status-seal status-cancelled">CANCELLED</span>
-                            {% else %}
-                            <span class="status-seal status-pending">SCHEDULED</span>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Meta Details Grid -->
-                <div class="invoice-meta-grid">
-                    <div class="meta-item">
-                        <label>TICKET NUMBER</label>
-                        <p>#HMS-APT-{{ appointment.id|stringformat:"05d" }}</p>
-                    </div>
                     <div class="meta-item">
                         <label>DATE & TIME</label>
                         <p>{{ appointment.date_time|date:"F j, Y" }}</p>

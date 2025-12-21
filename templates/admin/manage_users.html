@@ -110,7 +110,7 @@
                         <div class="d-flex gap-2 justify-content-center">
                             {% if user_item != user %}
                                 <!-- Promote/Demote Button -->
-                                <form method="post" action="{% url 'promote-user' user_item.id %}" class="d-inline">
+                                <form method="post" action="{% url 'promote_user' user_item.id %}" class="d-inline">
                                     {% csrf_token %}
                                     {% if user_item.is_staff %}
                                         <button type="submit" class="btn btn-outline-warning btn-sm rounded-pill" title="Remove Admin">
@@ -124,7 +124,7 @@
                                 </form>
                                 
                                 <!-- Activate/Deactivate Button -->
-                                <form method="post" action="{% url 'deactivate-user' user_item.id %}" class="d-inline">
+                                <form method="post" action="{% url 'deactivate_user' user_item.id %}" class="d-inline">
                                     {% csrf_token %}
                                     {% if user_item.is_active %}
                                         <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill" title="Deactivate">
@@ -135,6 +135,14 @@
                                             <i class="fas fa-check-circle"></i>
                                         </button>
                                     {% endif %}
+                                </form>
+                                 
+                                <!-- Permanent Delete Button -->
+                                <form method="post" action="{% url 'delete_user' user_item.id %}" class="d-inline" onsubmit="return confirm('Are you sure you want to PERMANENTLY delete this user? This cannot be undone.');">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill" title="Delete Permanently">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
                                 </form>
                             {% else %}
                                 <span class="badge bg-info rounded-pill">You</span>

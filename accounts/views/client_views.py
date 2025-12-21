@@ -11,6 +11,9 @@ from django.contrib.auth import authenticate
 from operations.models import Appointment, Room
 from accounts.models import Doctor, Patient
 from accounts.forms import AppointmentForm, UserUpdateForm, PatientForm
+from django.db import models
+from operations.models import Appointment, Room, Review
+from operations.forms import ReviewForm
 
 class VerifyPasswordView(LoginRequiredMixin, View):
     template_name = 'accounts/verify_password.html'
@@ -98,6 +101,20 @@ class PatientBookAppointmentView(LoginRequiredMixin, CreateView):
         # Save appointment first
         self.object = form.save(commit=False)
         self.object.patient = self.request.user.patient
+        
+        # Combine Date and Time Slot
+        import datetime
+        date = form.cleaned_data['date']
+        time_slot = form.cleaned_data['time_slot']
+        # time_slot is string "HH:MM", convert to time object
+        hour, minute = map(int, time_slot.split(':'))
+        time_obj = datetime.time(hour, minute)
+        
+        # Combine
+        dt = datetime.datetime.combine(date, time_obj)
+        # Make aware
+        self.object.date_time = timezone.make_aware(dt)
+        
         self.object.save()
         
         # Billing Logic integration
@@ -183,8 +200,56 @@ class DoctorSearchView(LoginRequiredMixin, ListView):
             queryset = queryset.filter(specialty=specialty)
         return queryset
 
+class DoctorDetailView(LoginRequiredMixin, View):
+    template_name = 'client/doctor_detail.html'
+
+    def get(self, request, pk):
+        doctor = get_object_or_404(Doctor, pk=pk)
+        reviews = doctor.reviews.all().order_by('-created_at')
+        form = ReviewForm()
+        
+        # Calculate average rating
+        avg_rating = reviews.aggregate(models.Avg('rating'))['rating__avg'] or 0
+        
+        context = {
+            'doctor': doctor,
+            'reviews': reviews,
+            'form': form,
+            'avg_rating': round(avg_rating, 1),
+            'star_range': range(1, 6)
+        }
+        return render(request, self.template_name, context)
+        
+    def post(self, request, pk):
+        doctor = get_object_or_404(Doctor, pk=pk)
+        if not hasattr(request.user, 'patient'):
+             messages.error(request, "Only patients can leave reviews.")
+             return redirect('doctor-detail', pk=pk)
+
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.doctor = doctor
+            review.patient = request.user.patient
+            review.save()
+            messages.success(request, "Thank you for your review!")
+            return redirect('doctor-detail', pk=pk)
+            
+        reviews = doctor.reviews.all().order_by('-created_at')
+        avg_rating = reviews.aggregate(models.Avg('rating'))['rating__avg'] or 0
+        
+        context = {
+            'doctor': doctor,
+            'reviews': reviews,
+            'form': form,
+            'avg_rating': round(avg_rating, 1),
+            'star_range': range(1, 6)
+        }
+        return render(request, self.template_name, context)
+
+
 class AccountSettingsView(LoginRequiredMixin, TemplateView):
-    template_name = 'accounts/account_settings.html'
+    template_name = 'client/profile.html'
 
     def dispatch(self, request, *args, **kwargs):
         # Require password verification before accessing this view
@@ -221,3 +286,14 @@ class AccountPasswordChangeView(LoginRequiredMixin, PasswordChangeView):
         
         messages.success(self.request, "Your password has been changed successfully!")
         return response
+
+class ClientReviewsView(LoginRequiredMixin, ListView):
+    model = Review
+    template_name = 'client/my_reviews.html'
+    context_object_name = 'reviews'
+    paginate_by = 10
+
+    def get_queryset(self):
+        if hasattr(self.request.user, 'patient'):
+            return Review.objects.filter(patient=self.request.user.patient).order_by('-created_at')
+        return Review.objects.none()

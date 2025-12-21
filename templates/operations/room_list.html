@@ -1,46 +1,73 @@
-{% extends 'base.html' %}
+{% extends 'layouts/admin_base.html' %}
+
+{% block title %}Rooms Management{% endblock %}
+{% block page_title %}Rooms{% endblock %}
+{% block page_subtitle %}Manage hospital capacity and occupancy{% endblock %}
+
+{% block header_actions %}
+<a href="{% url 'room-create' %}" class="btn btn-outline-primary rounded-pill btn-sm">
+    <i class="fas fa-plus me-1"></i> Add Room
+</a>
+{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-    <h1 class="h2">Hospital Rooms</h1>
-    <div class="btn-toolbar mb-2 mb-md-0">
-        <a href="{% url 'room-create' %}" class="btn btn-sm btn-outline-primary">
-            + Add New Room
-        </a>
+<div class="magic-card">
+    <div class="table-responsive">
+        <table class="medical-table">
+            <thead>
+                <tr>
+                    <th>Room #</th>
+                    <th>Type</th>
+                    <th>Price/Night</th>
+                    <th>Status</th>
+                    <th>Current Patient</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for room in rooms %}
+                <tr>
+                    <td><strong>{{ room.room_number }}</strong></td>
+                    <td>{{ room.room_type }}</td>
+                    <td>${{ room.price_per_night }}</td>
+                    <td>
+                        {% if room.is_occupied %}
+                        <span class="badge bg-danger rounded-pill">Occupied</span>
+                        {% else %}
+                        <span class="badge bg-success rounded-pill">Available</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if room.current_patient %}
+                            <a href="{% url 'patient-dashboard' room.current_patient.pk %}" class="text-decoration-none fw-bold">
+                                {{ room.current_patient.name }}
+                            </a>
+                        {% else %}
+                            <span class="text-muted">-</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="d-flex gap-2">
+                            {% if room.is_occupied %}
+                                <a href="{% url 'room-vacate' room.pk %}" class="btn btn-sm btn-outline-warning rounded-pill">Vacate</a>
+                            {% else %}
+                                <a href="{% url 'room-assign' room.pk %}" class="btn btn-sm btn-outline-success rounded-pill">Assign</a>
+                            {% endif %}
+                            <a href="{% url 'room-update' room.pk %}" class="btn btn-sm btn-outline-secondary rounded-pill">Edit</a>
+                             <a href="{% url 'room-delete' room.pk %}" class="btn btn-sm btn-outline-danger rounded-pill">Delete</a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center text-muted py-5">
+                        <i class="fas fa-bed fa-3x mb-3 d-block"></i>
+                        No rooms found.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
-</div>
-
-<div class="row">
-    {% for room in rooms %}
-    <div class="col-md-4 mb-4">
-        <div class="card h-100 {% if room.is_occupied %}border-danger{% else %}border-success{% endif %}">
-            <div
-                class="card-header {% if room.is_occupied %}bg-danger text-white{% else %}bg-success text-white{% endif %}">
-                Room {{ room.room_number }} - {{ room.room_type }}
-            </div>
-            <div class="card-body">
-                <p class="card-text"><strong>Price:</strong> ${{ room.price_per_night }}</p>
-                {% if room.is_occupied %}
-                <p class="card-text text-danger"><strong>Occupied by:</strong> {{ room.current_patient.name }}</p>
-                <form method="post" action="{% url 'room-vacate' room.pk %}" class="d-inline">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-warning btn-sm w-100">Vacate Room</button>
-                </form>
-                {% else %}
-                <p class="card-text text-success"><strong>Available</strong></p>
-                <a href="{% url 'room-assign' room.pk %}" class="btn btn-success btn-sm w-100">Assign Patient</a>
-                {% endif %}
-                <div class="btn-group mt-2">
-                    <a href="{% url 'room-update' room.pk %}" class="btn btn-outline-secondary btn-sm">Edit</a>
-                    <a href="{% url 'room-delete' room.pk %}" class="btn btn-outline-danger btn-sm">Delete</a>
-                </div>
-            </div>
-        </div>
-    </div>
-    {% empty %}
-    <div class="col-12">
-        <p class="text-center">No rooms configured.</p>
-    </div>
-    {% endfor %}
 </div>
 {% endblock %}

@@ -1,6 +1,4 @@
-/* _layout.css - Grid System & Structural Layout */
 
-/* Global Reset */
 body {
     font-family: var(--font-body);
     background-color: var(--light-bg);
@@ -16,7 +14,6 @@ body {
     min-height: 100vh;
 }
 
-/* Sidebar */
 .sidebar {
     background: var(--gradient-sidebar);
     color: var(--white);

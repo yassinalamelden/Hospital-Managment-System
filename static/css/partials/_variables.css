@@ -1,7 +1,5 @@
-/* _variables.css - Color Palette & Typography */
 
 :root {
-    /* --- Modern Medical Palette --- */
     --primary-dark: #0e1a24;  /* Deep Navy (Base Text/Headings) */
     --purple: #8e44ad;        /* Medical Purple (Primary Brand) */
     --turquoise: #01a5c6;     /* Soft Teal (Secondary Accent) */

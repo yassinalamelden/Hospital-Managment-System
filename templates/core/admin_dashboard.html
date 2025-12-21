@@ -6,300 +6,407 @@
 
 {% block extra_css %}
 <style>
-    .activity-card {
-        height: 100%;
-        transition: transform 0.2s;
-    }
-
-    .activity-card:hover {
-        transform: translateY(-5px);
-    }
-
-    .table-responsive {
-        max-height: 400px;
-        overflow-y: auto;
-    }
-
-    .chart-container {
+    /* --- 1. Stats Boxes (Top Row) --- */
+    .stats-box {
+        border-radius: 20px;
+        padding: 25px;
+        color: white;
+        height: 140px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
         position: relative;
-        height: 300px;
-        width: 100%;
+        overflow: hidden;
+        transition: transform 0.3s ease;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        border: none;
+    }
+    .stats-box:hover { transform: translateY(-5px); }
+    .stats-info h3 { font-size: 2.5rem; font-weight: 800; margin: 0; line-height: 1; }
+    .stats-info p { margin: 0; font-size: 0.85rem; text-transform: uppercase; font-weight: 600; opacity: 0.9; margin-bottom: 5px; }
+    .stats-icon-bg { position: absolute; right: -10px; bottom: -10px; font-size: 6rem; opacity: 0.2; transform: rotate(-15deg); }
+
+    /* --- 2. Quick Action Cards --- */
+    .quick-action-card {
+        background: #fff;
+        border: 1px solid rgba(0,0,0,0.05);
+        border-radius: 20px;
+        padding: 20px 10px;
+        text-align: center;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none !important;
+        box-shadow: 0 5px 10px rgba(0,0,0,0.02);
+    }
+    .quick-action-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        border-color: transparent;
+    }
+    .quick-action-title {
+        color: #5a5c69;
+        font-weight: 700;
+        font-size: 0.9rem;
+        margin-top: 15px;
+    }
+    .icon-circle {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        transition: all 0.4s ease;
+        margin-bottom: 5px;
     }
 
-    .action-btn {
-        transition: all 0.3s ease;
-        border: 2px solid transparent;
+    /* --- 3. Resource Links Styles --- */
+    .resource-link-item {
+        transition: background-color 0.2s ease;
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+        text-decoration: none;
+        padding: 15px 10px;
     }
+    .resource-link-item:hover {
+        background-color: #f8f9fc;
+    }
+    .resource-link-item:last-child { border-bottom: none; }
 
-    .action-btn:hover {
-        transform: scale(1.05);
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    }
+    /* --- COLOR PALETTE DEFINITIONS (Hex Codes & Gradients) --- */
+
+    /* Doctor (#4e73df) */
+    .bg-gradient-doctor { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+    .theme-doctor .icon-circle { background: rgba(78, 115, 223, 0.1); color: #4e73df; }
+    .quick-action-card:hover .theme-doctor .icon-circle { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; box-shadow: 0 5px 15px rgba(118, 75, 162, 0.4); }
+    .text-theme-doctor { color: #4e73df !important; }
+    .bg-theme-doctor { background-color: #4e73df !important; }
+
+    /* Patient (#1cc88a) */
+    .bg-gradient-patient { background: linear-gradient(135deg, #2af598 0%, #009efd 100%); }
+    .theme-patient .icon-circle { background: rgba(28, 200, 138, 0.1); color: #1cc88a; }
+    .quick-action-card:hover .theme-patient .icon-circle { background: linear-gradient(135deg, #2af598 0%, #009efd 100%); color: #fff; box-shadow: 0 5px 15px rgba(0, 158, 253, 0.4); }
+    .text-theme-patient { color: #1cc88a !important; }
+    .bg-theme-patient { background-color: #1cc88a !important; }
+
+    /* Appointment (#f6c23e) */
+    .bg-gradient-appt { background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); }
+    .theme-appt .icon-circle { background: rgba(246, 194, 62, 0.1); color: #f6c23e; }
+    .quick-action-card:hover .theme-appt .icon-circle { background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); color: #fff; box-shadow: 0 5px 15px rgba(253, 160, 133, 0.4); }
+    .text-theme-appt { color: #f6c23e !important; }
+    .bg-theme-appt { background-color: #f6c23e !important; }
+
+    /* Room (#36b9cc) */
+    .bg-gradient-room { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+    .theme-room .icon-circle { background: rgba(54, 185, 204, 0.1); color: #36b9cc; }
+    .quick-action-card:hover .theme-room .icon-circle { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: #fff; box-shadow: 0 5px 15px rgba(0, 242, 254, 0.4); }
+    .text-theme-room { color: #36b9cc !important; }
+    .bg-theme-room { background-color: #36b9cc !important; }
+
+    /* Bill (#e74a3b) */
+    .bg-gradient-bill { background: linear-gradient(135deg, #ff0844 0%, #ffb199 100%); }
+    .theme-bill .icon-circle { background: rgba(231, 74, 59, 0.1); color: #e74a3b; }
+    .quick-action-card:hover .theme-bill .icon-circle { background: linear-gradient(135deg, #ff0844 0%, #ffb199 100%); color: #fff; box-shadow: 0 5px 15px rgba(255, 8, 68, 0.4); }
+    .text-theme-bill { color: #e74a3b !important; }
+    .bg-theme-bill { background-color: #e74a3b !important; }
+
+    /* Admin (#5a5c69) */
+    .bg-gradient-admin { background: linear-gradient(135deg, #485563 0%, #29323c 100%); }
+    .theme-admin .icon-circle { background: rgba(90, 92, 105, 0.1); color: #5a5c69; }
+    .quick-action-card:hover .theme-admin .icon-circle { background: linear-gradient(135deg, #485563 0%, #29323c 100%); color: #fff; box-shadow: 0 5px 15px rgba(41, 50, 60, 0.4); }
+    .text-theme-admin { color: #5a5c69 !important; }
 </style>
 {% endblock %}
 
-{% block header_actions %}
-<a href="{% url 'admin:index' %}" class="btn btn-outline-secondary rounded-pill btn-sm" target="_blank">
-    <i class="fas fa-cog me-1"></i> Django Admin
-</a>
-{% endblock %}
-
 {% block content %}
-<!-- Top Stats Row -->
+
 <div class="row g-4 mb-4">
-    <div class="col-lg-3 col-md-6">
-        <div class="magic-card text-center">
-            <div class="mb-2">
-                <i class="fas fa-user-injured fa-2x text-accent"></i>
+    <div class="col-xl-3 col-md-6">
+        <div class="stats-box bg-gradient-patient">
+            <div class="stats-info">
+                <p>Total Patients</p>
+                <h3>{{ total_patients }}</h3>
             </div>
-            <div class="display-6 fw-bold text-accent mb-1">{{ total_patients }}</div>
-            <div class="text-muted small text-uppercase">Total Patients</div>
-        </div>
-    </div>
-    <div class="col-lg-3 col-md-6">
-        <div class="magic-card text-center">
-            <div class="mb-2">
-                <i class="fas fa-user-md fa-2x text-primary"></i>
-            </div>
-            <div class="display-6 fw-bold text-primary mb-1">{{ total_doctors }}</div>
-            <div class="text-muted small text-uppercase">Active Doctors</div>
-        </div>
-    </div>
-    <div class="col-lg-3 col-md-6">
-        <div class="magic-card text-center border-start border-warning border-4">
-            <div class="mb-2">
-                <i class="fas fa-calendar-check fa-2x text-warning"></i>
-            </div>
-            <div class="display-6 fw-bold text-warning mb-1">{{ pending_appointments }}</div>
-            <div class="text-muted small text-uppercase">Pending Apps</div>
-        </div>
-    </div>
-    <div class="col-lg-3 col-md-6">
-        <div class="magic-card text-center border-start border-success border-4">
-            <div class="mb-2">
-                <i class="fas fa-dollar-sign fa-2x text-success"></i>
-            </div>
-            <div class="display-6 fw-bold text-success mb-1">${{ total_revenue|floatformat:0 }}</div>
-            <div class="text-muted small text-uppercase">Total Revenue</div>
-        </div>
-    </div>
-</div>
-
-<!-- Charts Row -->
-<div class="row g-4 mb-5">
-    <div class="col-lg-4">
-        <div class="magic-card h-100">
-            <h5 class="card-title mb-4"><i class="fas fa-venus-mars text-accent me-2"></i>Patient Gender</h5>
-            <div class="text-center">
-                {% if gender_chart %}
-                <img src="{{ gender_chart }}" class="img-fluid" alt="Gender Distribution">
-                {% else %}
-                <p class="text-muted">No data available</p>
-                {% endif %}
+            <div class="stats-icon-bg">
+                <i class="fas fa-user-injured"></i>
             </div>
         </div>
     </div>
-    <div class="col-lg-4">
-        <div class="magic-card h-100">
-            <h5 class="card-title mb-4"><i class="fas fa-tasks text-primary me-2"></i>Appointment Status</h5>
-            <div class="text-center">
-                {% if status_chart %}
-                <img src="{{ status_chart }}" class="img-fluid" alt="Appointment Status">
-                {% else %}
-                <p class="text-muted">No data available</p>
-                {% endif %}
+    <div class="col-xl-3 col-md-6">
+        <div class="stats-box bg-gradient-doctor">
+            <div class="stats-info">
+                <p>Active Doctors</p>
+                <h3>{{ total_doctors }}</h3>
+            </div>
+            <div class="stats-icon-bg">
+                <i class="fas fa-user-md"></i>
             </div>
         </div>
     </div>
-    <div class="col-lg-4">
-        <div class="magic-card h-100">
-            <h5 class="card-title mb-4"><i class="fas fa-chart-line text-success me-2"></i>Monthly Revenue</h5>
-            <div class="text-center">
-                {% if revenue_chart %}
-                <img src="{{ revenue_chart }}" class="img-fluid" alt="Monthly Revenue">
-                {% else %}
-                <p class="text-muted">No data available</p>
-                {% endif %}
+    <div class="col-xl-3 col-md-6">
+        <div class="stats-box bg-gradient-appt">
+            <div class="stats-info">
+                <p>Pending Apps</p>
+                <h3>{{ pending_appointments }}</h3>
+            </div>
+            <div class="stats-icon-bg">
+                <i class="fas fa-calendar-check"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="stats-box bg-gradient-room">
+            <div class="stats-info">
+                <p>Total Revenue</p>
+                <h3>${{ total_revenue|floatformat:0 }}</h3>
+            </div>
+            <div class="stats-icon-bg">
+                <i class="fas fa-dollar-sign"></i>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Quick Actions & Links -->
 <div class="row g-4 mb-5">
+    <div class="col-lg-4">
+        <div class="card h-100 border-0 shadow-sm rounded-4">
+            <div class="card-body p-4">
+                <h6 class="text-uppercase text-muted fw-bold small mb-4">
+                    <i class="fas fa-venus-mars text-theme-patient me-2"></i>Patient Gender
+                </h6>
+                <div class="text-center">
+                    {% if gender_chart %}
+                    <img src="{{ gender_chart }}" class="img-fluid rounded" alt="Gender Distribution">
+                    {% else %}
+                    <p class="text-muted py-5">No data available</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card h-100 border-0 shadow-sm rounded-4">
+            <div class="card-body p-4">
+                <h6 class="text-uppercase text-muted fw-bold small mb-4">
+                    <i class="fas fa-tasks text-theme-doctor me-2"></i>Appt Status
+                </h6>
+                <div class="text-center">
+                    {% if status_chart %}
+                    <img src="{{ status_chart }}" class="img-fluid rounded" alt="Appointment Status">
+                    {% else %}
+                    <p class="text-muted py-5">No data available</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card h-100 border-0 shadow-sm rounded-4">
+            <div class="card-body p-4">
+                <h6 class="text-uppercase text-muted fw-bold small mb-4">
+                    <i class="fas fa-chart-line text-theme-room me-2"></i>Revenue
+                </h6>
+                <div class="text-center">
+                    {% if revenue_chart %}
+                    <img src="{{ revenue_chart }}" class="img-fluid rounded" alt="Monthly Revenue">
+                    {% else %}
+                    <p class="text-muted py-5">No data available</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-5">
+    
     <div class="col-lg-8">
-        <div class="magic-card">
-            <h5 class="mb-4" style="font-family: var(--font-heading); color: var(--primary-dark);">
-                <i class="fas fa-bolt text-accent me-2"></i> Quick Management
-            </h5>
-            <div class="row g-3">
-                <div class="col-md-4">
-                    <a href="{% url 'doctor-create' %}" class="btn btn-outline-primary w-100 rounded-4 py-3 action-btn">
-                        <i class="fas fa-user-md d-block fs-3 mb-2"></i>
-                        Add Doctor
-                    </a>
-                </div>
-                <div class="col-md-4">
-                    <a href="{% url 'patient-create' %}"
-                        class="btn btn-outline-success w-100 rounded-4 py-3 action-btn">
-                        <i class="fas fa-user-plus d-block fs-3 mb-2"></i>
-                        Register Patient
-                    </a>
-                </div>
-                <div class="col-md-4">
-                    <a href="/operations/appointments/add/"
-                        class="btn btn-outline-warning w-100 rounded-4 py-3 action-btn">
-                        <i class="fas fa-calendar-plus d-block fs-3 mb-2"></i>
-                        Schedule Appt
-                    </a>
-                </div>
-                <div class="col-md-4">
-                    <a href="/operations/rooms/add/" class="btn btn-outline-info w-100 rounded-4 py-3 action-btn">
-                        <i class="fas fa-bed d-block fs-3 mb-2"></i>
-                        Add Room
-                    </a>
-                </div>
-                <div class="col-md-4">
-                    <a href="/billing/bills/add/" class="btn btn-outline-danger w-100 rounded-4 py-3 action-btn">
-                        <i class="fas fa-file-invoice d-block fs-3 mb-2"></i>
-                        Create Bill
-                    </a>
-                </div>
-                <div class="col-md-4">
-                    <a href="{% url 'manage-users' %}"
-                        class="btn btn-outline-secondary w-100 rounded-4 py-3 action-btn">
-                        <i class="fas fa-users-cog d-block fs-3 mb-2"></i>
-                        Manage Users
-                    </a>
+        <div class="card border-0 shadow-sm rounded-4 h-100">
+            <div class="card-body p-4">
+                <h5 class="mb-4" style="font-family: var(--font-heading); color: #5a5c69;">
+                    <i class="fas fa-bolt text-theme-appt me-2"></i> Quick Management
+                </h5>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <a href="{% url 'doctor-create' %}" class="quick-action-card theme-doctor">
+                            <div class="icon-circle">
+                                <i class="fas fa-user-md"></i>
+                            </div>
+                            <span class="quick-action-title">Add Doctor</span>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="{% url 'patient-create' %}" class="quick-action-card theme-patient">
+                            <div class="icon-circle">
+                                <i class="fas fa-user-plus"></i>
+                            </div>
+                            <span class="quick-action-title">Register Patient</span>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="/operations/appointments/add/" class="quick-action-card theme-appt">
+                            <div class="icon-circle">
+                                <i class="fas fa-calendar-plus"></i>
+                            </div>
+                            <span class="quick-action-title">Schedule Appt</span>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="/operations/rooms/add/" class="quick-action-card theme-room">
+                            <div class="icon-circle">
+                                <i class="fas fa-bed"></i>
+                            </div>
+                            <span class="quick-action-title">Add Room</span>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="/billing/bills/add/" class="quick-action-card theme-bill">
+                            <div class="icon-circle">
+                                <i class="fas fa-file-invoice-dollar"></i>
+                            </div>
+                            <span class="quick-action-title">Create Bill</span>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="{% url 'manage_users' %}" class="quick-action-card theme-admin">
+                            <div class="icon-circle">
+                                <i class="fas fa-users-cog"></i>
+                            </div>
+                            <span class="quick-action-title">Manage Users</span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="col-lg-4">
-        <div class="magic-card h-100">
-            <h5 class="mb-4" style="font-family: var(--font-heading); color: var(--primary-dark);">
-                <i class="fas fa-link text-primary me-2"></i> Resource Links
-            </h5>
-            <div class="list-group list-group-flush">
-                <a href="{% url 'doctor-list' %}"
-                    class="list-group-item list-group-item-action d-flex justify-content-between align-items-center px-0 bg-transparent">
-                    <span><i class="fas fa-user-md me-2 text-primary"></i> Doctors</span>
-                    <span class="badge bg-primary rounded-pill">{{ total_doctors }}</span>
-                </a>
-                <a href="{% url 'patient-list' %}"
-                    class="list-group-item list-group-item-action d-flex justify-content-between align-items-center px-0 bg-transparent">
-                    <span><i class="fas fa-user-injured me-2 text-success"></i> Patients</span>
-                    <span class="badge bg-success rounded-pill">{{ total_patients }}</span>
-                </a>
-                <a href="/operations/appointments/"
-                    class="list-group-item list-group-item-action d-flex justify-content-between align-items-center px-0 bg-transparent">
-                    <span><i class="fas fa-calendar-alt me-2 text-warning"></i> Appointments</span>
-                    <i class="fas fa-chevron-right small text-muted"></i>
-                </a>
-                <a href="/operations/rooms/"
-                    class="list-group-item list-group-item-action d-flex justify-content-between align-items-center px-0 bg-transparent">
-                    <span><i class="fas fa-door-open me-2 text-info"></i> Rooms</span>
-                    <span class="badge bg-info rounded-pill">{{ total_rooms }}</span>
-                </a>
-                <a href="/billing/bills/"
-                    class="list-group-item list-group-item-action d-flex justify-content-between align-items-center px-0 bg-transparent">
-                    <span><i class="fas fa-receipt me-2 text-danger"></i> Billing</span>
-                    <i class="fas fa-chevron-right small text-muted"></i>
-                </a>
+        <div class="card border-0 shadow-sm rounded-4 h-100">
+            <div class="card-body p-4">
+                <h5 class="mb-4" style="font-family: var(--font-heading); color: #5a5c69;">
+                    <i class="fas fa-link text-theme-doctor me-2"></i> Resource Links
+                </h5>
+                <div class="list-group list-group-flush">
+                    <a href="{% url 'doctor-list' %}" class="resource-link-item d-flex justify-content-between align-items-center">
+                        <span><i class="fas fa-user-md me-2 text-theme-doctor"></i> Doctors</span>
+                        <span class="badge bg-theme-doctor rounded-pill">{{ total_doctors }}</span>
+                    </a>
+                    
+                    <a href="{% url 'patient-list' %}" class="resource-link-item d-flex justify-content-between align-items-center">
+                        <span><i class="fas fa-user-injured me-2 text-theme-patient"></i> Patients</span>
+                        <span class="badge bg-theme-patient rounded-pill">{{ total_patients }}</span>
+                    </a>
+                    
+                    <a href="/operations/appointments/" class="resource-link-item d-flex justify-content-between align-items-center">
+                        <span><i class="fas fa-calendar-alt me-2 text-theme-appt"></i> Appointments</span>
+                        <i class="fas fa-chevron-right small text-muted"></i>
+                    </a>
+                    
+                    <a href="/operations/rooms/" class="resource-link-item d-flex justify-content-between align-items-center">
+                        <span><i class="fas fa-door-open me-2 text-theme-room"></i> Rooms</span>
+                        <span class="badge bg-theme-room rounded-pill">{{ total_rooms }}</span>
+                    </a>
+                    
+                    <a href="/billing/bills/" class="resource-link-item d-flex justify-content-between align-items-center">
+                        <span><i class="fas fa-receipt me-2 text-theme-bill"></i> Billing</span>
+                        <i class="fas fa-chevron-right small text-muted"></i>
+                    </a>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Recent Activity Tables -->
 <div class="row g-4">
-    <!-- Recent Appointments -->
     <div class="col-lg-6">
-        <div class="magic-card">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h5 class="mb-0"><i class="fas fa-clock text-warning me-2"></i>Recent Appointments</h5>
-                <a href="/operations/appointments/" class="btn btn-sm btn-link">View All</a>
-            </div>
-            <div class="table-responsive">
-                <table class="table table-hover align-middle">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Patient</th>
-                            <th>Doctor</th>
-                            <th>Date</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for appt in recent_appointments %}
-                        <tr>
-                            <td>{{ appt.patient.name }}</td>
-                            <td>Dr. {{ appt.doctor.name }}</td>
-                            <td>{{ appt.date_time|date:"M d, H:i" }}</td>
-                            <td>
-                                <span
-                                    class="badge {% if appt.status == 'Scheduled' %}bg-info{% elif appt.status == 'Completed' %}bg-success{% else %}bg-secondary{% endif %}">
-                                    {{ appt.status }}
-                                </span>
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="4" class="text-center text-muted">No recent appointments</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+        <div class="card border-0 shadow-sm rounded-4 h-100">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="mb-0"><i class="fas fa-clock text-theme-appt me-2"></i>Recent Appointments</h5>
+                    <a href="/operations/appointments/" class="btn btn-sm btn-light rounded-pill px-3">View All</a>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="border-0 rounded-start">Patient</th>
+                                <th class="border-0">Doctor</th>
+                                <th class="border-0">Date</th>
+                                <th class="border-0 rounded-end">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for appt in recent_appointments %}
+                            <tr>
+                                <td>{{ appt.patient.name }}</td>
+                                <td class="text-muted">Dr. {{ appt.doctor.name }}</td>
+                                <td class="text-muted small">{{ appt.date_time|date:"M d, H:i" }}</td>
+                                <td>
+                                    <span class="badge rounded-pill {% if appt.status == 'Scheduled' %}bg-info-subtle text-info border border-info{% elif appt.status == 'Completed' %}bg-success-subtle text-success border border-success{% else %}bg-secondary-subtle text-secondary{% endif %}">
+                                        {{ appt.status }}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center text-muted py-4">No recent appointments</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Latest Bills -->
     <div class="col-lg-6">
-        <div class="magic-card">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h5 class="mb-0"><i class="fas fa-file-invoice-dollar text-danger me-2"></i>Latest Invoices</h5>
-                <a href="/billing/bills/" class="btn btn-sm btn-link">View All</a>
-            </div>
-            <div class="table-responsive">
-                <table class="table table-hover align-middle">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Patient</th>
-                            <th>Amount</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for bill in recent_bills %}
-                        <tr>
-                            <td>{{ bill.patient.name }}</td>
-                            <td class="fw-bold">${{ bill.total_amount }}</td>
-                            <td>
-                                <span
-                                    class="badge {% if bill.payment_status == 'PAID' %}bg-success{% elif bill.payment_status == 'PARTIAL' %}bg-warning{% else %}bg-danger{% endif %}">
-                                    {{ bill.payment_status }}
-                                </span>
-                            </td>
-                            <td><a href="/billing/bills/{{ bill.id }}/" class="btn btn-sm btn-outline-primary"><i
-                                        class="fas fa-eye"></i></a></td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="4" class="text-center text-muted">No recent bills</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+        <div class="card border-0 shadow-sm rounded-4 h-100">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="mb-0"><i class="fas fa-file-invoice-dollar text-theme-bill me-2"></i>Latest Invoices</h5>
+                    <a href="/billing/bills/" class="btn btn-sm btn-light rounded-pill px-3">View All</a>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="border-0 rounded-start">Patient</th>
+                                <th class="border-0">Amount</th>
+                                <th class="border-0">Status</th>
+                                <th class="border-0 rounded-end">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for bill in recent_bills %}
+                            <tr>
+                                <td>{{ bill.patient.name }}</td>
+                                <td class="fw-bold text-dark">${{ bill.total_amount }}</td>
+                                <td>
+                                    <span class="badge rounded-pill {% if bill.payment_status == 'PAID' %}bg-success-subtle text-success border border-success{% elif bill.payment_status == 'PARTIAL' %}bg-warning-subtle text-warning border border-warning{% else %}bg-danger-subtle text-danger border border-danger{% endif %}">
+                                        {{ bill.payment_status }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <a href="/billing/bills/{{ bill.id }}/" class="btn btn-sm btn-light text-primary rounded-circle">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center text-muted py-4">No recent bills</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-{% endblock %}
-
-{% block extra_js %}
-<!-- JavaScript removed in favor of server-side Matplotlib charts -->
 {% endblock %}

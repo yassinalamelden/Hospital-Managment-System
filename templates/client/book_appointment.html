@@ -1,43 +1,74 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-<div class="row justify-content-center py-5 animate-fade-in">
-    <div class="col-md-10 col-lg-8">
-        <div class="magic-card">
-            <div class="row g-0 align-items-center mb-5">
-                <div class="col">
-                    <h2 class="display-6">Book an <span class="text-accent">Appointment</span></h2>
-                    <p class="text-muted">Schedule your visit with our specialists.</p>
+<div class="row justify-content-center animate-fade-in my-5">
+    <div class="col-md-8 col-lg-6">
+        <div class="magic-card p-5">
+            <div class="text-center mb-5">
+                <div class="bg-primary-subtle text-primary rounded-circle d-inline-flex p-3 mb-3">
+                    <span class="fs-2">📅</span>
                 </div>
-                <div class="col-auto">
-                    <a href="{% url 'client-portal' %}" class="btn btn-outline-dark rounded-pill">Back to Portal</a>
-                </div>
+                <h2 class="fw-bold mb-1">Book Appointment</h2>
+                <p class="text-muted">Schedule a consultation with our specialists.</p>
             </div>
 
-            <form method="post">
+            <form method="post" class="needs-validation" novalidate>
                 {% csrf_token %}
-                {% for field in form %}
-                <div class="mb-4">
-                    <label class="form-label fw-bold text-uppercase small text-muted" for="{{ field.id_for_label }}">
-                        {{ field.label }}
-                    </label>
-                    {{ field }}
-                    {% if field.errors %}
-                    <div class="text-danger small mt-1">
-                        {{ field.errors|striptags }}
+                
+                <div class="row g-4">
+                    <!-- Doctor Selection -->
+                    <div class="col-12">
+                        <label class="form-label text-uppercase small fw-bold text-muted">Specialist</label>
+                        {{ form.doctor }}
+                        {% if form.doctor.errors %}
+                            <div class="text-danger small mt-1">{{ form.doctor.errors.0 }}</div>
+                        {% endif %}
                     </div>
-                    {% endif %}
-                </div>
-                {% endfor %}
 
-                <div class="alert alert-light border-0 bg-purple-light mt-4">
-                    <small>ℹ️ Please arrive 15 minutes before your scheduled time.</small>
-                </div>
+                    <!-- Date & Time Row -->
+                    <div class="col-md-6">
+                        <label class="form-label text-uppercase small fw-bold text-muted">Date</label>
+                        {{ form.date }}
+                        {% if form.date.errors %}
+                            <div class="text-danger small mt-1">{{ form.date.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label class="form-label text-uppercase small fw-bold text-muted">Time Slot</label>
+                        {{ form.time_slot }}
+                        {% if form.time_slot.errors %}
+                            <div class="text-danger small mt-1">{{ form.time_slot.errors.0 }}</div>
+                        {% endif %}
+                    </div>
 
-                <div class="d-grid gap-2 mt-4">
-                    <button type="submit" class="btn-gradient">Confirm Booking</button>
-                    <a href="{% url 'client-portal' %}"
-                        class="btn btn-link text-muted text-decoration-none text-center">Cancel</a>
+                    <!-- Reason -->
+                    <div class="col-12">
+                        <label class="form-label text-uppercase small fw-bold text-muted">Reason for Visit</label>
+                        {{ form.reason }}
+                         <div class="form-text small text-muted mt-1">Briefly describe your symptoms or concern.</div>
+                    </div>
+
+                    <!-- Payment -->
+                    <div class="col-12">
+                         <div class="p-3 bg-light rounded-3 border border-secondary-subtle">
+                            <label class="form-label text-uppercase small fw-bold text-muted mb-2">Payment Preference</label>
+                            {{ form.payment_location }}
+                            <div class="d-flex align-items-center mt-2 small text-muted">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <span>Platform payment secures your slot immediately.</span>
+                            </div>
+                         </div>
+                    </div>
+                    
+                    <!-- Submit -->
+                    <div class="col-12 mt-4">
+                        <button type="submit" class="btn btn-gradient w-100 py-3 shadow-sm">
+                            Confirm Booking
+                        </button>
+                        <a href="{% url 'client-portal' %}" class="btn btn-link w-100 mt-2 text-decoration-none text-muted">Cancel</a>
+                    </div>
                 </div>
             </form>
         </div>
@@ -45,13 +76,12 @@
 </div>
 
 <script>
-    // Quick script to add styling class to default django widgets
-    document.querySelectorAll('input, select, textarea').forEach(el => {
-        if (!el.classList.contains('form-control-custom')) {
-            el.classList.add('form-control-custom');
-            el.classList.add('w-100');
-            el.style.border = 'none';
-            el.style.backgroundColor = '#f4f6f8';
+    // Set min date to today
+    document.addEventListener('DOMContentLoaded', function() {
+        const dateInput = document.querySelector('input[type="date"]');
+        if(dateInput) {
+            const today = new Date().toISOString().split('T')[0];
+            dateInput.setAttribute('min', today);
         }
     });
 </script>

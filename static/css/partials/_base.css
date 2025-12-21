@@ -1,6 +1,4 @@
-/* _base.css - Utility & Resets */
 
-/* Typography Utils */
 .display-4, .display-5, .display-6 {
     font-family: var(--font-heading);
     font-weight: 700;
@@ -15,7 +13,6 @@
     background-color: rgba(142, 68, 173, 0.1);
 }
 
-/* Animations */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }

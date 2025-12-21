@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <!-- Doctor Info Card -->
+        <div class="col-md-4">
+            <div class="magic-card p-4 text-center">
+                <div class="mb-3">
+                    <img src="{% static 'images/doctor_placeholder.png' %}" alt="{{ doctor.name }}" class="rounded-circle shadow" style="width: 150px; height: 150px; object-fit: cover; border: 3px solid var(--primary-teal);">
+                </div>
+                <h3 class="text-white mb-1">Dr. {{ doctor.name }}</h3>
+                <p class="text-accent mb-3">{{ doctor.specialty }}</p>
+                
+                <div class="d-flex justify-content-center align-items-center mb-3">
+                    <span class="fs-4 text-warning me-2">★</span>
+                    <span class="fs-4 text-white">{{ avg_rating }}</span>
+                    <span class="text-muted ms-2">({{ reviews.count }} reviews)</span>
+                </div>
+
+                <a href="{% url 'book-appointment' %}?doctor={{ doctor.id }}" class="btn btn-gradient w-100">Make Appointment</a>
+            </div>
+
+            <!-- Contact/Details -->
+            <div class="magic-card p-4 mt-4">
+                <h5 class="text-accent border-bottom border-secondary pb-2 mb-3">Professional Details</h5>
+                <p class="mb-2"><strong class="text-light">Experience:</strong> <span class="text-muted">10+ Years</span></p>
+                <p class="mb-2"><strong class="text-light">Education:</strong> <span class="text-muted">Harvard Medical</span></p>
+                <p class="mb-0"><strong class="text-light">Languages:</strong> <span class="text-muted">English, Spanish</span></p>
+            </div>
+        </div>
+
+        <!-- Reviews Section -->
+        <div class="col-md-8">
+            <div class="magic-card p-4">
+                <h4 class="text-white mb-4">Patient Reviews</h4>
+
+                <!-- Write Review Form -->
+                {% if user.patient %}
+                <div class="mb-5 p-3 rounded" style="background: rgba(255,255,255,0.05);">
+                    <h5 class="text-accent mb-3">Write a Review</h5>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label text-light">Rating</label>
+                            <div class="rating-stars">
+                                {% for i in "12345" %}
+                                <input type="radio" name="rating" value="{{ i }}" id="star{{ i }}" class="d-none">
+                                <label for="star{{ i }}" class="fs-3 text-secondary cursor-pointer hover-warning" onclick="setRating(this)">★</label>
+                                {% endfor %}
+                            </div>
+                            <!-- Hidden input for form submission -->
+                            <input type="number" name="rating" id="ratingInput" required hidden min="1" max="5">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label text-light">Your Experience</label>
+                            {{ form.comment }}
+                        </div>
+
+                        <button type="submit" class="btn btn-gradient px-4">Submit Review</button>
+                    </form>
+                </div>
+                {% endif %}
+
+                <!-- Reviews List -->
+                <div class="reviews-list">
+                    {% for review in reviews %}
+                    <div class="review-item border-bottom border-secondary pb-3 mb-3">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6 class="text-white mb-1">{{ review.patient.name }}</h6>
+                                <div class="text-warning small mb-2">
+                                    {% for i in star_range %}
+                                        {% if i <= review.rating %}★{% else %}☆{% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <small class="text-muted">{{ review.created_at|date:"M d, Y" }}</small>
+                        </div>
+                        <p class="text-light mb-0">{{ review.comment }}</p>
+                    </div>
+                    {% empty %}
+                    <p class="text-muted text-center py-4">No reviews yet. Be the first to share your experience!</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function setRating(label) {
+    const parent = label.parentElement;
+    const stars = parent.querySelectorAll('label');
+    const input = document.getElementById('ratingInput');
+    const value = label.getAttribute('for').replace('star', '');
+    
+    input.value = value;
+    
+    stars.forEach(s => {
+        if (s.getAttribute('for').replace('star', '') <= value) {
+            s.classList.remove('text-secondary');
+            s.classList.add('text-warning');
+        } else {
+            s.classList.add('text-secondary');
+            s.classList.remove('text-warning');
+        }
+    });
+}
+</script>
+
+<style>
+.cursor-pointer { cursor: pointer; }
+.hover-warning:hover { color: #ffc107 !important; }
+</style>
+{% endblock %}

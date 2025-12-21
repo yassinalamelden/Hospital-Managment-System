@@ -29,9 +29,30 @@ class RoomAssignForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # Only show patients who are not already assigned to a room
         self.fields["current_patient"].queryset = Patient.objects.filter(room__isnull=True)
 
-        # Default admission date = today
+
         if not self.initial.get("admission_date"):
             self.initial["admission_date"] = timezone.localdate()
+
+from .models import Review
+
+class ReviewForm(forms.ModelForm):
+    class Meta:
+        model = Review
+        fields = ['rating', 'comment']
+        widgets = {
+            'rating': forms.NumberInput(attrs={'class': 'form-control-custom', 'min': 1, 'max': 5}),
+            'comment': forms.Textarea(attrs={'class': 'form-control-custom', 'rows': 3, 'placeholder': 'Share your experience...'}),
+        }
+
+class RoomForm(forms.ModelForm):
+    class Meta:
+        model = Room
+        fields = ['room_number', 'room_type', 'price_per_night']
+        widgets = {
+            'room_number': forms.TextInput(attrs={'class': 'form-control-custom'}),
+            'room_type': forms.Select(attrs={'class': 'form-control-custom'}),
+            'price_per_night': forms.NumberInput(attrs={'class': 'form-control-custom'}),
+        }
+

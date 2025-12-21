@@ -5,13 +5,18 @@ from .models.patient import Patient
 
 @receiver(post_save, sender=User)
 def create_patient_profile(sender, instance, created, **kwargs):
-    if created and not instance.is_staff:
-        # Create a patient profile for non-staff users
-        # For simplicity, we use the username as the name initially, 
-        # user can update it later.
-        Patient.objects.create(user=instance, name=instance.username)
+    if created:
+        Patient.objects.create(
+            user=instance,
+            name=instance.username,
+            age=0,  
+            address="Please update address", 
+            phone="0000000000", 
+            blood_type="O+", 
+            medical_history="None"
+        )
 
 @receiver(post_save, sender=User)
 def save_patient_profile(sender, instance, **kwargs):
-    if not instance.is_staff and hasattr(instance, 'patient'):
+    if hasattr(instance, 'patient'):
         instance.patient.save()

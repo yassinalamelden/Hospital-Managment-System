@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-5 animate-fade-in">
+    <div class="row mb-5 align-items-center">
+        <div class="col-md-6">
+            <h1 class="display-4">Account <span class="text-accent">Settings</span></h1>
+            <p class="lead text-muted">Manage your personal information and security.</p>
+        </div>
+        <div class="col-md-6 text-md-end">
+            <a href="{% url 'client-portal' %}" class="btn btn-outline-dark rounded-pill px-4">Back to Portal</a>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Profile Info -->
+        <div class="col-md-8">
+            <div class="magic-card p-5">
+                <div class="d-flex align-items-center gap-3 mb-5 pb-3 border-bottom">
+                    <div class="bg-primary-subtle text-primary p-3 rounded-circle">
+                        <span class="fs-3">👤</span>
+                    </div>
+                    <div>
+                        <h4 class="mb-0 fw-bold">Personal Profile</h4>
+                        <p class="small text-muted mb-0">Update your contact and medical details.</p>
+                    </div>
+                </div>
+
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="row g-4">
+                        <div class="col-md-12">
+                            <label class="text-muted small text-uppercase fw-bold mb-2">Email Address</label>
+                            {{ u_form.email }}
+                            {% if u_form.email.errors %}
+                            <div class="text-danger small mt-1">{{ u_form.email.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-8">
+                            <label class="text-muted small text-uppercase fw-bold mb-2">Full Name</label>
+                            {{ p_form.name }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="text-muted small text-uppercase fw-bold mb-2">Age</label>
+                            {{ p_form.age }}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="text-muted small text-uppercase fw-bold mb-2">Gender</label>
+                            {{ p_form.gender }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="text-muted small text-uppercase fw-bold mb-2">Phone Number</label>
+                            {{ p_form.phone }}
+                        </div>
+
+                        <div class="col-md-12">
+                            <label class="text-muted small text-uppercase fw-bold mb-2">Residential Address</label>
+                            {{ p_form.address }}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="text-muted small text-uppercase fw-bold mb-2">Blood Type</label>
+                            {{ p_form.blood_type }}
+                        </div>
+
+                        <div class="col-md-12">
+                            <label class="text-muted small text-uppercase fw-bold mb-2">Medical History</label>
+                            {{ p_form.medical_history }}
+                            <p class="tiny-text text-muted mt-2">Summarize any chronic conditions, allergies, or past
+                                surgeries.</p>
+                        </div>
+
+                        <div class="col-12 mt-5">
+                            <button type="submit" class="btn-gradient px-5 btn-lg shadow-sm">Save Changes</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Security / Quick Actions -->
+        <div class="col-md-4">
+            <div class="magic-card p-4 h-100">
+                <div class="d-flex align-items-center gap-3 mb-4">
+                    <div class="bg-warning-subtle text-warning p-2 rounded-3">
+                        <span class="fs-4">🔒</span>
+                    </div>
+                    <h5 class="mb-0 fw-bold">Security</h5>
+                </div>
+
+                <p class="small text-muted mb-4">Keep your account secure by regularly updating your password.</p>
+
+                <a href="{% url 'password-change' %}"
+                    class="btn btn-outline-dark w-100 rounded-pill mb-4 transition-all hover-scale">
+                    Change Password
+                </a>
+
+                <div class="divider-light my-4"></div>
+
+                <div class="p-3 bg-light rounded-4">
+                    <h6 class="fw-bold small text-uppercase mb-2">Aetheria Member ID</h6>
+                    <p class="font-monospace text-primary mb-0">#PAT-{{ user.patient.id|stringformat:"04d" }}</p>
+                    <p class="tiny-text text-muted mt-1">Joined {{ user.date_joined|date:"F Y" }}</p>
+                </div>
+
+                <div class="mt-5 text-center opacity-50">
+                    <span class="fs-1">⚕️</span>
+                    <p class="tiny-text text-uppercase tracking-widest mt-2">Aetheria Sanctuary</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-control-custom {
+        background: #f8f9fa;
+        border: 2px solid #eee;
+        border-radius: 12px;
+        padding: 12px 16px;
+        transition: all 0.3s ease;
+    }
+
+    .form-control-custom:focus {
+        background: #fff;
+        border-color: var(--accent-color, #6a11cb);
+        box-shadow: 0 0 0 4px rgba(106, 17, 203, 0.1);
+        outline: none;
+    }
+
+    .hover-scale:hover {
+        transform: translateY(-2px);
+    }
+</style>
+{% endblock %}

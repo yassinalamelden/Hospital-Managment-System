@@ -6,8 +6,11 @@ from django.contrib import messages
 from django.views import View
 from django.http import JsonResponse
 from accounts.views.auth_views import StaffRequiredMixin
-from operations.models import Appointment, Room
+from datetime import timedelta
+from operations.models import Appointment, Room, Review
 from accounts.models import Patient, Doctor
+from accounts.forms import DoctorForm, PatientForm
+from operations.forms import RoomForm
 from billing.models import Bill
 from django.db.models import Sum, Count, Avg
 from django.utils import timezone
@@ -101,7 +104,12 @@ class AdminDashboardView(StaffRequiredMixin, TemplateView):
     def generate_gender_chart(self, labels, counts):
         if not labels: return None
         fig, ax = plt.subplots(figsize=(4, 4))
-        colors = ['#6f42c1', '#007bff', '#e83e8c', '#fd7e14']
+        # Custom colors: Royal Blue (Doctor Theme) & Emerald Teal (Patient Theme)
+        colors = ['#4e73df', '#1cc88a'] 
+        # If more than 2 genders, fallback or cycle (though system likely has M/F or few)
+        if len(labels) > 2:
+            colors.extend(['#36b9cc', '#f6c23e']) # Add Room/Appt colors as fallbacks
+            
         ax.pie(counts, labels=labels, autopct='%1.1f%%', startangle=90, colors=colors[:len(labels)])
         ax.axis('equal')
         return self.generate_chart_base64(fig)
@@ -109,15 +117,28 @@ class AdminDashboardView(StaffRequiredMixin, TemplateView):
     def generate_status_chart(self, labels, counts):
         if not labels: return None
         fig, ax = plt.subplots(figsize=(5, 3))
-        ax.bar(labels, counts, color='#0dcaf0')
+        
+        # Map statuses to specific colors
+        color_map = {
+            'Completed': '#1cc88a',    # Success/Teal
+            'Scheduled': '#f6c23e',    # Warning/Orange (matches "Pending")
+            'Cancelled': '#e74a3b',    # Danger/Red
+            'Pending': '#f6c23e'       # Fallback if "Pending" is used
+        }
+        
+        # Generate color list for bars based on labels
+        bar_colors = [color_map.get(label, '#4e73df') for label in labels] # Default to Blue if unknown
+        
+        ax.bar(labels, counts, color=bar_colors)
         ax.set_title('Appointment Status')
         return self.generate_chart_base64(fig)
 
     def generate_revenue_chart(self, labels, data):
         if not labels: return None
         fig, ax = plt.subplots(figsize=(5, 3))
-        ax.plot(labels, data, marker='o', color='#198754', linewidth=2)
-        ax.fill_between(labels, data, color='#198754', alpha=0.1)
+        # Room Theme Cyan for Revenue
+        ax.plot(labels, data, marker='o', color='#36b9cc', linewidth=2)
+        ax.fill_between(labels, data, color='#36b9cc', alpha=0.1)
         ax.set_title('Monthly Revenue')
         return self.generate_chart_base64(fig)
 
@@ -201,17 +222,52 @@ class DeactivateUserView(StaffRequiredMixin, View):
 
 
 # Review Management (Placeholder - will need Review model)
-class ManageReviewsView(StaffRequiredMixin, TemplateView):
+class ManageReviewsView(StaffRequiredMixin, ListView):
     """
     Review management view for admins.
-    Note: Requires a Review model to be created.
     """
+    model = Review
     template_name = 'admin/manage_reviews.html'
-    
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        # Placeholder - replace with actual Review model
-        context['reviews'] = []
-        context['total_reviews'] = 0
-        context['pending_reviews'] = 0
-        return context
+    context_object_name = 'reviews'
+    paginate_by = 10
+    ordering = ['-created_at']
+
+class DeleteReviewView(StaffRequiredMixin, View):
+    def post(self, request, pk):
+        review = get_object_or_404(Review, pk=pk)
+        review.delete()
+        messages.success(request, "Review deleted successfully.")
+        return redirect('manage-reviews')
+
+from django.views.generic.edit import CreateView
+from django.urls import reverse_lazy
+
+class AddDoctorView(StaffRequiredMixin, CreateView):
+    model = Doctor
+    form_class = DoctorForm
+    template_name = 'admin/add_doctor.html'
+    success_url = reverse_lazy('manage-users') # or dedicated doctor list
+
+    def form_valid(self, form):
+        messages.success(self.request, "Doctor added successfully!")
+        return super().form_valid(form)
+
+class AddPatientView(StaffRequiredMixin, CreateView):
+    model = Patient
+    form_class = PatientForm
+    template_name = 'admin/add_patient.html'
+    success_url = reverse_lazy('manage-users')
+
+    def form_valid(self, form):
+        messages.success(self.request, "Patient added successfully!")
+        return super().form_valid(form)
+
+class AddRoomView(StaffRequiredMixin, CreateView):
+    model = Room
+    form_class = RoomForm
+    template_name = 'admin/add_room.html'
+    success_url = reverse_lazy('room-availability') # Redirect to room list
+
+    def form_valid(self, form):
+        messages.success(self.request, "Room added successfully!")
+        return super().form_valid(form)
