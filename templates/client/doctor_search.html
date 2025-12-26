@@ -1,66 +1,380 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Find a Doctor | Aetheria{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ========================================= */
+    /* --- 0. FONTS & WRAPPER --- */
+    /* ========================================= */
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+    .chic-page-wrapper {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    
+    .chic-page-wrapper h1, h2, h3, h4, h5, h6, .btn, label, .input-label {
+        font-family: 'Outfit', sans-serif;
+        letter-spacing: -0.02em;
+    }
+
+    /* ========================================= */
+    /* --- 1. HERO & SEARCH BAR --- */
+    /* ========================================= */
+    
+    .hero-section {
+        background: url('{% static "images/hospital-hero.jpg" %}') no-repeat center center/cover;
+        padding: 100px 0;
+        position: relative;
+        margin-bottom: 60px;
+    }
+    .hero-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.9); /* Deep Navy Overlay */
+    }
+    .hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    /* Glass Panel */
+    .search-bar-panel {
+        background: rgba(30, 41, 59, 0.6);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 24px;
+        padding: 12px;
+        display: flex;
+        align-items: center;
+        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+        margin-top: 40px;
+    }
+
+    .search-group {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        padding: 10px 25px;
+    }
+
+    .search-divider {
+        width: 1px;
+        height: 60px;
+        background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.15), transparent);
+    }
+
+    /* Icons */
+    .search-icon-box {
+        width: 55px;
+        height: 55px;
+        background: #1e293b;
+        border: 1px solid rgba(255,255,255,0.05);
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 20px;
+        flex-shrink: 0;
+        color: #94a3b8;
+        font-size: 1.4rem;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .search-group:focus-within .search-icon-box {
+        background: #6f42c1;
+        border-color: #6f42c1;
+        color: white;
+        box-shadow: 0 0 25px rgba(111, 66, 193, 0.4);
+        transform: scale(1.05);
+    }
+
+    /* Inputs */
+    .input-wrapper { display: flex; flex-direction: column; width: 100%; }
+    .input-label {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        color: #94a3b8;
+        font-weight: 700;
+        margin-bottom: 6px;
+    }
+    .custom-input, .custom-select {
+        background: transparent;
+        border: none;
+        color: white;
+        font-size: 1.15rem;
+        font-weight: 500;
+        width: 100%;
+        outline: none;
+    }
+    .custom-input::placeholder { color: rgba(255,255,255,0.25); }
+    .custom-select option { background: #0f172a; color: white; padding: 10px; }
+
+    /* --- MAGIC ROTATING BORDER BUTTON --- */
+    .search-btn-container { padding: 5px; width: 180px; }
+    
+    .btn-magic-search {
+        position: relative;
+        z-index: 1;
+        overflow: hidden;
+        border: none;
+        width: 100%;
+        height: 65px;
+        border-radius: 18px;
+        color: white;
+        font-weight: 700;
+        font-size: 1.1rem;
+        cursor: pointer;
+        background: transparent;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        transition: 0.3s;
+    }
+
+    /* 1. The Spinning Gradient Layer (Behind) */
+    .btn-magic-search::before {
+        content: '';
+        position: absolute;
+        top: 50%; left: 50%;
+        width: 300%; height: 300%;
+        transform: translate(-50%, -50%);
+        background: conic-gradient(
+            from 0deg, 
+            transparent 0%, 
+            #6f42c1 25%, 
+            #00b4d8 50%, 
+            transparent 60%,
+            #6f42c1 75%,
+            #00b4d8 100%
+        );
+        z-index: -2;
+        animation: rotateBorder 4s linear infinite;
+        opacity: 0.7;
+    }
+
+    /* 2. The Inner Mask (To create the frame effect) */
+    .btn-magic-search::after {
+        content: '';
+        position: absolute;
+        inset: 3px; /* سمك الفريم */
+        background: #0f172a; /* نفس لون خلفية البار */
+        border-radius: 15px;
+        z-index: -1;
+        transition: 0.3s;
+    }
+
+    /* Hover Effects */
+    .btn-magic-search:hover {
+        transform: scale(1.05);
+        color: #fff;
+        text-shadow: 0 0 10px rgba(255,255,255,0.5);
+        box-shadow: 0 0 40px rgba(111, 66, 193, 0.4), 
+                    0 0 20px rgba(0, 180, 216, 0.2);
+    }
+
+    /* Speed up rotation & brightness on hover */
+    .btn-magic-search:hover::before {
+        animation-duration: 1.5s;
+        opacity: 1;
+        filter: brightness(1.5);
+    }
+
+    /* Lighten inner background slightly */
+    .btn-magic-search:hover::after {
+        background: rgba(15, 23, 42, 0.8); 
+    }
+
+    @keyframes rotateBorder {
+        0% { transform: translate(-50%, -50%) rotate(0deg); }
+        100% { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    /* ========================================= */
+    /* --- 2. DOCTOR CARDS --- */
+    /* ========================================= */
+    .magic-card {
+        background: #fff;
+        border-radius: 24px;
+        border: 1px solid rgba(0,0,0,0.03);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        height: 100%;
+        overflow: hidden;
+    }
+    .magic-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 25px 50px rgba(111, 66, 193, 0.12);
+        border-color: rgba(111, 66, 193, 0.15);
+    }
+
+    .rating-badge {
+        background: #fffbeb; color: #b45309;
+        padding: 6px 14px; border-radius: 30px;
+        font-weight: 700; font-size: 0.8rem;
+        display: inline-flex; align-items: center; gap: 5px;
+    }
+
+    /* Buttons inside Card */
+    .btn-action-purple {
+        background: linear-gradient(135deg, #6f42c1, #8e44ad);
+        color: white; border: none; border-radius: 50px;
+        font-weight: 600; padding: 12px 25px;
+        text-decoration: none; text-align: center;
+        transition: 0.3s;
+        box-shadow: 0 8px 20px rgba(111, 66, 193, 0.25);
+    }
+    .btn-action-purple:hover {
+        background: linear-gradient(135deg, #5b2fa8, #732d91);
+        transform: translateY(-2px);
+        box-shadow: 0 12px 25px rgba(111, 66, 193, 0.4);
+        color: white;
+    }
+
+    .btn-action-outline {
+        border: 2px solid #e2e8f0;
+        color: #475569; border-radius: 50px;
+        font-weight: 600; padding: 10px 25px;
+        text-decoration: none; text-align: center;
+        transition: 0.3s; background: transparent;
+    }
+    .btn-action-outline:hover {
+        border-color: #2c3e50; color: #2c3e50; background: #f8fafc;
+    }
+
+    @media (max-width: 992px) {
+        .search-bar-panel { flex-direction: column; gap: 0; padding: 15px; }
+        .search-group { width: 100%; border-bottom: 1px solid rgba(255,255,255,0.1); padding: 20px 10px; }
+        .search-divider { display: none; }
+        .search-btn-container { width: 100%; margin-top: 20px; }
+    }
+    
+    .animate-fade-in { animation: fadeIn 0.8s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="container py-5 animate-fade-in">
-    <div class="text-center mb-5">
-        <h1 class="display-5 fw-bold">Find Your <span class="text-accent">Specialist</span></h1>
-        <p class="lead text-muted">Connect with world-class doctors close to you.</p>
-    </div>
-
-    <div class="row justify-content-center mb-5">
-        <div class="col-md-8">
-            <div class="magic-card p-4">
-                <form method="get" class="row g-3 align-items-end">
-                    <div class="col-md-9">
-                        <label for="specialty" class="form-label text-uppercase small fw-bold text-muted">Filter by Specialty</label>
-                        <select name="specialty" id="specialty" class="form-control-custom w-100 border-0 bg-light">
-                            <option value="">All Specialties</option>
-                            <!-- Would ideally iterate over distinct specialties from backend, for now assume context has it or simple input -->
-                            <option value="Cardiology">Cardiology</option>
-                            <option value="Neurology">Neurology</option>
-                            <option value="General Surgery">General Surgery</option>
-                            <option value="Pediatrics">Pediatrics</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <button type="submit" class="btn-gradient w-100">Search</button>
-                    </div>
-                </form>
+<div class="chic-page-wrapper" style="margin-top: 0px;">
+    
+    <div class="hero-section">
+        <div class="hero-overlay"></div>
+        <div class="container hero-content animate-fade-in">
+            <div class="text-center mb-5 text-white">
+                <h6 class="text-uppercase fw-bold mb-3" style="color: #a66efa; letter-spacing: 3px; font-size: 0.8rem;">World Class Care</h6>
+                <h1 class="display-3 fw-bold mb-2">Find Your <span style="color: #00b4d8;">Specialist</span></h1>
+                <p class="text-white-50 fs-5 fw-light">Connect with top-tier medical professionals.</p>
             </div>
+
+            <form method="get">
+                <div class="search-bar-panel">
+                    
+                    <div class="search-group">
+                        <div class="search-icon-box">
+                            <i class="fas fa-stethoscope"></i>
+                        </div>
+                        <div class="input-wrapper">
+                            <label class="input-label">Specialty</label>
+                            <select name="specialty" class="custom-select">
+                                <option value="">All Specialties</option>
+                                {% for s in specialties %}
+                                    <option value="{{ s }}" {% if request.GET.specialty == s %}selected{% endif %}>{{ s }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="search-divider"></div>
+
+                    <div class="search-group">
+                        <div class="search-icon-box">
+                            <i class="fas fa-user-md"></i>
+                        </div>
+                        <div class="input-wrapper">
+                            <label class="input-label">Doctor Name</label>
+                            <input type="text" name="doctor" class="custom-input" 
+                                   placeholder="e.g. Dr. Ahmed" value="{{ request.GET.doctor|default:'' }}">
+                        </div>
+                    </div>
+
+                    <div class="search-btn-container">
+                        <button type="submit" class="btn-magic-search">
+                            <i class="fas fa-search"></i> <span>Search</span>
+                        </button>
+                    </div>
+
+                </div>
+            </form>
         </div>
     </div>
 
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-        {% for doctor in doctors %}
-            <div class="col">
-                <div class="magic-card h-100 text-center">
-                    <div class="mb-3 d-inline-block bg-purple-light rounded-circle p-3 text-accent display-6">
-                        👨‍⚕️
-                    </div>
-                    <h5 class="fw-bold mb-1">Dr. {{ doctor.name }}</h5>
-                    <p class="text-accent mb-3">{{ doctor.specialty }}</p>
-                    
-                    <div class="text-start bg-light p-3 rounded-3 mb-4">
-                        <div class="d-flex justify-content-between mb-2">
-                             <small class="text-muted">Consultation Fee</small>
-                             <span class="fw-bold">${{ doctor.consultation_fee }}</span>
+    <div class="container pb-5">
+        <div class="row g-4">
+            {% for doctor in doctors %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="magic-card">
+                        <div class="p-4 d-flex align-items-center border-bottom bg-light bg-opacity-25">
+                            <div class="rounded-circle bg-white shadow-sm d-flex align-items-center justify-content-center me-3 position-relative" 
+                                 style="width: 75px; height: 75px; border: 4px solid #fff;">
+                                <i class="fas fa-user-md fa-2x text-secondary opacity-50"></i>
+                                <div class="position-absolute bottom-0 end-0 bg-success border border-white rounded-circle" style="width: 15px; height: 15px;"></div>
+                            </div>
+                            <div>
+                                <h5 class="fw-bold mb-1 text-dark">{{ doctor.name }}</h5>
+                                <span class="badge bg-white text-secondary border fw-medium px-2 py-1">{{ doctor.specialty }}</span>
+                            </div>
                         </div>
-                        <div class="d-flex justify-content-between">
-                             <small class="text-muted">Location</small>
-                             <span class="fw-bold text-end">{{ doctor.address|truncatechars:20 }}</span>
-                        </div>
-                    </div>
+                        
+                        <div class="p-4">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <div class="rating-badge">
+                                    <i class="fas fa-star text-warning"></i> 
+                                    <span>{{ doctor.avg_rating|default:"New" }}</span>
+                                </div>
+                                <div class="text-muted small fw-medium">
+                                    <i class="fas fa-comment-dots me-1 text-info"></i> {{ doctor.review_count }} Reviews
+                                </div>
+                            </div>
 
-                    <a href="{% url 'book-appointment' %}?doctor={{ doctor.id }}" class="btn-gradient w-100">Book Appointment</a>
+                            <div class="d-flex justify-content-between align-items-end mb-4 px-1">
+                                <div>
+                                    <span class="d-block text-muted text-uppercase" style="font-size: 0.65rem; letter-spacing: 1px; font-weight: 700;">Consultation</span>
+                                    <span class="fw-bold fs-5 text-dark">${{ doctor.consultation_fee }}</span>
+                                </div>
+                                <div class="text-end">
+                                    <span class="d-block text-muted text-uppercase" style="font-size: 0.65rem; letter-spacing: 1px; font-weight: 700;">Experience</span>
+                                    <span class="fw-bold text-dark">10+ Years</span>
+                                </div>
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <a href="{% url 'book-appointment' %}?doctor={{ doctor.pk }}" class="btn-action-purple">
+                                    Book Appointment
+                                </a>
+                                <a href="{% url 'doctor-detail' doctor.pk %}" class="btn-action-outline">
+                                    View Profile
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        {% empty %}
-            <div class="col-12 text-center py-5">
-                <div class="magic-card d-inline-block px-5 py-4">
-                    <p class="mb-0 text-muted">No specialists found matching your criteria.</p>
+            {% empty %}
+                <div class="col-12 text-center py-5">
+                    <div class="d-inline-block p-5 bg-white rounded-4 shadow-sm border border-light">
+                        <div class="mb-3">
+                            <i class="fas fa-search fa-3x text-muted opacity-25"></i>
+                        </div>
+                        <h3 class="fw-bold text-dark mb-2">No Doctors Found</h3>
+                        <p class="text-muted mb-4">We couldn't find any specialists matching your search.</p>
+                        <a href="{% url 'doctor-search' %}" class="btn btn-link text-decoration-none fw-bold">Clear All Filters</a>
+                    </div>
                 </div>
-            </div>
-        {% endfor %}
+            {% endfor %}
+        </div>
     </div>
 </div>
 {% endblock %}

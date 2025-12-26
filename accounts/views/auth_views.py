@@ -56,6 +56,7 @@ class SignUpView(CreateView):
 class CustomLogoutView(LogoutView):
     """Custom logout with redirect to home"""
     next_page = 'home'
+    http_method_names = ['get', 'post', 'options']  # Allow both GET and POST
     
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:

@@ -177,7 +177,7 @@ class PatientBookRoomView(LoginRequiredMixin, View):
         room.save()
         
         messages.success(request, f"Room {room.room_number} has been successfully booked for you!")
-        return redirect('client-portal')
+        return redirect('room-availability')
 
 class RoomAvailabilityListView(LoginRequiredMixin, ListView):
     model = Room
@@ -194,11 +194,29 @@ class DoctorSearchView(LoginRequiredMixin, ListView):
     context_object_name = 'doctors'
 
     def get_queryset(self):
-        queryset = Doctor.objects.filter(is_active=True)
+        from django.db.models import Avg, Count
+        queryset = Doctor.objects.filter(is_active=True).annotate(
+            avg_rating=Avg('reviews__rating'),
+            review_count=Count('reviews')
+        )
         specialty = self.request.GET.get('specialty')
+        name_query = self.request.GET.get('doctor') # Matches input name="doctor" from home.html
+        
         if specialty:
             queryset = queryset.filter(specialty=specialty)
+        
+        if name_query:
+            from django.db.models import Q
+            queryset = queryset.filter(
+                Q(name__icontains=name_query)
+            )
+            
         return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['specialties'] = Doctor.objects.values_list('specialty', flat=True).distinct().order_by('specialty')
+        return context
 
 class DoctorDetailView(LoginRequiredMixin, View):
     template_name = 'client/doctor_detail.html'

@@ -1,86 +1,221 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Portal | Aetheria{% endblock %}
+
+{% block extra_css %}
+<style>
+
+    :root {
+        --gradient-primary: linear-gradient(135deg, #6f42c1, #00b4d8);
+        --purple: #6f42c1;
+        --primary-dark: #2c3e50;
+    }
+
+    /* Magic Card (الخلفية البيضاء للكروت) */
+    .magic-card {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        border: 1px solid rgba(0,0,0,0.02);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    /* Hover Scale (تأثير التكبير) */
+    .hover-scale {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .hover-scale:hover {
+        transform: translateY(-5px) scale(1.02);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1) !important;
+    }
+
+    /* Gradient Button (زرار الحجز) */
+    .btn-gradient {
+        background: var(--gradient-primary);
+        color: white !important;
+        border: none;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 180, 216, 0.3);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .btn-gradient:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 180, 216, 0.5);
+        color: white !important;
+    }
+
+    /* Medical Table (الجداول) */
+    .medical-table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
+    .medical-table thead th { border-bottom: none; color: #6c757d; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; padding: 15px; }
+    .medical-table tbody tr { background-color: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.02); transition: 0.2s; }
+    .medical-table tbody tr:hover { transform: scale(1.01); }
+    .medical-table td { padding: 20px 15px; vertical-align: middle; border: none; }
+    .medical-table td:first-child { border-top-left-radius: 15px; border-bottom-left-radius: 15px; }
+    .medical-table td:last-child { border-top-right-radius: 15px; border-bottom-right-radius: 15px; }
+
+    /* ========================================= */
+    /* --- 2. YOUR ORIGINAL STYLES --- */
+    /* ========================================= */
+    
+    /* Tab Transition Animations */
+    .tab-pane { animation: fadeSlideIn 0.5s ease-out; }
+    @keyframes fadeSlideIn {
+        from { opacity: 0; transform: translateX(20px); }
+        to { opacity: 1; transform: translateX(0); }
+    }
+    
+    /* Custom Tab Pills */
+    .nav-pills .nav-link {
+        font-weight: 600;
+        transition: all 0.3s ease;
+        color: var(--primary-dark);
+        border-radius: 50px;
+        padding: 10px 25px;
+    }
+    .nav-pills .nav-link.active {
+        background: var(--gradient-primary) !important;
+        color: white !important;
+        box-shadow: 0 4px 15px rgba(142, 68, 173, 0.3);
+    }
+    .nav-pills .nav-link:hover:not(.active) {
+        background: rgba(142, 68, 173, 0.1);
+        color: var(--purple);
+    }
+    
+    /* Button Hover Effects */
+    .btn-outline-dark:hover {
+        background: var(--gradient-primary) !important;
+        border-color: transparent !important;
+        color: white !important;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(142, 68, 173, 0.3);
+    }
+    .btn-outline-secondary:hover {
+        background: var(--gradient-primary) !important;
+        border-color: transparent !important;
+        color: white !important;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(1, 165, 198, 0.3);
+    }
+    
+    .animate-fade-in { animation: fadeIn 0.8s ease; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="container py-5 animate-fade-in">
+<div class="container py-5 animate-fade-in" style="margin-top: 80px;">
+    
     <div class="row mb-5 align-items-center">
         <div class="col-md-6">
-            <h1 class="display-4">My <span class="text-accent">Portal</span></h1>
-            <p class="lead text-muted">Welcome back, {{ patient.name }}. Manage your health records here.</p>
+            <h1 class="display-4 fw-bold" style="color: var(--primary-dark);">
+                My <span style="background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Portal</span>
+            </h1>
+            <p class="lead text-muted">Welcome back, <strong>{{ patient.name }}</strong>. Manage your health records here.</p>
         </div>
         <div class="col-md-6 text-md-end">
-            <div class="d-flex gap-2 justify-content-md-end">
-                <a href="{% url 'book-appointment' %}" class="btn-gradient px-4">Book New Appointment</a>
-                <a href="{% url 'account-settings' %}" class="btn btn-outline-dark rounded-pill px-4">Manage Account</a>
-                <a href="{% url 'room-availability' %}" class="btn btn-outline-secondary rounded-pill px-4">Find
-                    Room</a>
+            <div class="d-flex gap-2 justify-content-md-end flex-wrap">
+                <a href="{% url 'book-appointment' %}" class="btn-gradient px-4 py-2 text-decoration-none">
+                    <i class="far fa-calendar-plus me-2"></i>Book Appointment
+                </a>
+                <a href="{% url 'account-settings' %}" class="btn btn-outline-dark rounded-pill px-4 py-2">
+                    <i class="fas fa-user-cog me-2"></i>Account Settings
+                </a>
+                <a href="{% url 'room-availability' %}" class="btn btn-outline-secondary rounded-pill px-4 py-2">
+                    <i class="fas fa-bed me-2"></i>Find Room
+                </a>
             </div>
         </div>
     </div>
 
-    <!-- Summary Dashboard -->
     <div class="row g-4 mb-5">
         <div class="col-md-3">
-            <div class="magic-card p-4 text-center border-0 h-100 shadow-sm transition-all hover-scale">
-                <div class="bg-primary-subtle text-primary p-3 rounded-circle d-inline-block mb-3">
-                    <span class="fs-4">📅</span>
+            <div class="magic-card p-4 text-center border-0 h-100 shadow-sm hover-scale">
+                <div class="mb-3">
+                    <div class="d-inline-flex align-items-center justify-content-center rounded-circle" 
+                         style="width: 70px; height: 70px; background: linear-gradient(135deg, rgba(142, 68, 173, 0.1), rgba(142, 68, 173, 0.2));">
+                        <i class="far fa-calendar-check fa-2x" style="color: var(--purple);"></i>
+                    </div>
                 </div>
-                <h6 class="text-muted small text-uppercase tracking-wider">Upcoming Visits</h6>
-                <h2 class="fw-bold mb-0 text-dark">{{ upcoming_count }}</h2>
+                <h6 class="text-muted small text-uppercase fw-bold mb-2" style="letter-spacing: 1px;">Upcoming Visits</h6>
+                <h2 class="fw-bold mb-0" style="color: var(--primary-dark);">{{ upcoming_count }}</h2>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="magic-card p-4 text-center border-0 h-100 shadow-sm transition-all hover-scale">
-                <div class="bg-danger-subtle text-danger p-3 rounded-circle d-inline-block mb-3">
-                    <span class="fs-4">💳</span>
+            <div class="magic-card p-4 text-center border-0 h-100 shadow-sm hover-scale">
+                <div class="mb-3">
+                    <div class="d-inline-flex align-items-center justify-content-center rounded-circle" 
+                         style="width: 70px; height: 70px; background: linear-gradient(135deg, rgba(220, 53, 69, 0.1), rgba(220, 53, 69, 0.2));">
+                        <i class="fas fa-dollar-sign fa-2x text-danger"></i>
+                    </div>
                 </div>
-                <h6 class="text-muted small text-uppercase tracking-wider">Unpaid Balance</h6>
-                <h2 class="fw-bold mb-0 text-dark">${{ unpaid_total }}</h2>
+                <h6 class="text-muted small text-uppercase fw-bold mb-2" style="letter-spacing: 1px;">Unpaid Balance</h6>
+                <h2 class="fw-bold mb-0 text-danger">${{ unpaid_total }}</h2>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="magic-card p-4 text-center border-0 h-100 shadow-sm transition-all hover-scale">
-                <div class="bg-success-subtle text-success p-3 rounded-circle d-inline-block mb-3">
-                    <span class="fs-4">🕒</span>
+            <div class="magic-card p-4 text-center border-0 h-100 shadow-sm hover-scale">
+                <div class="mb-3">
+                    <div class="d-inline-flex align-items-center justify-content-center rounded-circle" 
+                         style="width: 70px; height: 70px; background: linear-gradient(135deg, rgba(25, 135, 84, 0.1), rgba(25, 135, 84, 0.2));">
+                        <i class="far fa-clock fa-2x text-success"></i>
+                    </div>
                 </div>
-                <h6 class="text-muted small text-uppercase tracking-wider">Latest Visit</h6>
-                <h2 class="fw-bold mb-0 text-dark" style="font-size: 1.25rem;">
+                <h6 class="text-muted small text-uppercase fw-bold mb-2" style="letter-spacing: 1px;">Latest Visit</h6>
+                <h2 class="fw-bold mb-0" style="color: var(--primary-dark); font-size: 1.5rem;">
                     {% if last_visit %}{{ last_visit|date:"M d" }}{% else %}None{% endif %}
                 </h2>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="magic-card p-4 text-center border-0 h-100 shadow-sm transition-all hover-scale">
-                <div class="bg-info-subtle text-info p-3 rounded-circle d-inline-block mb-3">
-                    <span class="fs-4">🏥</span>
+            <div class="magic-card p-4 text-center border-0 h-100 shadow-sm hover-scale">
+                <div class="mb-3">
+                    <div class="d-inline-flex align-items-center justify-content-center rounded-circle" 
+                         style="width: 70px; height: 70px; background: linear-gradient(135deg, rgba(1, 165, 198, 0.1), rgba(1, 165, 198, 0.2));">
+                        <i class="fas fa-hospital fa-2x" style="color: #00b4d8;"></i>
+                    </div>
                 </div>
-                <h6 class="text-muted small text-uppercase tracking-wider">Stay Status</h6>
-                <h2 class="fw-bold mb-0 text-dark" style="font-size: 1.1rem;">
+                <h6 class="text-muted small text-uppercase fw-bold mb-2" style="letter-spacing: 1px;">Stay Status</h6>
+                <h2 class="fw-bold mb-0" style="color: var(--primary-dark); font-size: 1.3rem;">
                     {% if current_room %}Room {{ current_room.room_number }}{% else %}Outpatient{% endif %}
                 </h2>
             </div>
         </div>
     </div>
 
-    <!-- Tab Navigation -->
-    <div class="row g-4 mb-4">
-        <div class="col-md-12">
-            <ul class="nav nav-pills mb-3 bg-light p-2 rounded-pill d-inline-flex border" id="pills-tab" role="tablist">
+    <div class="row mb-4">
+        <div class="col-12 text-center">
+            <ul class="nav nav-pills justify-content-center bg-white p-3 rounded-pill d-inline-flex shadow-sm" id="pills-tab" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link active rounded-pill px-4" id="pills-appt-tab" data-bs-toggle="pill"
-                        data-bs-target="#pills-appt" type="button" role="tab">📅 Appointments</button>
+                    <button class="nav-link active rounded-pill px-5 py-2" id="pills-appt-tab" data-bs-toggle="pill"
+                        data-bs-target="#pills-appt" type="button" role="tab">
+                        <i class="far fa-calendar-alt me-2"></i>My Appointments
+                    </button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link rounded-pill px-4" id="pills-bills-tab" data-bs-toggle="pill"
-                        data-bs-target="#pills-bills" type="button" role="tab">💳 Bills & Payments</button>
+                    <button class="nav-link rounded-pill px-5 py-2" id="pills-bills-tab" data-bs-toggle="pill"
+                        data-bs-target="#pills-bills" type="button" role="tab">
+                        <i class="fas fa-file-invoice-dollar me-2"></i>Bills & Payments
+                    </button>
                 </li>
             </ul>
         </div>
     </div>
 
     <div class="tab-content" id="pills-tabContent">
-        <!-- Appointments Tab -->
+        
         <div class="tab-pane fade show active" id="pills-appt" role="tabpanel">
             <div class="magic-card p-4">
+                <h5 class="fw-bold mb-4" style="color: var(--primary-dark);">
+                    <i class="far fa-calendar-check me-2" style="color: var(--purple);"></i>Appointment History
+                </h5>
                 {% if appointments %}
                 <div class="table-responsive">
                     <table class="medical-table">
@@ -104,17 +239,17 @@
                                 <td>{{ appt.reason|default:"Regular Checkup" }}</td>
                                 <td>
                                     {% if appt.status == 'Completed' %}
-                                    <span class="badge bg-success">Completed</span>
+                                    <span class="badge bg-success rounded-pill px-3">Completed</span>
                                     {% elif appt.status == 'Cancelled' %}
-                                    <span class="badge bg-danger">Cancelled</span>
+                                    <span class="badge bg-danger rounded-pill px-3">Cancelled</span>
                                     {% else %}
-                                    <span class="badge bg-primary">Scheduled</span>
+                                    <span class="badge bg-primary rounded-pill px-3">Scheduled</span>
                                     {% endif %}
                                 </td>
                                 <td>
                                     <a href="{% url 'appointment-detail' appt.pk %}"
-                                        class="btn btn-sm btn-outline-dark rounded-pill px-3">
-                                        <span class="me-1">📅</span> View Details
+                                       class="btn btn-sm btn-outline-dark rounded-pill px-3">
+                                        <i class="fas fa-eye me-1"></i>View Details
                                     </a>
                                 </td>
                             </tr>
@@ -124,18 +259,22 @@
                 </div>
                 {% else %}
                 <div class="text-center py-5">
-                    <div class="mb-4 display-1 text-muted opacity-25">📅</div>
-                    <h4 class="text-muted">No appointments scheduled</h4>
-                    <p class="small text-muted mb-4">You haven't booked any visits yet.</p>
-                    <a href="{% url 'book-appointment' %}" class="btn-gradient px-4">Book Your First Appointment</a>
+                    <i class="far fa-calendar-times fa-4x mb-4 opacity-25" style="color: var(--primary-dark);"></i>
+                    <h4 class="text-muted mb-3">No Appointments Scheduled</h4>
+                    <p class="text-muted mb-4">You haven't booked any visits yet.</p>
+                    <a href="{% url 'book-appointment' %}" class="btn-gradient px-5 py-3 text-decoration-none">
+                        <i class="far fa-calendar-plus me-2"></i>Book Your First Appointment
+                    </a>
                 </div>
                 {% endif %}
             </div>
         </div>
 
-        <!-- Bills Tab -->
         <div class="tab-pane fade" id="pills-bills" role="tabpanel">
             <div class="magic-card p-4">
+                <h5 class="fw-bold mb-4" style="color: var(--primary-dark);">
+                    <i class="fas fa-file-invoice-dollar me-2" style="color: #00b4d8;"></i>Billing History
+                </h5>
                 {% if bills %}
                 <div class="table-responsive">
                     <table class="medical-table">
@@ -143,7 +282,7 @@
                             <tr>
                                 <th>Issued Date</th>
                                 <th>Amount</th>
-                                <th>Method</th>
+                                <th>Payment Method</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
@@ -152,22 +291,21 @@
                             {% for bill in bills %}
                             <tr>
                                 <td>{{ bill.issued_date|date:"F j, Y" }}</td>
-                                <td class="fw-bold text-dark">${{ bill.total_amount }}</td>
+                                <td class="fw-bold" style="color: var(--primary-dark);">${{ bill.total_amount }}</td>
                                 <td>
-                                    <span class="small text-muted text-uppercase">{{ bill.get_payment_method_display
-                                        }}</span>
+                                    <span class="small text-muted text-uppercase">{{ bill.get_payment_method_display }}</span>
                                 </td>
                                 <td>
                                     {% if bill.payment_status == 'PAID' %}
-                                    <span class="badge bg-success">PAID</span>
+                                    <span class="badge bg-success rounded-pill px-3">PAID</span>
                                     {% else %}
-                                    <span class="badge bg-warning text-dark">PENDING</span>
+                                    <span class="badge bg-warning text-dark rounded-pill px-3">PENDING</span>
                                     {% endif %}
                                 </td>
                                 <td>
                                     <a href="{% url 'bill-detail' bill.pk %}"
-                                        class="btn btn-sm btn-outline-dark rounded-pill px-3">
-                                        <span class="me-1">💳</span> View Invoice
+                                       class="btn btn-sm btn-outline-dark rounded-pill px-3">
+                                        <i class="fas fa-file-invoice me-1"></i>View Invoice
                                     </a>
                                 </td>
                             </tr>
@@ -177,9 +315,9 @@
                 </div>
                 {% else %}
                 <div class="text-center py-5">
-                    <div class="mb-4 display-1 text-muted opacity-25">💳</div>
-                    <h4 class="text-muted">No billing history found</h4>
-                    <p class="small text-muted">A record of your payments will appear here.</p>
+                    <i class="fas fa-receipt fa-4x mb-4 opacity-25" style="color: var(--primary-dark);"></i>
+                    <h4 class="text-muted mb-3">No Billing History Found</h4>
+                    <p class="text-muted">A record of your payments will appear here.</p>
                 </div>
                 {% endif %}
             </div>

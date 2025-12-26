@@ -2,11 +2,14 @@ from django.urls import path
 from .views import (
     HomeView, AdminDashboardView, ManageUsersView,
     PromoteUserView, DeactivateUserView, ManageReviewsView,
-    DeleteReviewView, AddDoctorView, AddPatientView, AddRoomView
+    DeleteReviewView, AddDoctorView, AddPatientView, AddRoomView,
+    AboutView, ContactView  # Added new views
 )
 
 urlpatterns = [
     path('', HomeView.as_view(), name='home'),
+    path('about/', AboutView.as_view(), name='about'),
+    path('contact/', ContactView.as_view(), name='contact'),
     path('admin-dashboard/', AdminDashboardView.as_view(), name='admin-dashboard'),
     
     # User Management

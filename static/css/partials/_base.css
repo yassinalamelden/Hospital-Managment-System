@@ -1,23 +1,194 @@
+body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--light-bg);
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
 
-.display-4, .display-5, .display-6 {
-    font-family: var(--font-heading);
-    font-weight: 700;
-    color: var(--primary-dark);
-}
+        /* --- 1. TOP BAR (Andalusia Style) --- */
+        .top-bar {
+            background-color: var(--primary-dark);
+            color: #fff;
+            padding: 8px 0;
+            font-size: 0.85rem;
+            position: relative;
+            z-index: 101; /* Above Navbar */
+        }
+        .top-bar a {
+            color: #fff;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+        .top-bar a:hover { color: var(--turquoise); }
+        .top-bar-divider { border-right: 1px solid rgba(255,255,255,0.2); height: 15px; margin: 0 15px; display: inline-block; vertical-align: middle; }
 
-.text-accent {
-    color: var(--purple);
-}
+        /* --- 2. GLASS NAVBAR (Your Requested Style) --- */
+        .glass-navbar {
+            position: sticky; /* Or fixed if you want it over content */
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 100;
+            background-color: rgba(255, 255, 255, 0.85); /* Semi-transparent White */
+            padding: 1rem 0;
+            
+            /* Glass Effect */
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
 
-.bg-purple-light {
-    background-color: rgba(142, 68, 173, 0.1);
-}
+        .navbar-brand {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-dark) !important;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+        }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
+        .nav-link {
+            color: var(--text-main) !important;
+            font-weight: 600;
+            margin: 0 12px;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: color 0.3s;
+            position: relative;
+        }
 
-.animate-fade-in {
-    animation: fadeIn 0.6s ease-out forwards;
-}
+        .nav-link:hover, .nav-link.active {
+            color: var(--turquoise) !important;
+        }
+        
+        /* Book Button */
+        .btn-book-nav {
+            background: var(--gradient-primary);
+            color: #fff !important;
+            border-radius: 50px;
+            padding: 10px 30px;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            border: none;
+            box-shadow: 0 4px 15px rgba(142, 68, 173, 0.3);
+            transition: transform 0.3s;
+        }
+        .btn-book-nav:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 180, 216, 0.4);
+        }
+
+        /* Login Button - Outline with Gradient Hover */
+        .btn-login-nav {
+            background: transparent;
+            color: var(--primary-dark) !important;
+            border: 2px solid var(--primary-dark);
+            border-radius: 50px;
+            padding: 10px 25px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            text-decoration: none;
+        }
+        
+        .btn-login-nav:hover {
+            background: var(--gradient-primary);
+            border-color: transparent;
+            color: white !important;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(142, 68, 173, 0.4);
+        }
+
+        /* Signup Button - Gradient Background */
+        .btn-signup-nav {
+            background: var(--gradient-primary);
+            color: white !important;
+            border: none;
+            border-radius: 50px;
+            padding: 10px 25px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(142, 68, 173, 0.3);
+        }
+        
+        .btn-signup-nav:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(142, 68, 173, 0.5);
+            filter: brightness(1.05);
+            color: white !important;
+        }
+
+        /* --- 3. FOOTER (Andalusia Style - Dark) --- */
+        .footer {
+            background-color: var(--primary-dark);
+            color: #fff;
+            padding-top: 70px;
+            font-size: 0.95rem;
+            margin-top: auto;
+        }
+        .footer h5 {
+            color: var(--turquoise);
+            font-weight: 700;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 1.1rem;
+        }
+        .footer ul { padding: 0; list-style: none; }
+        .footer li { margin-bottom: 12px; }
+        .footer a { color: #ccc; text-decoration: none; transition: 0.3s; }
+        .footer a:hover { color: var(--purple); padding-left: 5px; }
+
+        /* App Buttons */
+        .app-btn {
+            background: #000;
+            border: 1px solid #333;
+            color: #fff;
+            border-radius: 8px;
+            padding: 8px 15px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            margin-bottom: 10px;
+            width: 170px;
+            transition: 0.3s;
+        }
+        .app-btn:hover { background: #222; border-color: #555; color: #fff; }
+        .app-btn i { font-size: 1.5rem; }
+        .app-btn div { line-height: 1.2; text-align: left; }
+        .app-btn span { font-size: 0.65rem; display: block; color: #aaa; }
+        .app-btn strong { font-size: 0.9rem; display: block; }
+
+        .footer-bottom {
+            background-color: #001f35;
+            padding: 20px 0;
+            margin-top: 50px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+        .social-icons a {
+            width: 35px;
+            height: 35px;
+            background: rgba(255,255,255,0.1);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            margin-left: 10px;
+            color: #fff;
+            transition: 0.3s;
+        }
+        .social-icons a:hover { background: var(--turquoise); transform: translateY(-3px); }
