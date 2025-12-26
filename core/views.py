@@ -37,6 +37,16 @@ class HomeView(TemplateView):
         return context
 
 
+class AboutView(TemplateView):
+    """About Us page"""
+    template_name = 'core/about.html'
+
+
+class ContactView(TemplateView):
+    """Contact Us page"""
+    template_name = 'core/contact.html'
+
+
 class AdminDashboardView(StaffRequiredMixin, TemplateView):
     """
     Main admin dashboard with statistics.

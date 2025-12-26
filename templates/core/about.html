@@ -1,0 +1,333 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}About Us | Aetheria{% endblock %}
+
+{% block extra_css %}
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Great+Vibes&display=swap" rel="stylesheet">
+
+<style>
+    /* --- 1. HERO SECTION (Modern & Clean) --- */
+    .about-hero {
+        position: relative;
+        background: url('{% static "images/hospital-hero.jpg" %}') center/cover no-repeat fixed; /* Parallax effect */
+        padding: 140px 0 100px;
+        color: white;
+        text-align: center;
+        overflow: hidden;
+    }
+
+    .about-hero::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(15, 23, 42, 0.85), rgba(0, 43, 73, 0.8)); /* Dark Navy Overlay */
+        z-index: 1;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .curly-title {
+        font-family: 'Great Vibes', cursive;
+        font-size: 4.5rem;
+        background: linear-gradient(to right, #00b4d8, #fff, #00b4d8);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 15px;
+        filter: drop-shadow(0 0 10px rgba(0,180,216,0.3));
+    }
+
+    .hero-subtitle {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.5rem;
+        letter-spacing: 1px;
+        opacity: 0.9;
+        font-style: italic;
+    }
+
+    /* --- 2. TYPOGRAPHY --- */
+    .section-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--primary-dark);
+        margin-bottom: 20px;
+        position: relative;
+        display: inline-block;
+    }
+    
+    /* Decorative underline */
+    .section-title::after {
+        content: '';
+        display: block;
+        width: 60px;
+        height: 3px;
+        background: linear-gradient(90deg, var(--purple), var(--primary-cyan));
+        margin: 10px auto 0;
+        border-radius: 2px;
+    }
+
+    /* --- 3. PRO CARDS (Gradient Border Effect) --- */
+    .pro-card {
+        position: relative;
+        background: #fff;
+        border-radius: 20px;
+        padding: 40px 30px;
+        text-align: center;
+        transition: all 0.4s ease;
+        height: 100%;
+        border: 1px solid rgba(0,0,0,0.03);
+        z-index: 1;
+        overflow: hidden;
+    }
+
+    /* The Gradient Border Trick */
+    .pro-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 20px;
+        padding: 2px; /* Border thickness */
+        background: linear-gradient(135deg, var(--purple), var(--primary-cyan));
+        -webkit-mask: 
+           linear-gradient(#fff 0 0) content-box, 
+           linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        opacity: 0; /* Hidden by default */
+        transition: opacity 0.4s ease;
+        z-index: -1;
+    }
+
+    /* Hover State */
+    .pro-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 50px rgba(111, 66, 193, 0.15); /* Purple Glow */
+    }
+
+    .pro-card:hover::before {
+        opacity: 1; /* Show gradient border */
+    }
+
+    /* Icon Styling */
+    .value-icon-box {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 25px;
+        background: rgba(248, 249, 250, 1);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        color: var(--primary-dark);
+        transition: 0.4s ease;
+        border: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .pro-card:hover .value-icon-box {
+        background: linear-gradient(135deg, var(--purple), var(--primary-cyan));
+        color: white;
+        transform: scale(1.1) rotate(5deg);
+        box-shadow: 0 10px 20px rgba(0, 180, 216, 0.3);
+    }
+
+    /* --- 4. STATS SECTION --- */
+    .stats-section {
+        background: linear-gradient(135deg, #f8f9fa 0%, #eef2f5 100%);
+        padding: 80px 0;
+        position: relative;
+    }
+
+    .stat-number {
+        font-size: 4rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, var(--primary-dark), var(--primary-cyan));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        line-height: 1;
+        margin-bottom: 10px;
+    }
+
+    .stat-label {
+        font-family: 'Montserrat', sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #6c757d;
+    }
+
+    /* --- 5. IMAGE STYLING --- */
+    .image-frame {
+        border-radius: 30px;
+        overflow: hidden;
+        position: relative;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    }
+    
+    .image-frame::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: 30px;
+        border: 1px solid rgba(255,255,255,0.2);
+        pointer-events: none;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="about-hero">
+    <div class="container hero-content">
+        <h1 class="curly-title">About Aetheria</h1>
+        <p class="hero-subtitle">Where Medical Excellence Meets Compassionate Care</p>
+    </div>
+</div>
+
+<div class="container py-5">
+    <div class="row align-items-center mb-5 mt-4">
+        <div class="col-lg-6 mb-5 mb-lg-0 pe-lg-5">
+            <h6 class="text-uppercase text-info fw-bold letter-spacing-2 mb-2">Our History</h6>
+            <h2 class="section-title mb-4" style="text-align: left; margin: 0;">Pioneering Healthcare</h2>
+            <p class="fs-5 text-dark mb-4" style="line-height: 1.8;">
+                Founded in 2010, Aetheria Medical Group has been at the forefront of healthcare innovation, 
+                combining state-of-the-art technology with a human touch that makes every patient feel valued.
+            </p>
+            <p class="text-muted mb-4">
+                Our journey began with a simple vision: to create a healthcare environment where patients 
+                receive not just treatment, but comprehensive care that addresses their physical, emotional, 
+                and mental well-being.
+            </p>
+            <div class="d-flex gap-4 mt-4">
+                <div>
+                    <h3 class="fw-bold text-dark m-0">15+</h3>
+                    <small class="text-muted">Years Exp.</small>
+                </div>
+                <div class="border-start ps-4">
+                    <h3 class="fw-bold text-dark m-0">50k+</h3>
+                    <small class="text-muted">Patients Healed</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="image-frame">
+                <img src="{% static 'images/hospital-hero.jpg' %}" alt="Hospital" class="img-fluid w-100" style="height: 500px; object-fit: cover;">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="bg-white py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h6 class="text-uppercase text-info fw-bold letter-spacing-2">Why Choose Us</h6>
+            <h2 class="section-title">Our Core Values</h2>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="pro-card">
+                    <div class="value-icon-box">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">Compassion</h4>
+                    <p class="text-muted mb-0">
+                        We treat every patient with empathy, respect, and genuine care, 
+                        understanding that healing goes beyond just medicine.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="pro-card">
+                    <div class="value-icon-box">
+                        <i class="fas fa-award"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">Excellence</h4>
+                    <p class="text-muted mb-0">
+                        Our commitment to the highest standards of medical care drives 
+                        continuous improvement and technological innovation.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="pro-card">
+                    <div class="value-icon-box">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">Integrity</h4>
+                    <p class="text-muted mb-0">
+                        Transparency, honesty, and ethical practices form the foundation 
+                        of our relationships with patients and partners.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="stats-section">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-3 col-6 mb-4 mb-md-0">
+                <div class="stat-number">50+</div>
+                <div class="stat-label">Expert Doctors</div>
+            </div>
+            <div class="col-md-3 col-6 mb-4 mb-md-0">
+                <div class="stat-number">15k</div>
+                <div class="stat-label">Happy Patients</div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-number">20+</div>
+                <div class="stat-label">Specialties</div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-number">24/7</div>
+                <div class="stat-label">Emergency</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container py-5 mb-5">
+    <div class="row g-4 mt-2">
+        <div class="col-md-6">
+            <div class="pro-card d-flex flex-column justify-content-center h-100">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="rounded-circle bg-light p-3 me-3 text-info">
+                        <i class="fas fa-bullseye fa-2x"></i>
+                    </div>
+                    <h3 class="fw-bold m-0 text-dark">Our Mission</h3>
+                </div>
+                <p class="text-muted fs-5">
+                    To provide accessible, affordable, and exceptional healthcare services 
+                    that improve the quality of life for our community, leveraging cutting-edge 
+                    technology and compassionate care.
+                </p>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="pro-card d-flex flex-column justify-content-center h-100">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="rounded-circle bg-light p-3 me-3 text-purple" style="color: var(--purple);">
+                        <i class="fas fa-eye fa-2x"></i>
+                    </div>
+                    <h3 class="fw-bold m-0 text-dark">Our Vision</h3>
+                </div>
+                <p class="text-muted fs-5">
+                    To be the leading healthcare provider recognized for clinical excellence, 
+                    patient-centered care, and innovation, setting new standards in medical 
+                    practice and patient satisfaction.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

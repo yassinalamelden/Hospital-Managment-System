@@ -124,8 +124,8 @@
                 {% if user.is_authenticated and not user.is_staff %}
                     <a href="{% url 'client-portal' %}" class="nav-link">My Portal</a>
                 {% endif %}
-                <a href="#" class="nav-link">About</a>
-                <a href="#" class="nav-link">Contact</a>
+                <a href="{% url 'about' %}" class="nav-link">About</a>
+                <a href="{% url 'contact' %}" class="nav-link">Contact</a>
             </div>
 
             <div class="header-actions d-none d-lg-flex">
