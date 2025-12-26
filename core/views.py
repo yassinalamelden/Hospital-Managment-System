@@ -26,6 +26,16 @@ class HomeView(TemplateView):
     """Public landing page"""
     template_name = 'home.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Fetch Top 4 Doctors for display
+        context['doctors'] = Doctor.objects.filter(is_active=True)[:4]
+        
+        # Fetch Distinct Specialties for Search Dropdown
+        # Assuming specialty is a CharField or similar. If it's a ChoiceField, we can get distinct values.
+        context['specialties'] = Doctor.objects.values_list('specialty', flat=True).distinct().order_by('specialty')
+        return context
+
 
 class AdminDashboardView(StaffRequiredMixin, TemplateView):
     """

@@ -491,3 +491,88 @@ select {
 .theme-admin .icon-circle { background: rgba(90, 92, 105, 0.1); color: #5a5c69; }
 .quick-action-card:hover .theme-admin .icon-circle { background: linear-gradient(135deg, #485563 0%, #29323c 100%); color: #fff; }
 .bg-gradient-admin { background: linear-gradient(135deg, #485563 0%, #29323c 100%); }
+
+
+[class^="btn-gradient-border-"] {
+    display: inline-block;
+    padding: 10px 25px;
+    border-radius: 50px;
+    font-weight: 600;
+    text-decoration: none;
+    text-align: center;
+    border: 2px solid transparent; /* Space for the gradient border */
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+[class^="btn-gradient-border-"]:hover {
+    color: #fff !important; /* Force white text on hover */
+    background-clip: border-box; /* Fill the whole button */
+    border-color: transparent;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+}
+
+/* 1. Doctor Theme Button */
+.btn-gradient-border-doctor {
+    color: #4e73df;
+    /* White padding-box, Gradient border-box */
+    background-image: linear-gradient(#fff, #fff), linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+.btn-gradient-border-doctor:hover {
+    background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    box-shadow: 0 5px 15px rgba(118, 75, 162, 0.4);
+}
+
+/* 2. Patient Theme Button */
+.btn-gradient-border-patient {
+    color: #1cc88a;
+    background-image: linear-gradient(#fff, #fff), linear-gradient(135deg, #2af598 0%, #009efd 100%);
+}
+.btn-gradient-border-patient:hover {
+    background-image: linear-gradient(135deg, #2af598 0%, #009efd 100%);
+    box-shadow: 0 5px 15px rgba(0, 158, 253, 0.4);
+}
+
+/* 3. Appointment Theme Button */
+.btn-gradient-border-appt {
+    color: #f6c23e;
+    background-image: linear-gradient(#fff, #fff), linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+}
+.btn-gradient-border-appt:hover {
+    background-image: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+    box-shadow: 0 5px 15px rgba(253, 160, 133, 0.4);
+}
+
+/* 4. Room Theme Button */
+.btn-gradient-border-room {
+    color: #36b9cc;
+    background-image: linear-gradient(#fff, #fff), linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+.btn-gradient-border-room:hover {
+    background-image: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    box-shadow: 0 5px 15px rgba(0, 242, 254, 0.4);
+}
+
+/* 5. Bill Theme Button */
+.btn-gradient-border-bill {
+    color: #e74a3b;
+    background-image: linear-gradient(#fff, #fff), linear-gradient(135deg, #ff0844 0%, #ffb199 100%);
+}
+.btn-gradient-border-bill:hover {
+    background-image: linear-gradient(135deg, #ff0844 0%, #ffb199 100%);
+    box-shadow: 0 5px 15px rgba(255, 8, 68, 0.4);
+}
+
+/* 6. Admin Theme Button */
+.btn-gradient-border-admin {
+    color: #5a5c69;
+    background-image: linear-gradient(#fff, #fff), linear-gradient(135deg, #485563 0%, #29323c 100%);
+}
+.btn-gradient-border-admin:hover {
+    background-image: linear-gradient(135deg, #485563 0%, #29323c 100%);
+    box-shadow: 0 5px 15px rgba(41, 50, 60, 0.4);
+}

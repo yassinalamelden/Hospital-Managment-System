@@ -1,118 +1,358 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block title %}Dr. {{ doctor.name }} | Profile{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* --- Page Specific Styles --- */
+    
+    :root {
+        --purple: #6f42c1;
+        --turquoise: #00b4d8;
+        --primary-dark: #2c3e50;
+    }
+
+    /* Icon Boxes */
+    .icon-box {
+        width: 45px;
+        height: 45px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        background: rgba(142, 68, 173, 0.1);
+        color: var(--turquoise);
+        font-size: 1.2rem;
+        flex-shrink: 0;
+        transition: 0.3s;
+    }
+    
+    .detail-item:hover .icon-box {
+        background: var(--turquoise);
+        color: white;
+    }
+
+    /* Magic Card */
+    .magic-card {
+        background: #fff;
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        border: 1px solid rgba(0,0,0,0.02);
+        height: auto; /* Natural height */
+        margin-bottom: 24px;
+        transition: transform 0.3s ease;
+    }
+    
+    .magic-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+    }
+
+    /* Gradient Button */
+    .btn-gradient {
+        background: linear-gradient(135deg, var(--purple), var(--turquoise));
+        color: white;
+        border: none;
+        border-radius: 50px;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .btn-gradient:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0, 180, 216, 0.4);
+        color: white;
+    }
+
+    /* Interactive Star Rating */
+    .star-label-interactive {
+        font-size: 2.2rem;
+        cursor: pointer;
+        color: #e0e0e0;
+        transition: all 0.3s;
+    }
+    .star-label-interactive:hover, 
+    .star-label-interactive.active, 
+    .star-label-interactive.selected {
+        color: #ffc107;
+        transform: scale(1.1);
+    }
+
+    /* Slider Styles */
+    .review-slide {
+        animation: fadeIn 0.6s ease;
+    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    
+    .slider-dots .dot {
+        width: 10px; height: 10px; background: #ddd; border-radius: 50%; cursor: pointer; transition: 0.3s;
+    }
+    .slider-dots .dot.active { background: var(--turquoise); transform: scale(1.3); }
+    .slider-btn:hover { background: var(--primary-dark); color: white; border-color: var(--primary-dark); }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="container py-5">
-    <div class="row">
-        <!-- Doctor Info Card -->
-        <div class="col-md-4">
-            <div class="magic-card p-4 text-center">
-                <div class="mb-3">
-                    <img src="{% static 'images/doctor_placeholder.png' %}" alt="{{ doctor.name }}" class="rounded-circle shadow" style="width: 150px; height: 150px; object-fit: cover; border: 3px solid var(--primary-teal);">
+    <div class="row g-4">
+        
+        <div class="col-lg-4">
+            
+            <div class="magic-card text-center">
+                <div class="doctor-avatar-wrapper mb-4">
+                    <div class="avatar-circle mx-auto position-relative" style="width: 160px; height: 160px;">
+                        <div style="position: absolute; inset: 0; border-radius: 50%; background: linear-gradient(135deg, var(--purple), var(--turquoise)); padding: 4px;">
+                            <div class="bg-white rounded-circle w-100 h-100 d-flex align-items-center justify-content-center overflow-hidden">
+                                <i class="fas fa-user-md fa-5x" style="color: var(--purple);"></i>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <h3 class="text-white mb-1">Dr. {{ doctor.name }}</h3>
-                <p class="text-accent mb-3">{{ doctor.specialty }}</p>
                 
-                <div class="d-flex justify-content-center align-items-center mb-3">
-                    <span class="fs-4 text-warning me-2">★</span>
-                    <span class="fs-4 text-white">{{ avg_rating }}</span>
-                    <span class="text-muted ms-2">({{ reviews.count }} reviews)</span>
+                <h3 class="fw-bold mb-1" style="color: var(--primary-dark);">Dr. {{ doctor.name }}</h3>
+                <p class="text-uppercase fw-bold mb-3" style="color: var(--turquoise); font-size: 0.9rem; letter-spacing: 1px;">{{ doctor.specialty }}</p>
+                
+                <div class="d-flex justify-content-center align-items-center mb-4 gap-2">
+                    <div class="text-warning fs-5">
+                        {% for i in star_range %}
+                            {% if i <= avg_rating %}<i class="fas fa-star"></i>{% else %}<i class="far fa-star"></i>{% endif %}
+                        {% endfor %}
+                    </div>
+                    <span class="fw-bold" style="color: var(--primary-dark);">{{ avg_rating }}</span>
+                    <span class="text-muted small">({{ reviews.count }} reviews)</span>
                 </div>
 
-                <a href="{% url 'book-appointment' %}?doctor={{ doctor.id }}" class="btn btn-gradient w-100">Make Appointment</a>
+                <a href="{% url 'book-appointment' %}?doctor={{ doctor.id }}" class="btn-gradient w-100 py-3 fw-bold text-decoration-none d-block">
+                    <i class="far fa-calendar-check me-2"></i>Book Appointment
+                </a>
             </div>
 
-            <!-- Contact/Details -->
-            <div class="magic-card p-4 mt-4">
-                <h5 class="text-accent border-bottom border-secondary pb-2 mb-3">Professional Details</h5>
-                <p class="mb-2"><strong class="text-light">Experience:</strong> <span class="text-muted">10+ Years</span></p>
-                <p class="mb-2"><strong class="text-light">Education:</strong> <span class="text-muted">Harvard Medical</span></p>
-                <p class="mb-0"><strong class="text-light">Languages:</strong> <span class="text-muted">English, Spanish</span></p>
+            <div class="magic-card">
+                <h5 class="fw-bold mb-4 pb-3 border-bottom" style="color: var(--primary-dark);">
+                    <i class="fas fa-user-tie me-2" style="color: var(--purple);"></i>Professional Details
+                </h5>
+                
+                <div class="detail-item mb-4">
+                    <div class="d-flex align-items-start">
+                        <div class="icon-box me-3">
+                            <i class="fas fa-briefcase"></i>
+                        </div>
+                        <div>
+                            <small class="text-muted d-block text-uppercase fw-bold" style="font-size: 0.7rem;">Experience</small>
+                            <strong style="color: var(--primary-dark); font-size: 1.1rem;">10+ Years</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-item mb-4">
+                    <div class="d-flex align-items-start">
+                        <div class="icon-box me-3">
+                            <i class="fas fa-graduation-cap" style="color: var(--purple);"></i>
+                        </div>
+                        <div>
+                            <small class="text-muted d-block text-uppercase fw-bold" style="font-size: 0.7rem;">Education</small>
+                            <strong style="color: var(--primary-dark); font-size: 1.1rem;">Harvard Medical School</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-item mb-4">
+                    <div class="d-flex align-items-start">
+                        <div class="icon-box me-3">
+                            <i class="fas fa-language" style="color: var(--turquoise);"></i>
+                        </div>
+                        <div>
+                            <small class="text-muted d-block text-uppercase fw-bold" style="font-size: 0.7rem;">Languages</small>
+                            <strong style="color: var(--primary-dark); font-size: 1.1rem;">English, Arabic, Spanish</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="d-flex align-items-start">
+                        <div class="icon-box me-3">
+                            <i class="fas fa-dollar-sign text-success"></i>
+                        </div>
+                        <div>
+                            <small class="text-muted d-block text-uppercase fw-bold" style="font-size: 0.7rem;">Consultation Fee</small>
+                            <strong class="fs-5 text-success">${{ doctor.consultation_fee }}</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="magic-card">
+                <h5 class="fw-bold mb-4 pb-3 border-bottom" style="color: var(--primary-dark);">
+                    <i class="fas fa-phone-alt me-2" style="color: var(--turquoise);"></i>Contact
+                </h5>
+                <div class="d-grid gap-3">
+                    <a href="tel:16789" class="btn btn-outline-dark rounded-pill py-2">
+                        <i class="fas fa-phone me-2"></i>Call: 16789
+                    </a>
+                    <a href="mailto:{{ doctor.email }}" class="btn btn-outline-dark rounded-pill py-2">
+                        <i class="fas fa-envelope me-2"></i>Email Doctor
+                    </a>
+                </div>
             </div>
         </div>
 
-        <!-- Reviews Section -->
-        <div class="col-md-8">
-            <div class="magic-card p-4">
-                <h4 class="text-white mb-4">Patient Reviews</h4>
+        <div class="col-lg-8">
+            <div class="magic-card h-100">
+                <h4 class="fw-bold mb-4" style="color: var(--primary-dark);">
+                    <i class="fas fa-comments me-2" style="color: var(--purple);"></i>Patient Reviews
+                </h4>
 
-                <!-- Write Review Form -->
                 {% if user.patient %}
-                <div class="mb-5 p-3 rounded" style="background: rgba(255,255,255,0.05);">
-                    <h5 class="text-accent mb-3">Write a Review</h5>
+                <div class="review-form-card mb-5 p-4 rounded-4" style="background: linear-gradient(135deg, rgba(142, 68, 173, 0.05), rgba(1, 165, 198, 0.05)); border: 1px dashed var(--turquoise);">
+                    <h5 class="fw-bold mb-4" style="color: var(--primary-dark);">Share Your Experience</h5>
                     <form method="post">
                         {% csrf_token %}
-                        <div class="mb-3">
-                            <label class="form-label text-light">Rating</label>
-                            <div class="rating-stars">
+                        <div class="mb-4">
+                            <label class="form-label fw-bold" style="color: var(--primary-dark);">Your Rating</label>
+                            <div class="rating-stars-interactive d-flex gap-2">
                                 {% for i in "12345" %}
-                                <input type="radio" name="rating" value="{{ i }}" id="star{{ i }}" class="d-none">
-                                <label for="star{{ i }}" class="fs-3 text-secondary cursor-pointer hover-warning" onclick="setRating(this)">★</label>
+                                <input type="radio" name="rating" value="{{ i }}" id="star{{ i }}" class="d-none" required>
+                                <label for="star{{ i }}" class="star-label-interactive" data-rating="{{ i }}">
+                                    <i class="fas fa-star"></i>
+                                </label>
                                 {% endfor %}
                             </div>
-                            <!-- Hidden input for form submission -->
-                            <input type="number" name="rating" id="ratingInput" required hidden min="1" max="5">
                         </div>
                         
-                        <div class="mb-3">
-                            <label class="form-label text-light">Your Experience</label>
+                        <div class="mb-4">
+                            <label class="form-label fw-bold" style="color: var(--primary-dark);">Your Feedback</label>
                             {{ form.comment }}
                         </div>
 
-                        <button type="submit" class="btn btn-gradient px-4">Submit Review</button>
+                        <button type="submit" class="btn-gradient px-5 py-3 fw-bold">
+                            <i class="fas fa-paper-plane me-2"></i>Submit Review
+                        </button>
                     </form>
                 </div>
                 {% endif %}
 
-                <!-- Reviews List -->
-                <div class="reviews-list">
-                    {% for review in reviews %}
-                    <div class="review-item border-bottom border-secondary pb-3 mb-3">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div>
-                                <h6 class="text-white mb-1">{{ review.patient.name }}</h6>
-                                <div class="text-warning small mb-2">
-                                    {% for i in star_range %}
-                                        {% if i <= review.rating %}★{% else %}☆{% endif %}
-                                    {% endfor %}
+                <div class="reviews-slider-container position-relative">
+                    {% if reviews %}
+                    <div class="reviews-slider" id="reviewsSlider">
+                        {% for review in reviews %}
+                        <div class="review-slide p-4 rounded-4 mb-3" style="background: #f8f9fa; display: none; min-height: 200px;">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="reviewer-avatar rounded-circle d-flex align-items-center justify-content-center text-white fw-bold" 
+                                         style="width: 50px; height: 50px; background: linear-gradient(135deg, #00b4d8, #0077b6);">
+                                         {{ review.patient.name|slice:":1"|upper }}
+                                    </div>
+                                    <div>
+                                        <h6 class="fw-bold mb-1" style="color: var(--primary-dark);">{{ review.patient.name }}</h6>
+                                        <div class="text-warning">
+                                            {% for i in star_range %}
+                                                {% if i <= review.rating %}<i class="fas fa-star"></i>{% else %}<i class="far fa-star"></i>{% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
                                 </div>
+                                <small class="text-muted">{{ review.created_at|date:"M d, Y" }}</small>
                             </div>
-                            <small class="text-muted">{{ review.created_at|date:"M d, Y" }}</small>
+                            <p class="mb-0 fs-5" style="color: #555; line-height: 1.6; font-style: italic;">"{{ review.comment }}"</p>
                         </div>
-                        <p class="text-light mb-0">{{ review.comment }}</p>
+                        {% endfor %}
                     </div>
-                    {% empty %}
-                    <p class="text-muted text-center py-4">No reviews yet. Be the first to share your experience!</p>
-                    {% endfor %}
+                    
+                    <div class="slider-controls d-flex justify-content-center align-items-center gap-3 mt-4">
+                        <button class="btn btn-outline-dark rounded-circle slider-btn" id="prevReview" style="width: 45px; height: 45px;">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <div class="slider-dots d-flex align-items-center gap-2" id="sliderDots"></div>
+                        <button class="btn btn-outline-dark rounded-circle slider-btn" id="nextReview" style="width: 45px; height: 45px;">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-comment-slash fa-3x mb-3 opacity-25" style="color: var(--primary-dark);"></i>
+                        <p class="text-muted lead">No reviews yet. Be the first to share your experience!</p>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
     </div>
 </div>
+{% endblock %}
 
+{% block extra_js %}
 <script>
-function setRating(label) {
-    const parent = label.parentElement;
-    const stars = parent.querySelectorAll('label');
-    const input = document.getElementById('ratingInput');
-    const value = label.getAttribute('for').replace('star', '');
-    
-    input.value = value;
-    
-    stars.forEach(s => {
-        if (s.getAttribute('for').replace('star', '') <= value) {
-            s.classList.remove('text-secondary');
-            s.classList.add('text-warning');
-        } else {
-            s.classList.add('text-secondary');
-            s.classList.remove('text-warning');
-        }
+// Interactive Star Rating Logic
+document.querySelectorAll('.star-label-interactive').forEach((star) => {
+    star.addEventListener('click', function() {
+        const rating = parseInt(this.dataset.rating);
+        document.querySelectorAll('.star-label-interactive').forEach((s, i) => {
+            if (i < rating) {
+                s.classList.add('selected');
+                s.classList.remove('active'); // Remove hover effect once selected
+            } else {
+                s.classList.remove('selected');
+                s.classList.remove('active');
+            }
+        });
     });
+    
+    // Hover effects
+    star.addEventListener('mouseenter', function() {
+        const rating = parseInt(this.dataset.rating);
+        document.querySelectorAll('.star-label-interactive').forEach((s, i) => {
+            if (i < rating) s.classList.add('active');
+            else s.classList.remove('active');
+        });
+    });
+});
+
+document.querySelector('.rating-stars-interactive')?.addEventListener('mouseleave', function() {
+    // On mouse leave, revert to selected state
+    const checkedInput = document.querySelector('input[name="rating"]:checked');
+    const selectedRating = checkedInput ? parseInt(checkedInput.value) : 0;
+    
+    document.querySelectorAll('.star-label-interactive').forEach((s, i) => {
+        s.classList.remove('active'); // Clear hover
+        if (i < selectedRating) s.classList.add('selected'); // Keep selected
+        else s.classList.remove('selected');
+    });
+});
+
+// Review Slider Logic
+const slides = document.querySelectorAll('.review-slide');
+const dotsContainer = document.getElementById('sliderDots');
+let currentSlide = 0;
+
+if (slides.length > 0) {
+    slides[0].classList.add('active');
+    
+    // Create Dots
+    slides.forEach((_, index) => {
+        const dot = document.createElement('div');
+        dot.className = 'dot' + (index === 0 ? ' active' : '');
+        dot.addEventListener('click', () => goToSlide(index));
+        dotsContainer?.appendChild(dot);
+    });
+    
+    function goToSlide(n) {
+        slides[currentSlide].classList.remove('active');
+        if(document.querySelectorAll('.dot')[currentSlide]) 
+            document.querySelectorAll('.dot')[currentSlide].classList.remove('active');
+        
+        currentSlide = (n + slides.length) % slides.length;
+        
+        slides[currentSlide].classList.add('active');
+        if(document.querySelectorAll('.dot')[currentSlide])
+            document.querySelectorAll('.dot')[currentSlide].classList.add('active');
+    }
+    
+    document.getElementById('prevReview')?.addEventListener('click', (e) => { e.preventDefault(); goToSlide(currentSlide - 1); });
+    document.getElementById('nextReview')?.addEventListener('click', (e) => { e.preventDefault(); goToSlide(currentSlide + 1); });
+    
+    // Auto Advance
+    setInterval(() => goToSlide(currentSlide + 1), 5000);
 }
 </script>
-
-<style>
-.cursor-pointer { cursor: pointer; }
-.hover-warning:hover { color: #ffc107 !important; }
-</style>
 {% endblock %}
