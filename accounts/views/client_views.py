@@ -177,7 +177,7 @@ class PatientBookRoomView(LoginRequiredMixin, View):
         room.save()
         
         messages.success(request, f"Room {room.room_number} has been successfully booked for you!")
-        return redirect('client-portal')
+        return redirect('room-availability')
 
 class RoomAvailabilityListView(LoginRequiredMixin, ListView):
     model = Room

@@ -1,83 +1,237 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block title %}Book Appointment | Aetheria{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --gradient-primary: linear-gradient(135deg, #6f42c1, #00b4d8);
+        --purple: #6f42c1;
+        --turquoise: #00b4d8;
+        --primary-dark: #2c3e50;
+    }
+
+    .booking-wrapper {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        /* Padding عشان الهيدر الثابت */
+        padding: 120px 0 60px 0; 
+        background: linear-gradient(135deg, rgba(111, 66, 193, 0.03), rgba(0, 180, 216, 0.03));
+    }
+
+    .magic-card {
+        background: #fff;
+        border-radius: 24px;
+        padding: 40px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+        border: 1px solid rgba(0,0,0,0.02);
+    }
+
+    .icon-circle {
+        width: 80px;
+        height: 80px;
+        background: var(--gradient-primary);
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+        box-shadow: 0 10px 30px rgba(111, 66, 193, 0.3);
+    }
+
+    .form-label {
+        font-weight: 700;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: #6c757d;
+        margin-bottom: 8px;
+        display: block; /* تأكيد إن الليبل ياخد سطر لوحده */
+    }
+
+    /* --- FIX: Targeting Inputs Directly --- */
+    .form-control, .form-select, 
+    input[type="text"], 
+    input[type="email"], 
+    input[type="date"], 
+    input[type="time"], 
+    input[type="datetime-local"], 
+    select, 
+    textarea {
+        width: 100%; /* مهم جداً عشان يملى المكان */
+        border-radius: 12px;
+        padding: 14px 18px;
+        border: 2px solid #e9ecef;
+        background-color: #f8f9fa;
+        transition: all 0.3s ease;
+        font-size: 1rem;
+        color: #333;
+        box-sizing: border-box;
+    }
+
+    /* Focus State */
+    .form-control:focus, .form-select:focus,
+    input:focus, select:focus, textarea:focus {
+        border-color: var(--purple);
+        box-shadow: 0 0 0 4px rgba(111, 66, 193, 0.1);
+        background-color: #fff;
+        outline: none;
+    }
+
+    textarea {
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    .btn-gradient {
+        background: var(--gradient-primary);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        padding: 16px 40px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 8px 25px rgba(111, 66, 193, 0.3);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        width: 100%;
+        cursor: pointer;
+    }
+
+    .btn-gradient:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 35px rgba(111, 66, 193, 0.5);
+        color: white;
+    }
+
+    .payment-box {
+        background: linear-gradient(135deg, rgba(111, 66, 193, 0.05), rgba(0, 180, 216, 0.05));
+        border: 2px dashed rgba(111, 66, 193, 0.2);
+        border-radius: 16px;
+        padding: 20px;
+    }
+
+    .info-badge {
+        background: rgba(0, 180, 216, 0.1);
+        color: var(--turquoise);
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .animate-fade-in { animation: fadeInUp 0.6s ease; }
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="row justify-content-center animate-fade-in my-5">
-    <div class="col-md-8 col-lg-6">
-        <div class="magic-card p-5">
-            <div class="text-center mb-5">
-                <div class="bg-primary-subtle text-primary rounded-circle d-inline-flex p-3 mb-3">
-                    <span class="fs-2">📅</span>
-                </div>
-                <h2 class="fw-bold mb-1">Book Appointment</h2>
-                <p class="text-muted">Schedule a consultation with our specialists.</p>
-            </div>
-
-            <form method="post" class="needs-validation" novalidate>
-                {% csrf_token %}
-                
-                <div class="row g-4">
-                    <!-- Doctor Selection -->
-                    <div class="col-12">
-                        <label class="form-label text-uppercase small fw-bold text-muted">Specialist</label>
-                        {{ form.doctor }}
-                        {% if form.doctor.errors %}
-                            <div class="text-danger small mt-1">{{ form.doctor.errors.0 }}</div>
-                        {% endif %}
+<div class="booking-wrapper">
+    <div class="container">
+        <div class="row justify-content-center animate-fade-in">
+            <div class="col-md-10 col-lg-8">
+                <div class="magic-card">
+                    <div class="text-center mb-5">
+                        <div class="icon-circle">
+                            <i class="far fa-calendar-check fa-2x text-white"></i>
+                        </div>
+                        <h2 class="fw-bold mb-2" style="color: var(--primary-dark);">Book Your Appointment</h2>
+                        <p class="text-muted fs-5">Schedule a consultation with our world-class specialists</p>
                     </div>
 
-                    <!-- Date & Time Row -->
-                    <div class="col-md-6">
-                        <label class="form-label text-uppercase small fw-bold text-muted">Date</label>
-                        {{ form.date }}
-                        {% if form.date.errors %}
-                            <div class="text-danger small mt-1">{{ form.date.errors.0 }}</div>
-                        {% endif %}
-                    </div>
-                    
-                    <div class="col-md-6">
-                        <label class="form-label text-uppercase small fw-bold text-muted">Time Slot</label>
-                        {{ form.time_slot }}
-                        {% if form.time_slot.errors %}
-                            <div class="text-danger small mt-1">{{ form.time_slot.errors.0 }}</div>
-                        {% endif %}
-                    </div>
-
-                    <!-- Reason -->
-                    <div class="col-12">
-                        <label class="form-label text-uppercase small fw-bold text-muted">Reason for Visit</label>
-                        {{ form.reason }}
-                         <div class="form-text small text-muted mt-1">Briefly describe your symptoms or concern.</div>
-                    </div>
-
-                    <!-- Payment -->
-                    <div class="col-12">
-                         <div class="p-3 bg-light rounded-3 border border-secondary-subtle">
-                            <label class="form-label text-uppercase small fw-bold text-muted mb-2">Payment Preference</label>
-                            {{ form.payment_location }}
-                            <div class="d-flex align-items-center mt-2 small text-muted">
-                                <i class="fas fa-info-circle me-2"></i>
-                                <span>Platform payment secures your slot immediately.</span>
+                    <form method="post" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        
+                        <div class="row g-4">
+                            <div class="col-12">
+                                <label class="form-label">
+                                    <i class="fas fa-user-md me-2" style="color: var(--purple);"></i>Select Specialist
+                                </label>
+                                {{ form.doctor }}
+                                {% if form.doctor.errors %}
+                                    <div class="text-danger small mt-2">
+                                        <i class="fas fa-exclamation-circle me-1"></i>{{ form.doctor.errors.0 }}
+                                    </div>
+                                {% endif %}
                             </div>
-                         </div>
-                    </div>
-                    
-                    <!-- Submit -->
-                    <div class="col-12 mt-4">
-                        <button type="submit" class="btn btn-gradient w-100 py-3 shadow-sm">
-                            Confirm Booking
-                        </button>
-                        <a href="{% url 'client-portal' %}" class="btn btn-link w-100 mt-2 text-decoration-none text-muted">Cancel</a>
-                    </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">
+                                    <i class="far fa-calendar me-2" style="color: var(--turquoise);"></i>Appointment Date
+                                </label>
+                                {{ form.date }}
+                                {% if form.date.errors %}
+                                    <div class="text-danger small mt-2">
+                                        <i class="fas fa-exclamation-circle me-1"></i>{{ form.date.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label class="form-label">
+                                    <i class="far fa-clock me-2" style="color: var(--turquoise);"></i>Time Slot
+                                </label>
+                                {{ form.time_slot }}
+                                {% if form.time_slot.errors %}
+                                    <div class="text-danger small mt-2">
+                                        <i class="fas fa-exclamation-circle me-1"></i>{{ form.time_slot.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label">
+                                    <i class="fas fa-notes-medical me-2" style="color: var(--purple);"></i>Reason for Visit
+                                </label>
+                                {{ form.reason }}
+                                <div class="form-text small text-muted mt-2">
+                                    <i class="fas fa-info-circle me-1"></i>Briefly describe your symptoms or health concern
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="payment-box">
+                                    <label class="form-label mb-3">
+                                        <i class="fas fa-credit-card me-2" style="color: var(--purple);"></i>Payment Preference
+                                    </label>
+                                    {{ form.payment_location }}
+                                    <div class="info-badge mt-3">
+                                        <i class="fas fa-shield-alt"></i>
+                                        <span>Platform payment secures your slot immediately</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12 mt-5">
+                                <button type="submit" class="btn-gradient">
+                                    <i class="fas fa-check-circle me-2"></i>Confirm Booking
+                                </button>
+                                <div class="text-center mt-3">
+                                    <a href="{% url 'client-portal' %}" class="text-muted text-decoration-none">
+                                        <i class="fas fa-arrow-left me-2"></i>Back to Portal
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
-    // Set min date to today
     document.addEventListener('DOMContentLoaded', function() {
+        // Set min date to today
         const dateInput = document.querySelector('input[type="date"]');
         if(dateInput) {
             const today = new Date().toISOString().split('T')[0];

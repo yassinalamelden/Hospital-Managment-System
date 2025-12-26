@@ -1,0 +1,135 @@
+/* ========================================= */
+/* --- ISOLATED HEADER & FOOTER STYLES --- */
+/* ========================================= */
+
+/* 1. TOP BAR */
+.top-bar {
+    background-color: #002b49; /* Dark Blue */
+    color: #fff;
+    padding: 8px 0;
+    font-size: 0.85rem;
+    position: relative;
+    z-index: 102;
+}
+.top-bar a { color: #fff; text-decoration: none; transition: 0.3s; }
+.top-bar a:hover { color: #00b4d8; } /* Cyan */
+.top-bar-divider { 
+    border-right: 1px solid rgba(255,255,255,0.2); 
+    height: 15px; margin: 0 15px; 
+    display: inline-block; vertical-align: middle; 
+}
+
+/* 2. MAIN HEADER (Glass Effect) */
+.main-header {
+    position: sticky;
+    top: 0; left: 0; width: 100%;
+    z-index: 100;
+    padding: 15px 0;
+    background: transparent;
+    transition: all 0.4s ease;
+    display: flex; align-items: center; justify-content: space-between;
+}
+
+/* Scrolled State */
+body.scrolled .main-header {
+    background-color: rgba(255, 255, 255, 0.98);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    padding: 10px 0;
+}
+
+/* Logo */
+.header-brand { 
+    color: #fff; font-weight: 700; font-size: 1.5rem; 
+    text-decoration: none; display: flex; align-items: center; gap: 10px; 
+}
+.header-brand img { height: 50px; transition: 0.3s; }
+body.scrolled .header-brand { color: #002b49; }
+
+/* 3. CENTER PILL NAV */
+.nav-pill-frame {
+    background: rgba(40, 40, 40, 0.2);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    border-radius: 50px; padding: 10px 30px;
+    display: flex; gap: 25px; align-items: center;
+    transition: all 0.3s;
+}
+.nav-pill-frame .nav-link {
+    color: #fff !important; font-weight: 600; font-size: 0.95rem;
+    text-transform: capitalize; text-decoration: none; opacity: 0.9; transition: 0.3s;
+}
+.nav-pill-frame .nav-link:hover { opacity: 1; color: #00b4d8 !important; }
+
+/* Scrolled Pill */
+body.scrolled .nav-pill-frame { background: rgba(0, 0, 0, 0.05); }
+body.scrolled .nav-pill-frame .nav-link { color: #333 !important; }
+body.scrolled .nav-pill-frame .nav-link:hover { color: #00b4d8 !important; }
+
+/* 4. HEADER ACTIONS & BUTTONS (Specific Classes) */
+.header-actions { display: flex; align-items: center; gap: 15px; }
+
+.btn-magic {
+    position: relative; background: transparent; font-weight: 600;
+    padding: 8px 25px; border-radius: 50px; text-decoration: none;
+    display: inline-flex; align-items: center; gap: 8px;
+    transition: all 0.3s ease; overflow: hidden; font-size: 0.9rem;
+}
+
+/* Login Button Specifics */
+.btn-grey-magic { color: #cccccc !important; border: 2px solid #cccccc; }
+body.scrolled .btn-grey-magic { color: #555 !important; border-color: #555; }
+
+/* Logout Button Specifics */
+.btn-red-magic { color: #ff4757 !important; border: 2px solid #ff4757; }
+body.scrolled .btn-red-magic { color: #dc3545 !important; border-color: #dc3545; }
+
+/* Hover Animation */
+.btn-magic:hover {
+    border-color: transparent; color: #00b4d8 !important;
+    background-color: #fff;
+    box-shadow: 0 5px 15px rgba(0, 180, 216, 0.3);
+}
+
+.mobile-toggle { display: none; color: #fff; font-size: 1.5rem; cursor: pointer; }
+body.scrolled .mobile-toggle { color: #002b49; }
+
+@media (max-width: 992px) {
+    .nav-pill-frame { display: none; }
+    .header-actions { display: none; }
+    .mobile-toggle { display: block; }
+}
+
+/* 5. FOOTER (Isolated) */
+.site-footer {
+    background-color: #002b49;
+    color: #fff;
+    padding-top: 70px;
+    margin-top: auto;
+}
+.site-footer h5 {
+    color: #00b4d8; font-weight: 700; margin-bottom: 25px;
+    text-transform: uppercase; letter-spacing: 1px; font-size: 1.1rem;
+}
+.site-footer ul { padding: 0; list-style: none; }
+.site-footer li { margin-bottom: 12px; }
+.site-footer a { color: #ccc; text-decoration: none; transition: 0.3s; }
+.site-footer a:hover { color: #6f42c1; padding-left: 5px; }
+
+.footer-app-btn {
+    background: #000; border: 1px solid #333; color: #fff;
+    border-radius: 8px; padding: 8px 15px;
+    display: inline-flex; align-items: center; gap: 10px;
+    text-decoration: none; margin-bottom: 10px; width: 170px; transition: 0.3s;
+}
+.footer-app-btn:hover { background: #222; border-color: #555; color: #fff; }
+
+.footer-bottom {
+    background-color: #001f35; padding: 20px 0; margin-top: 50px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+}
+.footer-social a {
+    width: 35px; height: 35px; background: rgba(255,255,255,0.1);
+    display: inline-flex; align-items: center; justify-content: center;
+    border-radius: 50%; margin-left: 10px; color: #fff; transition: 0.3s;
+    text-decoration: none;
+}
+.footer-social a:hover { background: #00b4d8; transform: translateY(-3px); }

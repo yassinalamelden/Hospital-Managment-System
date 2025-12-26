@@ -21,6 +21,7 @@ urlpatterns = [
     path('login/', CustomLoginView.as_view(), name='login'),
     path('logout/', CustomLogoutView.as_view(), name='logout'),
     path('signup/', SignUpView.as_view(), name='signup'),
+    path('register/', SignUpView.as_view(), name='register'),  # Alias for signup
     
     # --- Client / Patient Portal (المريض) ---
     path('my-portal/', ClientPortalView.as_view(), name='client-portal'),
