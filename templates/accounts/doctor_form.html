@@ -1,15 +1,16 @@
 {% extends 'layouts/admin_base.html' %}
 {% load static %}
 
-{% block title %}Add Doctor{% endblock %}
-{% block page_title %}Add New Doctor{% endblock %}
-{% block page_subtitle %}Register a new medical professional{% endblock %}
+{% block title %}{% if form.instance.pk %}Edit Doctor{% else %}Add Doctor{% endif %}{% endblock %}
+{% block page_title %}{% if form.instance.pk %}Edit Doctor{% else %}Add New Doctor{% endif %}{% endblock %}
+{% block page_subtitle %}{% if form.instance.pk %}Update doctor profile details{% else %}Register a new medical
+professional{% endif %}{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-md-8">
         <div class="d-flex align-items-center mb-4">
-             <a href="{% url 'doctor-list' %}" class="btn btn-sm btn-outline-secondary rounded-pill me-3">← Back</a>
+            <a href="{% url 'doctor-list' %}" class="btn btn-sm btn-outline-secondary rounded-pill me-3">← Back</a>
         </div>
 
         <div class="magic-card p-5">
@@ -19,32 +20,36 @@
                     {% for field in form %}
                     <div class="col-md-12">
                         {% if field.name == 'is_active' %}
-                            <div class="mb-3">
-                                <label class="form-label text-muted small text-uppercase fw-bold d-block">{{ field.label }}</label>
-                                <div class="d-flex gap-4 p-3 bg-light rounded-3">
-                                    {% for radio in field %}
-                                        <div class="form-check">
-                                            {{ radio.tag }}
-                                            <label class="form-check-label fw-bold cursor-pointer" for="{{ radio.id_for_label }}">
-                                                {{ radio.choice_label }}
-                                            </label>
-                                        </div>
-                                    {% endfor %}
+                        <div class="mb-3">
+                            <label class="form-label text-muted small text-uppercase fw-bold d-block">{{ field.label
+                                }}</label>
+                            <div class="d-flex gap-4 p-3 bg-light rounded-3">
+                                {% for radio in field %}
+                                <div class="form-check">
+                                    {{ radio.tag }}
+                                    <label class="form-check-label fw-bold cursor-pointer"
+                                        for="{{ radio.id_for_label }}">
+                                        {{ radio.choice_label }}
+                                    </label>
                                 </div>
+                                {% endfor %}
                             </div>
+                        </div>
                         {% else %}
-                            <label class="form-label text-muted small text-uppercase fw-bold">{{ field.label }}</label>
-                            {{ field }}
+                        <label class="form-label text-muted small text-uppercase fw-bold">{{ field.label }}</label>
+                        {{ field }}
                         {% endif %}
-                        
+
                         {% if field.errors %}
-                            <div class="text-danger small mt-1">{{ field.errors.0 }}</div>
+                        <div class="text-danger small mt-1">{{ field.errors.0 }}</div>
                         {% endif %}
                     </div>
                     {% endfor %}
-                    
+
                     <div class="col-12 mt-4">
-                        <button type="submit" class="btn btn-gradient w-100 py-2">Save Doctor</button>
+                        <button type="submit" class="btn btn-gradient w-100 py-2">
+                            {% if form.instance.pk %}Update Doctor{% else %}Save Doctor{% endif %}
+                        </button>
                     </div>
                 </div>
             </form>

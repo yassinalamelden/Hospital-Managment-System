@@ -1,4 +1,4 @@
-from django.views.generic import CreateView, ListView
+from django.views.generic import CreateView, ListView, UpdateView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from accounts.models import Doctor
@@ -9,6 +9,12 @@ class StaffRequiredMixin(UserPassesTestMixin):
         return self.request.user.is_staff
 
 class DoctorCreateView(LoginRequiredMixin, StaffRequiredMixin, CreateView):
+    model = Doctor
+    form_class = DoctorForm
+    template_name = 'accounts/doctor_form.html'
+    success_url = reverse_lazy('doctor-list')
+
+class DoctorUpdateView(LoginRequiredMixin, StaffRequiredMixin, UpdateView):
     model = Doctor
     form_class = DoctorForm
     template_name = 'accounts/doctor_form.html'
