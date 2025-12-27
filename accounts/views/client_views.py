@@ -95,6 +95,11 @@ class PatientBookAppointmentView(LoginRequiredMixin, ProfileCompletionRequiredMi
             initial['doctor'] = doctor_id
         return initial
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
     def dispatch(self, request, *args, **kwargs):
         if not hasattr(request.user, 'patient'):
             from django.contrib import messages

@@ -17,7 +17,7 @@
         display: flex;
         align-items: center;
         /* Padding عشان الهيدر الثابت */
-        padding: 120px 0 60px 0; 
+        padding: 120px 0 60px 0;
         background: linear-gradient(135deg, rgba(111, 66, 193, 0.03), rgba(0, 180, 216, 0.03));
     }
 
@@ -25,8 +25,8 @@
         background: #fff;
         border-radius: 24px;
         padding: 40px;
-        box-shadow: 0 20px 60px rgba(0,0,0,0.08);
-        border: 1px solid rgba(0,0,0,0.02);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(0, 0, 0, 0.02);
     }
 
     .icon-circle {
@@ -48,19 +48,22 @@
         letter-spacing: 1px;
         color: #6c757d;
         margin-bottom: 8px;
-        display: block; /* تأكيد إن الليبل ياخد سطر لوحده */
+        display: block;
+        /* تأكيد إن الليبل ياخد سطر لوحده */
     }
 
     /* --- FIX: Targeting Inputs Directly --- */
-    .form-control, .form-select, 
-    input[type="text"], 
-    input[type="email"], 
-    input[type="date"], 
-    input[type="time"], 
-    input[type="datetime-local"], 
-    select, 
+    .form-control,
+    .form-select,
+    input[type="text"],
+    input[type="email"],
+    input[type="date"],
+    input[type="time"],
+    input[type="datetime-local"],
+    select,
     textarea {
-        width: 100%; /* مهم جداً عشان يملى المكان */
+        width: 100%;
+        /* مهم جداً عشان يملى المكان */
         border-radius: 12px;
         padding: 14px 18px;
         border: 2px solid #e9ecef;
@@ -72,8 +75,11 @@
     }
 
     /* Focus State */
-    .form-control:focus, .form-select:focus,
-    input:focus, select:focus, textarea:focus {
+    .form-control:focus,
+    .form-select:focus,
+    input:focus,
+    select:focus,
+    textarea:focus {
         border-color: var(--purple);
         box-shadow: 0 0 0 4px rgba(111, 66, 193, 0.1);
         background-color: #fff;
@@ -126,10 +132,20 @@
         gap: 8px;
     }
 
-    .animate-fade-in { animation: fadeInUp 0.6s ease; }
+    .animate-fade-in {
+        animation: fadeInUp 0.6s ease;
+    }
+
     @keyframes fadeInUp {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 </style>
 {% endblock %}
@@ -150,58 +166,75 @@
 
                     <form method="post" class="needs-validation" novalidate>
                         {% csrf_token %}
-                        
+
                         <div class="row g-4">
+                            {% if form.non_field_errors %}
+                            <div class="col-12">
+                                <div class="alert alert-danger d-flex align-items-center" role="alert">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>
+                                    <div>
+                                        {% for error in form.non_field_errors %}
+                                        <div class="fw-bold">{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+
                             <div class="col-12">
                                 <label class="form-label">
                                     <i class="fas fa-user-md me-2" style="color: var(--purple);"></i>Select Specialist
                                 </label>
                                 {{ form.doctor }}
                                 {% if form.doctor.errors %}
-                                    <div class="text-danger small mt-2">
-                                        <i class="fas fa-exclamation-circle me-1"></i>{{ form.doctor.errors.0 }}
-                                    </div>
+                                <div class="text-danger small mt-2">
+                                    <i class="fas fa-exclamation-circle me-1"></i>{{ form.doctor.errors.0 }}
+                                </div>
                                 {% endif %}
                             </div>
 
                             <div class="col-md-6">
                                 <label class="form-label">
-                                    <i class="far fa-calendar me-2" style="color: var(--turquoise);"></i>Appointment Date
+                                    <i class="far fa-calendar me-2" style="color: var(--turquoise);"></i>Appointment
+                                    Date
                                 </label>
                                 {{ form.date }}
                                 {% if form.date.errors %}
-                                    <div class="text-danger small mt-2">
-                                        <i class="fas fa-exclamation-circle me-1"></i>{{ form.date.errors.0 }}
-                                    </div>
+                                <div class="text-danger small mt-2">
+                                    <i class="fas fa-exclamation-circle me-1"></i>{{ form.date.errors.0 }}
+                                </div>
                                 {% endif %}
                             </div>
-                            
+
                             <div class="col-md-6">
                                 <label class="form-label">
                                     <i class="far fa-clock me-2" style="color: var(--turquoise);"></i>Time Slot
                                 </label>
                                 {{ form.time_slot }}
                                 {% if form.time_slot.errors %}
-                                    <div class="text-danger small mt-2">
-                                        <i class="fas fa-exclamation-circle me-1"></i>{{ form.time_slot.errors.0 }}
-                                    </div>
+                                <div class="text-danger small mt-2">
+                                    <i class="fas fa-exclamation-circle me-1"></i>{{ form.time_slot.errors.0 }}
+                                </div>
                                 {% endif %}
                             </div>
 
                             <div class="col-12">
                                 <label class="form-label">
-                                    <i class="fas fa-notes-medical me-2" style="color: var(--purple);"></i>Reason for Visit
+                                    <i class="fas fa-notes-medical me-2" style="color: var(--purple);"></i>Reason for
+                                    Visit
                                 </label>
                                 {{ form.reason }}
                                 <div class="form-text small text-muted mt-2">
-                                    <i class="fas fa-info-circle me-1"></i>Briefly describe your symptoms or health concern
+                                    <i class="fas fa-info-circle me-1"></i>Briefly describe your symptoms or health
+                                    concern
                                 </div>
                             </div>
 
                             <div class="col-12">
                                 <div class="payment-box">
                                     <label class="form-label mb-3">
-                                        <i class="fas fa-credit-card me-2" style="color: var(--purple);"></i>Payment Preference
+                                        <i class="fas fa-credit-card me-2" style="color: var(--purple);"></i>Payment
+                                        Preference
                                     </label>
                                     {{ form.payment_location }}
                                     <div class="info-badge mt-3">
@@ -210,7 +243,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="col-12 mt-5">
                                 <button type="submit" class="btn-gradient">
                                     <i class="fas fa-check-circle me-2"></i>Confirm Booking
@@ -230,10 +263,10 @@
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         // Set min date to today
         const dateInput = document.querySelector('input[type="date"]');
-        if(dateInput) {
+        if (dateInput) {
             const today = new Date().toISOString().split('T')[0];
             dateInput.setAttribute('min', today);
         }

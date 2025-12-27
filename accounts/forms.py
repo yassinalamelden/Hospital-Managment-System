@@ -177,6 +177,48 @@ class AppointmentForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
         self.fields['doctor'].queryset = Doctor.objects.filter(is_active=True)
         self.fields['doctor'].widget.attrs['class'] = 'form-control-custom w-100'
+
+    def clean(self):
+        cleaned_data = super().clean()
+        doctor = cleaned_data.get('doctor')
+        date = cleaned_data.get('date')
+        time_slot = cleaned_data.get('time_slot')
+        
+        if date and time_slot:
+            import datetime
+            from django.utils import timezone
+            
+            # Combine date and time
+            try:
+                hour, minute = map(int, time_slot.split(':'))
+                time_obj = datetime.time(hour, minute)
+                dt = datetime.datetime.combine(date, time_obj)
+                dt_aware = timezone.make_aware(dt)
+            except ValueError:
+                # Should be caught by field validation, but just in case
+                return cleaned_data
+            
+            # Check for past dates
+            if dt_aware < timezone.now():
+                 raise forms.ValidationError("You cannot book an appointment in the past.")
+
+            # Check Doctor Availability
+            if doctor:
+                # Check strict equality (same slot)
+                if Appointment.objects.filter(doctor=doctor, date_time=dt_aware).exclude(status='Cancelled').exists():
+                    self.add_error('time_slot', f"Dr. {doctor.name} is already booked at this time. Please choose another slot.")
+                    # Also raising a general error if preferred, or just return to verify field error.
+                    # Returning cleaned_data here ensures we don't proceed with other checks if this fails? 
+                    # Actually standard validation continues but isValid will be false.
+
+            # Check Patient Availability (Double Booking)
+            if self.user and hasattr(self.user, 'patient'):
+                patient = self.user.patient
+                if Appointment.objects.filter(patient=patient, date_time=dt_aware).exclude(status='Cancelled').exists():
+                     self.add_error('time_slot', "You already have an appointment scheduled for this time.")
+        
+        return cleaned_data
