@@ -14,6 +14,7 @@ from accounts.forms import AppointmentForm, UserUpdateForm, PatientForm
 from django.db import models
 from operations.models import Appointment, Room, Review
 from operations.forms import ReviewForm
+from ..mixins import ProfileCompletionRequiredMixin
 
 class VerifyPasswordView(LoginRequiredMixin, View):
     template_name = 'accounts/verify_password.html'
@@ -75,9 +76,13 @@ class ClientPortalView(LoginRequiredMixin, TemplateView):
             # 4. Stay Status
             context['current_room'] = patient.room if hasattr(patient, 'room') else None
 
+            # Profile Status Flag
+            if not patient.date_of_birth or patient.gender == 'Not specified' or patient.phone == 'None':
+                context['profile_incomplete'] = True
+
         return context
 
-class PatientBookAppointmentView(LoginRequiredMixin, CreateView):
+class PatientBookAppointmentView(LoginRequiredMixin, ProfileCompletionRequiredMixin, CreateView):
     model = Appointment
     form_class = AppointmentForm
     template_name = 'client/book_appointment.html'
@@ -153,7 +158,7 @@ class PatientAppointmentListView(LoginRequiredMixin, ListView):
         return Appointment.objects.none()
 
 
-class PatientBookRoomView(LoginRequiredMixin, View):
+class PatientBookRoomView(LoginRequiredMixin, ProfileCompletionRequiredMixin, View):
     def post(self, request, pk):
         if not hasattr(request.user, 'patient'):
             messages.error(request, "You must have a patient profile to book a room. Please contact administration.")
@@ -179,7 +184,7 @@ class PatientBookRoomView(LoginRequiredMixin, View):
         messages.success(request, f"Room {room.room_number} has been successfully booked for you!")
         return redirect('room-availability')
 
-class RoomAvailabilityListView(LoginRequiredMixin, ListView):
+class RoomAvailabilityListView(LoginRequiredMixin, ProfileCompletionRequiredMixin, ListView):
     model = Room
     template_name = 'client/room_list.html'
     context_object_name = 'rooms'
@@ -188,7 +193,7 @@ class RoomAvailabilityListView(LoginRequiredMixin, ListView):
         # Filter for available rooms or just list them all
         return Room.objects.all().order_by('room_number')
 
-class DoctorSearchView(LoginRequiredMixin, ListView):
+class DoctorSearchView(LoginRequiredMixin, ProfileCompletionRequiredMixin, ListView):
     model = Doctor
     template_name = 'client/doctor_search.html'
     context_object_name = 'doctors'
@@ -290,8 +295,14 @@ class AccountSettingsView(LoginRequiredMixin, TemplateView):
             u_form.save()
             p_form.save()
             
-            messages.success(request, "Your account has been updated!")
-            return redirect('account-settings')
+            # Check if profile is now complete
+            patient = request.user.patient
+            if patient.date_of_birth and patient.gender != 'Not specified' and patient.phone != 'None':
+                messages.success(request, "Your profile is complete! You can now book appointments.")
+            else:
+                messages.warning(request, "Your profile has been updated, but is still incomplete. Please ensure Date of Birth, Gender, and Phone are set.")
+                
+            return redirect('client-portal')
         
         return render(request, self.template_name, {'u_form': u_form, 'p_form': p_form})
 
