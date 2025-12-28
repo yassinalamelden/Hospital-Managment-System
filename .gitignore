@@ -1,2 +1,15 @@
 *.pyc
 *.pyc
+config/settings.py
+
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Virtual environment
+.venv/
+
+# OS
+.DS_Store
+Thumbs.db

@@ -1,4 +1,4 @@
-from django.views.generic import CreateView, ListView, DetailView, UpdateView
+from django.views.generic import CreateView, ListView, DetailView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from accounts.models.patient import Patient
@@ -36,21 +36,3 @@ class PatientDashboardView(LoginRequiredMixin, StaffRequiredMixin, DetailView):
         context['bills'] = Bill.objects.filter(patient=patient).order_by('-issued_date')
         
         return context
-
-class PatientUpdateView(LoginRequiredMixin, StaffRequiredMixin, UpdateView):
-    model = Patient
-    form_class = PatientForm
-    template_name = 'accounts/patient_form.html'
-    success_url = reverse_lazy('patient-list')
-
-from django.shortcuts import get_object_or_404, redirect
-from django.views import View
-from django.contrib import messages
-
-class PatientDeleteView(LoginRequiredMixin, StaffRequiredMixin, View):
-    def post(self, request, pk):
-        patient = get_object_or_404(Patient, pk=pk)
-        patient_name = patient.name
-        patient.delete()
-        messages.success(request, f"Patient {patient_name} has been permanently deleted.")
-        return redirect('patient-list')
