@@ -3,8 +3,8 @@ from decimal import Decimal
 
 class Bill(models.Model):
     PAYMENT_METHOD_CHOICES = [
-        ('CASH', 'Cash'),
-        ('CARD', 'Card'),
+        ('CASH', 'Cash Payment'),
+        ('CARD', 'Credit/Debit Card'),
     ]
     PAYMENT_STATUS_CHOICES = [
         ('PENDING', 'Pending'),
