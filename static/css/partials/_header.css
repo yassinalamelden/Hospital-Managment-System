@@ -159,7 +159,6 @@ body.scrolled .btn-red-magic {
 .btn-magic:hover {
     border-color: transparent;
     color: #00b4d8 !important;
-    background-color: #fff;
     box-shadow: 0 5px 15px rgba(0, 180, 216, 0.3);
     background-image: linear-gradient(#fff, #fff), linear-gradient(45deg, #6f42c1, #00b4d8, #ffffff, #6f42c1);
     background-origin: border-box;
