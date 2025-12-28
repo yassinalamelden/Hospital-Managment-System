@@ -1,7 +1,8 @@
 from django.urls import path
 from .views import (
     DoctorListView, DoctorCreateView, 
-    PatientListView, PatientCreateView, PatientDashboardView
+    PatientListView, PatientCreateView, PatientDashboardView,
+    PatientUpdateView, PatientDeleteView
 )
 from .views.auth_views import CustomLoginView, SignUpView, CustomLogoutView
 from .views.client_views import (
@@ -52,6 +53,8 @@ urlpatterns = [
     path('dashboard/patients/', PatientListView.as_view(), name='patient-list'),
     path('dashboard/patients/add/', PatientCreateView.as_view(), name='patient-create'),
     path('dashboard/patients/<int:pk>/', PatientDashboardView.as_view(), name='patient-dashboard'),
+    path('dashboard/patients/<int:pk>/edit/', PatientUpdateView.as_view(), name='patient-edit'),
+    path('dashboard/patients/<int:pk>/delete/', PatientDeleteView.as_view(), name='patient-delete'),
     path('dashboard/reviews/', ManageReviewsView.as_view(), name='manage_reviews'),
     path('dashboard/reviews/<int:pk>/delete/', DeleteReviewView.as_view(), name='delete-review'),
     path('dashboard/users/<int:pk>/deactivate/', DeactivateUserView.as_view(), name='deactivate_user'),
