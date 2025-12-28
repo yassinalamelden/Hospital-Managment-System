@@ -14,7 +14,7 @@ from .views.client_views import (
 )
 from .views.admin_views import ManageUsersView, ManageReviewsView, DeactivateUserView, PromoteUserView, DeleteUserView
 from .views.doctor_views import ToggleDoctorStatusView, DoctorUpdateView
-from core.views import AdminDashboardView
+from core.views import AdminDashboardView, DeleteReviewView
 
 urlpatterns = [
     # ---Authentication---
@@ -53,6 +53,7 @@ urlpatterns = [
     path('dashboard/patients/add/', PatientCreateView.as_view(), name='patient-create'),
     path('dashboard/patients/<int:pk>/', PatientDashboardView.as_view(), name='patient-dashboard'),
     path('dashboard/reviews/', ManageReviewsView.as_view(), name='manage_reviews'),
+    path('dashboard/reviews/<int:pk>/delete/', DeleteReviewView.as_view(), name='delete-review'),
     path('dashboard/users/<int:pk>/deactivate/', DeactivateUserView.as_view(), name='deactivate_user'),
     path('dashboard/users/<int:pk>/promote/', PromoteUserView.as_view(), name='promote_user'),
     path('dashboard/users/<int:pk>/delete/', DeleteUserView.as_view(), name='delete_user'),

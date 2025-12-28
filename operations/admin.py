@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Appointment, Room
+from .models import Appointment, Room, Review
 
 class OccupancyFilter(admin.SimpleListFilter):
     title = 'Occupancy Status'
