@@ -1,4 +1,4 @@
-from django.views.generic import CreateView, ListView, UpdateView
+from django.views.generic import CreateView, ListView, UpdateView, DetailView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from accounts.models import Doctor
@@ -24,6 +24,11 @@ class DoctorListView(LoginRequiredMixin, StaffRequiredMixin, ListView):
     model = Doctor
     template_name = 'accounts/doctor_list.html'
     context_object_name = 'doctors'
+
+class AdminDoctorDetailView(LoginRequiredMixin, StaffRequiredMixin, DetailView):
+    model = Doctor
+    template_name = 'accounts/admin_doctor_detail.html'
+    context_object_name = 'doctor'
 
 from django.shortcuts import get_object_or_404, redirect
 from django.views import View

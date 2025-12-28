@@ -65,7 +65,7 @@ if USE_SQL_SERVER:
             'ENGINE': 'mssql',
             'NAME': 'hospital_db',
             'HOST': r'(localdb)\MSSQLLocalDB',
-            # 'HOST': 'localhost',  
+            # 'HOST': 'localhost',
             # 'HOST': 'LAPTOP-KC3LAFMF', 
             'PORT': '',
             'OPTIONS': {
