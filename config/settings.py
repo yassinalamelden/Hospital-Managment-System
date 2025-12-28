@@ -10,7 +10,7 @@ USE_SQL_SERVER = True
 
 SECRET_KEY = 'django-insecure-+kxppgr^&r4^(4mffy+l%pp(o$_=)h&hb^^((qli&dte*mjtvw'
 DEBUG = True
-ALLOWED_HOSTS = ['LAPTOP-KC3LAFMF', 'localhost', '127.0.0.1', '*']
+ALLOWED_HOSTS = ['LAPTOP-KC3LAFMF', 'localhost', '127.0.0.1', '*',"(localdb)\MSSQLLocalDB"]
 
 
 # Application definition
