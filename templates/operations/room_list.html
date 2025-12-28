@@ -49,7 +49,10 @@
                     <td>
                         <div class="d-flex gap-2">
                             {% if room.is_occupied %}
-                                <a href="{% url 'room-vacate' room.pk %}" class="btn btn-sm btn-outline-warning rounded-pill">Vacate</a>
+                                <form method="post" action="{% url 'room-vacate' room.pk %}" class="d-inline" onsubmit="return confirm('Are you sure you want to vacate this room?');">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm btn-outline-warning rounded-pill">Vacate</button>
+                                </form>
                             {% else %}
                                 <a href="{% url 'room-assign' room.pk %}" class="btn btn-sm btn-outline-success rounded-pill">Assign</a>
                             {% endif %}

@@ -163,6 +163,27 @@
     </nav>
 
     <main>
+        <!-- Flash Messages (Client Side Only) -->
+        {% if messages %}
+            <div class="container mt-3">
+                {% for message in messages %}
+                    {% if 'admin' not in message.tags %}
+                        <div class="alert alert-{{ message.tags|cut:'admin' }} alert-dismissible fade show rounded-3 shadow-sm border-0" role="alert">
+                             {% if 'success' in message.tags %}
+                                <i class="fas fa-check-circle me-2"></i>
+                             {% elif 'error' in message.tags or 'warning' in message.tags %}
+                                <i class="fas fa-exclamation-circle me-2"></i>
+                             {% else %}
+                                <i class="fas fa-info-circle me-2"></i>
+                             {% endif %}
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% endif %}
+        
         {% block content %}{% endblock %}
     </main>
 
