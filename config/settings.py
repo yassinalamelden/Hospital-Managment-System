@@ -64,7 +64,7 @@ if USE_SQL_SERVER:
         'default': {
             'ENGINE': 'mssql',
             'NAME': 'hospital_db',
-            'HOST': r'LAPTOP-KC3LAFMF',
+            'HOST': 'localhost',
             'PORT': '',
             'OPTIONS': {
                 'driver': 'ODBC Driver 17 for SQL Server',
