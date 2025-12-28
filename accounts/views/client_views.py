@@ -177,6 +177,7 @@ class PatientBookRoomView(LoginRequiredMixin, View):
         room.save()
         
         messages.success(request, f"Room {room.room_number} has been successfully booked for you!")
+        messages.warning(request, "IMPORTANT: If you do not check in within 24 hours, the room price will be charged to your balance and the reservation cancelled automatically.")
         return redirect('room-availability')
 
 class RoomAvailabilityListView(LoginRequiredMixin, ListView):

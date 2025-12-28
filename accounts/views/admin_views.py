@@ -69,14 +69,14 @@ class DeactivateUserView(View):
         user = get_object_or_404(User, pk=pk)
         
         if user.is_superuser:
-            messages.error(request, "Cannot deactivate a Superuser account!")
+            messages.error(request, "Cannot deactivate a Superuser account!", extra_tags='admin')
         else:
             if user.is_active:
                 user.is_active = False
-                messages.warning(request, f"User {user.username} has been deactivated.")
+                messages.warning(request, f"User {user.username} has been deactivated.", extra_tags='admin')
             else:
                 user.is_active = True
-                messages.success(request, f"User {user.username} has been reactivated.")
+                messages.success(request, f"User {user.username} has been reactivated.", extra_tags='admin')
             
             user.save()
             
@@ -89,7 +89,7 @@ class PromoteUserView(View):
         user = get_object_or_404(User, pk=pk)
         
         if user == request.user:
-            messages.error(request, "You cannot change your own role.")
+            messages.error(request, "You cannot change your own role.", extra_tags='admin')
             return redirect('manage_users')
 
         if user.is_staff:
@@ -98,11 +98,11 @@ class PromoteUserView(View):
             if user.is_superuser:
                 user.is_superuser = False
             user.save()
-            messages.warning(request, f"User {user.username} has been removed from Staff.")
+            messages.warning(request, f"User {user.username} has been removed from Staff.", extra_tags='admin')
         else:
             user.is_staff = True
             user.save()
-            messages.success(request, f"User {user.username} has been promoted to Staff (Admin).")
+            messages.success(request, f"User {user.username} has been promoted to Staff (Admin).", extra_tags='admin')
         
         return redirect('manage_users')
 
@@ -113,10 +113,10 @@ class DeleteUserView(View):
         user = get_object_or_404(User, pk=pk)
         
         if user == request.user:
-            messages.error(request, "You cannot delete your own account.")
+            messages.error(request, "You cannot delete your own account.", extra_tags='admin')
             return redirect('manage_users')
             
         username = user.username
         user.delete()
-        messages.success(request, f"User {username} has been permanently deleted.")
+        messages.success(request, f"User {username} has been permanently deleted.", extra_tags='admin')
         return redirect('manage_users')
