@@ -10,7 +10,7 @@ USE_SQL_SERVER = True
 
 SECRET_KEY = 'django-insecure-+kxppgr^&r4^(4mffy+l%pp(o$_=)h&hb^^((qli&dte*mjtvw'
 DEBUG = True
-ALLOWED_HOSTS = ['LAPTOP-KC3LAFMF', 'localhost', '127.0.0.1', '*']
+ALLOWED_HOSTS = ['LAPTOP-KC3LAFMF', 'localhost', '127.0.0.1', '*',"(localdb)\MSSQLLocalDB"]
 
 
 # Application definition
@@ -64,9 +64,9 @@ if USE_SQL_SERVER:
         'default': {
             'ENGINE': 'mssql',
             'NAME': 'hospital_db',
-            # 'HOST': r'(localdb)\MSSQLLocalDB',
+            'HOST': r'(localdb)\MSSQLLocalDB',
             # 'HOST': 'localhost',
-            'HOST': 'LAPTOP-KC3LAFMF', 
+            # 'HOST': 'LAPTOP-KC3LAFMF', 
             'PORT': '',
             'OPTIONS': {
                 'driver': 'ODBC Driver 17 for SQL Server',

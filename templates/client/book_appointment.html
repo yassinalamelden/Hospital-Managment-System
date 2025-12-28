@@ -147,6 +147,102 @@
             transform: translateY(0);
         }
     }
+    /* Custom Calendar Styles */
+    .calendar-container {
+        background: #fff;
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        border: 1px solid rgba(0,0,0,0.05);
+        margin-top: 10px;
+    }
+    .calendar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    .calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 5px;
+        text-align: center;
+    }
+    .calendar-day-head {
+        font-weight: 700;
+        font-size: 0.7rem;
+        color: #adb5bd;
+        text-transform: uppercase;
+        padding-bottom: 10px;
+    }
+    .calendar-day {
+        aspect-ratio: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: all 0.2s;
+        border: 1px solid transparent;
+    }
+    .calendar-day:hover:not(.disabled) {
+        background: rgba(111, 66, 193, 0.1);
+        color: var(--purple);
+    }
+    .calendar-day.selected {
+        background: var(--gradient-primary);
+        color: white;
+        font-weight: 700;
+        box-shadow: 0 4px 10px rgba(111, 66, 193, 0.3);
+    }
+    .calendar-day.today {
+        border-color: var(--turquoise);
+        color: var(--turquoise);
+        font-weight: 700;
+    }
+    .calendar-day.disabled {
+        color: #dee2e6;
+        cursor: not-allowed;
+    }
+    .calendar-btn {
+        background: none;
+        border: none;
+        color: var(--purple);
+        cursor: pointer;
+        font-size: 1.2rem;
+        padding: 5px 10px;
+        border-radius: 8px;
+        transition: background 0.2s;
+    }
+    .calendar-btn:hover {
+        background: rgba(111, 66, 193, 0.05);
+    }
+
+    /* Payment Styles */
+    .payment-option-wrapper {
+        position: relative;
+    }
+    .payment-option-disabled {
+        opacity: 0.6;
+        pointer-events: none;
+        cursor: not-allowed;
+    }
+    .coming-soon-tag {
+        font-size: 0.7rem;
+        background: #eee;
+        color: #777;
+        padding: 2px 8px;
+        border-radius: 10px;
+        margin-left: 10px;
+        font-weight: 600;
+    }
+
+    .time-slot-item.disabled {
+        opacity: 0.5;
+        background-color: #f1f3f5;
+        cursor: not-allowed;
+    }
 </style>
 {% endblock %}
 
@@ -164,7 +260,7 @@
                         <p class="text-muted fs-5">Schedule a consultation with our world-class specialists</p>
                     </div>
 
-                    <form method="post" class="needs-validation" novalidate>
+                    <form method="post" id="bookingForm" class="needs-validation" novalidate>
                         {% csrf_token %}
 
                         <div class="row g-4">
@@ -195,10 +291,30 @@
 
                             <div class="col-md-6">
                                 <label class="form-label">
-                                    <i class="far fa-calendar me-2" style="color: var(--turquoise);"></i>Appointment
-                                    Date
+                                    <i class="far fa-calendar me-2" style="color: var(--turquoise);"></i>Appointment Date
                                 </label>
-                                {{ form.date }}
+                                <!-- Hidden real input -->
+                                <div style="display: none;">{{ form.date }}</div>
+                                <!-- Custom Styled Calendar -->
+                                <div class="calendar-container" id="customCalendar">
+                                    <div class="calendar-header">
+                                        <button type="button" class="calendar-btn" id="prevMonth"><i class="fas fa-chevron-left"></i></button>
+                                        <h6 class="fw-bold mb-0" id="currentMonthYear"></h6>
+                                        <button type="button" class="calendar-btn" id="nextMonth"><i class="fas fa-chevron-right"></i></button>
+                                    </div>
+                                    <div class="calendar-grid">
+                                        <div class="calendar-day-head">Su</div>
+                                        <div class="calendar-day-head">Mo</div>
+                                        <div class="calendar-day-head">Tu</div>
+                                        <div class="calendar-day-head">We</div>
+                                        <div class="calendar-day-head">Th</div>
+                                        <div class="calendar-day-head">Fr</div>
+                                        <div class="calendar-day-head">Sa</div>
+                                    </div>
+                                    <div class="calendar-grid" id="calendarDays">
+                                        <!-- Days injected by JS -->
+                                    </div>
+                                </div>
                                 {% if form.date.errors %}
                                 <div class="text-danger small mt-2">
                                     <i class="fas fa-exclamation-circle me-1"></i>{{ form.date.errors.0 }}
@@ -211,6 +327,9 @@
                                     <i class="far fa-clock me-2" style="color: var(--turquoise);"></i>Time Slot
                                 </label>
                                 {{ form.time_slot }}
+                                <div id="timeWarning" class="alert alert-warning small mt-2 d-none">
+                                    <i class="fas fa-exclamation-triangle me-1"></i>You cannot book an appointment in the past.
+                                </div>
                                 {% if form.time_slot.errors %}
                                 <div class="text-danger small mt-2">
                                     <i class="fas fa-exclamation-circle me-1"></i>{{ form.time_slot.errors.0 }}
@@ -220,32 +339,47 @@
 
                             <div class="col-12">
                                 <label class="form-label">
-                                    <i class="fas fa-notes-medical me-2" style="color: var(--purple);"></i>Reason for
-                                    Visit
+                                    <i class="fas fa-notes-medical me-2" style="color: var(--purple);"></i>Reason for Visit
                                 </label>
                                 {{ form.reason }}
                                 <div class="form-text small text-muted mt-2">
-                                    <i class="fas fa-info-circle me-1"></i>Briefly describe your symptoms or health
-                                    concern
+                                    <i class="fas fa-info-circle me-1"></i>Briefly describe your symptoms or health concern
                                 </div>
                             </div>
 
                             <div class="col-12">
                                 <div class="payment-box">
                                     <label class="form-label mb-3">
-                                        <i class="fas fa-credit-card me-2" style="color: var(--purple);"></i>Payment
-                                        Preference
+                                        <i class="fas fa-credit-card me-2" style="color: var(--purple);"></i>Payment Preference
                                     </label>
-                                    {{ form.payment_location }}
+                                    <div id="payment-options">
+                                        <!-- We'll manually render or wrap the form field logic -->
+                                        {% for value, label in form.fields.payment_location.choices %}
+                                            <div class="form-check mb-2 {% if value == 'platform' %}payment-option-disabled{% endif %}">
+                                                <input class="form-check-input" type="radio" name="{{ form.payment_location.name }}" 
+                                                       id="pref_{{ value }}" value="{{ value }}" 
+                                                       {% if value == form.payment_location.value or value == 'clinic' %}checked{% endif %}
+                                                       {% if value == 'platform' %}disabled{% endif %}>
+                                                <label class="form-check-label" for="pref_{{ value }}">
+                                                    {{ label }}
+                                                </label>
+                                            </div>
+                                            {% if value == 'platform' %}
+                                            <div class="text-muted small ms-4 mb-3" style="margin-top: -5px;">
+                                                <i class="fas fa-info-circle me-1"></i>This option will be available soon.
+                                            </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
                                     <div class="info-badge mt-3">
                                         <i class="fas fa-shield-alt"></i>
-                                        <span>Platform payment secures your slot immediately</span>
+                                        <span>Secure your slot with clinic payment or platform soon</span>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="col-12 mt-5">
-                                <button type="submit" class="btn-gradient">
+                                <button type="submit" class="btn-gradient" id="submitBtn">
                                     <i class="fas fa-check-circle me-2"></i>Confirm Booking
                                 </button>
                                 <div class="text-center mt-3">
@@ -264,12 +398,127 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Set min date to today
-        const dateInput = document.querySelector('input[type="date"]');
-        if (dateInput) {
-            const today = new Date().toISOString().split('T')[0];
-            dateInput.setAttribute('min', today);
+        const dateInput = document.querySelector('input[name="date"]');
+        const timeSelect = document.querySelector('select[name="time_slot"]');
+        const timeWarning = document.getElementById('timeWarning');
+        const submitBtn = document.getElementById('submitBtn');
+        const calendarDays = document.getElementById('calendarDays');
+        const currentMonthYear = document.getElementById('currentMonthYear');
+        const prevMonthBtn = document.getElementById('prevMonth');
+        const nextMonthBtn = document.getElementById('nextMonth');
+
+        let currentViewDate = new Date();
+        let selectedDate = dateInput.value ? new Date(dateInput.value) : new Date();
+
+        function renderCalendar() {
+            const year = currentViewDate.getFullYear();
+            const month = currentViewDate.getMonth();
+            const today = new Date();
+            today.setHours(0,0,0,0);
+
+            currentMonthYear.textContent = new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric' }).format(currentViewDate);
+
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            calendarDays.innerHTML = '';
+
+            // Empty slots for previous month
+            for (let i = 0; i < firstDay; i++) {
+                const div = document.createElement('div');
+                div.className = 'calendar-day empty';
+                calendarDays.appendChild(div);
+            }
+
+            // Days of month
+            for (let day = 1; day <= daysInMonth; day++) {
+                const date = new Date(year, month, day);
+                const div = document.createElement('div');
+                div.className = 'calendar-day';
+                div.textContent = day;
+
+                if (date < today) {
+                    div.classList.add('disabled');
+                } else {
+                    if (date.getTime() === today.getTime()) div.classList.add('today');
+                    if (selectedDate && date.getTime() === selectedDate.setHours(0,0,0,0)) div.classList.add('selected');
+                    
+                    div.addEventListener('click', () => {
+                        selectedDate = new Date(year, month, day);
+                        const yyyy = selectedDate.getFullYear();
+                        const mm = String(selectedDate.getMonth() + 1).padStart(2, '0');
+                        const dd = String(selectedDate.getDate()).padStart(2, '0');
+                        dateInput.value = `${yyyy}-${mm}-${dd}`;
+                        
+                        renderCalendar();
+                        validateTimeSlot();
+                    });
+                }
+                calendarDays.appendChild(div);
+            }
         }
+
+        prevMonthBtn.addEventListener('click', () => {
+            currentViewDate.setMonth(currentViewDate.getMonth() - 1);
+            renderCalendar();
+        });
+
+        nextMonthBtn.addEventListener('click', () => {
+            currentViewDate.setMonth(currentViewDate.getMonth() + 1);
+            renderCalendar();
+        });
+
+        function validateTimeSlot() {
+            const now = new Date();
+            const selectedDateVal = dateInput.value;
+            const todayStr = now.toISOString().split('T')[0];
+
+            let hasError = false;
+
+            if (selectedDateVal === todayStr) {
+                const currentTime = now.getHours() * 60 + now.getMinutes();
+                const options = timeSelect.options;
+
+                for (let i = 0; i < options.length; i++) {
+                    const slotTime = options[i].value; // "HH:MM"
+                    if (!slotTime) continue;
+                    
+                    const [hour, minute] = slotTime.split(':').map(Number);
+                    const slotMinutes = hour * 60 + minute;
+
+                    if (slotMinutes <= currentTime) {
+                        options[i].classList.add('disabled');
+                        // If selected option is in the past, show warning
+                        if (timeSelect.value === slotTime) {
+                            hasError = true;
+                        }
+                    } else {
+                        options[i].classList.remove('disabled');
+                    }
+                }
+            } else {
+                // Clear disabled from all
+                for (let i = 0; i < timeSelect.options.length; i++) {
+                    timeSelect.options[i].classList.remove('disabled');
+                }
+            }
+
+            if (hasError) {
+                timeWarning.classList.remove('d-none');
+                submitBtn.disabled = true;
+                submitBtn.style.opacity = '0.7';
+            } else {
+                timeWarning.classList.add('d-none');
+                submitBtn.disabled = false;
+                submitBtn.style.opacity = '1';
+            }
+        }
+
+        timeSelect.addEventListener('change', validateTimeSlot);
+        
+        // Initial render
+        renderCalendar();
+        validateTimeSlot();
     });
 </script>
 {% endblock %}
