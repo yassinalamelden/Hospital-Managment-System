@@ -11,7 +11,7 @@ def create_patient_profile(sender, instance, created, **kwargs):
             name=instance.username,
             age=0,  
             address="Please update address", 
-            phone="0000000000", 
+            phone="00000000000", 
             blood_type="O+", 
             medical_history="None"
         )
