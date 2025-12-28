@@ -55,4 +55,4 @@ class RoomForm(forms.ModelForm):
             'room_type': forms.Select(attrs={'class': 'form-control-custom'}),
             'price_per_night': forms.NumberInput(attrs={'class': 'form-control-custom'}),
         }
-
+    
