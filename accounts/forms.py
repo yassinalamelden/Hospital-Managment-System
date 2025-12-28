@@ -7,14 +7,24 @@ class DoctorForm(forms.ModelForm):
         model = Doctor
         fields = ['name', 'age', 'gender', 'phone', 'address', 'specialty', 'is_active']
         widgets = {
-            'is_active': forms.RadioSelect(choices=[(True, 'Active'), (False, 'Inactive')])
+            'is_active': forms.RadioSelect(choices=[(True, 'Active'), (False, 'Inactive')]),
+            'address': forms.Textarea(attrs={'rows': 2}),
+        }
+        labels = {
+            'name': 'Full Name',
+            'age': 'Age',
+            'gender': 'Gender',
+            'phone': 'Phone Number',
+            'address': 'Consultation Address',
+            'specialty': 'Medical Specialty',
+            'is_active': 'Account Status',
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        for field in self.fields.values():
+        for field_name, field in self.fields.items():
             if not isinstance(field.widget, forms.RadioSelect):
-                field.widget.attrs['class'] = 'form-control'
+                field.widget.attrs['class'] = 'form-control-custom w-100'
         
         # Specific styling for radio select if needed, usually done in template or via wrapper classes
         # But we can leave the class off the input itself if we want standard radio behavior
