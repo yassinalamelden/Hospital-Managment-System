@@ -1,14 +1,14 @@
 {% extends 'layouts/admin_base.html' %}
 {% load static %}
 
-{% block admin_content %}
-<div class="row justify-content-center animate-fade-in">
+{% block content %}
+<div class="row justify-content-center">
     <div class="col-md-8">
         <div class="d-flex align-items-center mb-4">
-            <a href="{% url 'manage-users' %}" class="btn btn-sm btn-outline-light rounded-pill me-3">← Back</a>
+            <a href="{% url 'manage-users' %}" class="btn btn-sm btn-outline-secondary rounded-pill me-3">← Back</a>
             <div>
-                <h2 class="h4 mb-0 text-white fw-bold">Add New Doctor</h2>
-                <p class="text-accent small mb-0">Register a new medical professional.</p>
+                <h2 class="h4 mb-0 fw-bold">Add New Doctor</h2>
+                <p class="text-muted small mb-0">Register a new medical professional.</p>
             </div>
         </div>
 
@@ -18,14 +18,33 @@
                 <div class="row g-4">
                     {% for field in form %}
                     <div class="col-md-12">
+                        {% if field.name == 'is_active' %}
+                        <div class="mb-3">
+                            <label class="form-label text-muted small text-uppercase fw-bold d-block">Account
+                                Status</label>
+                            <div class="d-flex gap-4 p-3 bg-light rounded-3">
+                                {% for radio in field %}
+                                <div class="form-check">
+                                    {{ radio.tag }}
+                                    <label class="form-check-label fw-bold cursor-pointer"
+                                        for="{{ radio.id_for_label }}">
+                                        {{ radio.choice_label }}
+                                    </label>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% else %}
                         <label class="form-label text-muted small text-uppercase fw-bold">{{ field.label }}</label>
                         {{ field }}
+                        {% endif %}
+
                         {% if field.errors %}
-                            <div class="text-danger small mt-1">{{ field.errors.0 }}</div>
+                        <div class="text-danger small mt-1">{{ field.errors.0 }}</div>
                         {% endif %}
                     </div>
                     {% endfor %}
-                    
+
                     <div class="col-12 mt-4">
                         <button type="submit" class="btn btn-gradient w-100 py-2">Add Doctor</button>
                     </div>

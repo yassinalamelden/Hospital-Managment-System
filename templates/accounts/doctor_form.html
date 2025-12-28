@@ -10,7 +10,9 @@ professional{% endif %}{% endblock %}
 <div class="row justify-content-center">
     <div class="col-md-8">
         <div class="d-flex align-items-center mb-4">
-            <a href="{% url 'doctor-list' %}" class="btn btn-sm btn-outline-secondary rounded-pill me-3">← Back</a>
+            <a href="{% url 'doctor-list' %}" class="btn btn-sm btn-outline-secondary rounded-pill me-3">
+                <i class="fas fa-arrow-left me-1"></i> Back
+            </a>
         </div>
 
         <div class="magic-card p-5">
@@ -21,8 +23,8 @@ professional{% endif %}{% endblock %}
                     <div class="col-md-12">
                         {% if field.name == 'is_active' %}
                         <div class="mb-3">
-                            <label class="form-label text-muted small text-uppercase fw-bold d-block">{{ field.label
-                                }}</label>
+                            <label class="form-label text-muted small text-uppercase fw-bold d-block">Account
+                                Status</label>
                             <div class="d-flex gap-4 p-3 bg-light rounded-3">
                                 {% for radio in field %}
                                 <div class="form-check">
@@ -48,7 +50,7 @@ professional{% endif %}{% endblock %}
 
                     <div class="col-12 mt-4">
                         <button type="submit" class="btn btn-gradient w-100 py-2">
-                            {% if form.instance.pk %}Update Doctor{% else %}Save Doctor{% endif %}
+                            {% if form.instance.pk %}Update Doctor Profile{% else %}Save Doctor{% endif %}
                         </button>
                     </div>
                 </div>
