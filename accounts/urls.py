@@ -13,7 +13,7 @@ from .views.client_views import (
     ClientReviewsView
 )
 from .views.admin_views import ManageUsersView, ManageReviewsView, DeactivateUserView, PromoteUserView, DeleteUserView
-from .views.doctor_views import ToggleDoctorStatusView, DoctorUpdateView
+from .views.doctor_views import ToggleDoctorStatusView, DoctorUpdateView, DoctorDeleteView
 from core.views import AdminDashboardView, DeleteReviewView
 
 urlpatterns = [
@@ -58,5 +58,6 @@ urlpatterns = [
     path('dashboard/users/<int:pk>/promote/', PromoteUserView.as_view(), name='promote_user'),
     path('dashboard/users/<int:pk>/delete/', DeleteUserView.as_view(), name='delete_user'),
     path('dashboard/doctors/<int:pk>/edit/', DoctorUpdateView.as_view(), name='doctor-edit'),
+    path('dashboard/doctors/<int:pk>/delete/', DoctorDeleteView.as_view(), name='doctor-delete'),
     path('dashboard/doctors/<int:pk>/toggle-status/', ToggleDoctorStatusView.as_view(), name='toggle-doctor-status'), # Doctor Toggle
 ]

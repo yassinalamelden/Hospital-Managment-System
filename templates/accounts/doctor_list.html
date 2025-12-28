@@ -54,6 +54,12 @@
                             title="Edit">
                             <i class="fas fa-edit"></i>
                         </a>
+                        <form method="post" action="{% url 'doctor-delete' doctor.pk %}" class="d-inline" onsubmit="return confirm('Are you sure you want to PERMANENTLY delete Dr. {{ doctor.name }}?');">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill" title="Delete">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </form>
                     </td>
                 </tr>
                 {% empty %}

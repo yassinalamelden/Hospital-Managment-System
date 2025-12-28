@@ -39,3 +39,11 @@ class ToggleDoctorStatusView(LoginRequiredMixin, StaffRequiredMixin, View):
         status_msg = "activated" if doctor.is_active else "deactivated"
         messages.success(request, f"Doctor {doctor.name} has been {status_msg}.")
         return redirect('doctor-list')
+
+class DoctorDeleteView(LoginRequiredMixin, StaffRequiredMixin, View):
+    def post(self, request, pk):
+        doctor = get_object_or_404(Doctor, pk=pk)
+        doctor_name = doctor.name
+        doctor.delete()
+        messages.success(request, f"Doctor {doctor_name} has been permanently deleted.")
+        return redirect('doctor-list')
