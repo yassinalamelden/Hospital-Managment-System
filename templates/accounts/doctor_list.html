@@ -20,6 +20,7 @@
                     <th>Specialty</th>
                     <th>Phone</th>
                     <th>Status</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -27,7 +28,8 @@
                 <tr>
                     <td>
                         <div class="d-flex align-items-center gap-2">
-                            <div class="avatar bg-purple-light text-accent rounded-circle d-flex align-items-center justify-content-center" style="width: 35px; height: 35px; font-size: 0.9rem;">
+                            <div class="avatar bg-purple-light text-accent rounded-circle d-flex align-items-center justify-content-center"
+                                style="width: 35px; height: 35px; font-size: 0.9rem;">
                                 {{ doctor.name|slice:":1"|upper }}
                             </div>
                             <strong>{{ doctor.name }}</strong>
@@ -39,11 +41,19 @@
                         <form method="post" action="{% url 'toggle-doctor-status' doctor.pk %}">
                             {% csrf_token %}
                             {% if doctor.is_active %}
-                            <button type="submit" class="btn badge bg-success rounded-pill border-0" title="Click to Deactivate">Active</button>
+                            <button type="submit" class="btn badge bg-success rounded-pill border-0"
+                                title="Click to Deactivate">Active</button>
                             {% else %}
-                            <button type="submit" class="btn badge bg-secondary rounded-pill border-0" title="Click to Activate">Inactive</button>
+                            <button type="submit" class="btn badge bg-secondary rounded-pill border-0"
+                                title="Click to Activate">Inactive</button>
                             {% endif %}
                         </form>
+                    </td>
+                    <td>
+                        <a href="{% url 'doctor-edit' doctor.pk %}" class="btn btn-sm btn-outline-primary rounded-pill"
+                            title="Edit">
+                            <i class="fas fa-edit"></i>
+                        </a>
                     </td>
                 </tr>
                 {% empty %}
