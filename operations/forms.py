@@ -37,16 +37,13 @@ class AppointmentForm(forms.ModelForm):
         dt_aware = cleaned_data.get('date_time') 
         
         if dt_aware:
-            # 1. التأكد إن التاريخ مش قديم
             if dt_aware < timezone.now():
                  raise forms.ValidationError("You cannot book an appointment in the past.")
 
-            # 2. التأكد من إن الدكتور فاضي في الوقت ده
             if doctor:
                 if Appointment.objects.filter(doctor=doctor, date_time=dt_aware).exclude(status='Cancelled').exists():
                     raise forms.ValidationError(f"Dr. {doctor.name} is already booked at this time. Please choose another slot.")
 
-            # 3. التأكد إن المريض معندوش حجز تاني في نفس الوقت (لو اليوزر موجود)
             if self.user and hasattr(self.user, 'patient'):
                 patient = self.user.patient
                 if Appointment.objects.filter(patient=patient, date_time=dt_aware).exclude(status='Cancelled').exists():
