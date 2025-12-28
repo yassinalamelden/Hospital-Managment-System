@@ -3,8 +3,13 @@
 
 {% block title %}{% if form.instance.pk %}Edit Patient{% else %}Add Patient{% endif %}{% endblock %}
 {% block page_title %}{% if form.instance.pk %}Edit Patient{% else %}Add New Patient{% endif %}{% endblock %}
-{% block page_subtitle %}{% if form.instance.pk %}Modify patient information{% else %}Register a new patient manually{%
-endif %}{% endblock %}
+{% block page_subtitle %}
+    {% if form.instance.pk %}
+        Modify patient information
+    {% else %}
+        Register a new patient manually
+    {% endif %}
+{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
