@@ -256,8 +256,8 @@ class DeleteReviewView(StaffRequiredMixin, View):
     def post(self, request, pk):
         review = get_object_or_404(Review, pk=pk)
         review.delete()
-        messages.success(request, "Review deleted successfully.")
-        return redirect('manage-reviews')
+        messages.success(request, "Review deleted successfully.", extra_tags='admin')
+        return redirect('manage_reviews')
 
 from django.views.generic.edit import CreateView
 from django.urls import reverse_lazy

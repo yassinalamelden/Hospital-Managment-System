@@ -18,7 +18,7 @@ urlpatterns = [
     path('admin/users/<int:user_id>/deactivate/', DeactivateUserView.as_view(), name='deactivate-user'),
     
     # Review Management
-    path('admin/reviews/', ManageReviewsView.as_view(), name='manage-reviews'),
+    path('admin/reviews/', ManageReviewsView.as_view(), name='manage_reviews'),
     
     # Custom Admin Add Forms
     path('admin/doctors/add/', AddDoctorView.as_view(), name='add-doctor'),

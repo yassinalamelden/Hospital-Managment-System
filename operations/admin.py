@@ -36,3 +36,5 @@ class RoomAdmin(admin.ModelAdmin):
     
     is_occupied_display.boolean = True
     is_occupied_display.short_description = 'Occupied'
+    
+admin.site.register(Review)
