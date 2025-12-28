@@ -51,6 +51,14 @@ class PatientForm(forms.ModelForm):
             'medical_history': forms.Textarea(attrs={'rows': 2}),
             'date_of_birth': forms.DateInput(attrs={'type': 'date'}),
         }
+        labels = {
+            'name': 'Full Name',
+            'date_of_birth': 'Date of Birth',
+            'gender': 'Gender',
+            'address': 'Residential Address',
+            'blood_type': 'Blood Type',
+            'medical_history': 'Medical History',
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

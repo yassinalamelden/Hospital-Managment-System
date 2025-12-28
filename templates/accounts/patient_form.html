@@ -4,42 +4,192 @@
 {% block title %}{% if form.instance.pk %}Edit Patient{% else %}Add Patient{% endif %}{% endblock %}
 {% block page_title %}{% if form.instance.pk %}Edit Patient{% else %}Add New Patient{% endif %}{% endblock %}
 {% block page_subtitle %}
-    {% if form.instance.pk %}
-        Modify patient information
-    {% else %}
-        Register a new patient manually
-    {% endif %}
+{% if form.instance.pk %}
+Modify patient information
+{% else %}
+Register a new patient manually
+{% endif %}
 {% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-8">
-        <div class="d-flex align-items-center mb-4">
-            <a href="{% url 'patient-list' %}" class="btn btn-sm btn-outline-secondary rounded-pill me-3">← Back</a>
+<div class="container animate-fade-in">
+    <div class="row mb-4">
+        <div class="col-12">
+            <a href="{% url 'patient-list' %}"
+                class="btn btn-sm btn-outline-secondary rounded-pill px-3 shadow-sm transition-all hover-scale">
+                <i class="fas fa-arrow-left me-2"></i>Back to Patient List
+            </a>
         </div>
+    </div>
 
-        <div class="magic-card p-5">
-            <form method="post">
-                {% csrf_token %}
-                <div class="row g-4">
-                    {% for field in form %}
-                    <div class="col-md-12">
-                        <label class="form-label text-muted small text-uppercase fw-bold">{{ field.label }}</label>
-                        {{ field }}
-                        {% if field.errors %}
-                        <div class="text-danger small mt-1">{{ field.errors.0 }}</div>
-                        {% endif %}
+    <div class="row g-4">
+        <!-- Main Form Area -->
+        <div class="col-lg-8">
+            <div class="magic-card p-5">
+                <div class="d-flex align-items-center gap-3 mb-5 pb-3 border-bottom">
+                    <div class="bg-primary-subtle text-primary p-3 rounded-circle">
+                        <span class="fs-4">📋</span>
                     </div>
-                    {% endfor %}
-
-                    <div class="col-12 mt-4">
-                        <button type="submit" class="btn btn-gradient w-100 py-2">
-                            {% if form.instance.pk %}Update Patient Information{% else %}Register Patient{% endif %}
-                        </button>
+                    <div>
+                        <h4 class="mb-0 fw-bold">{% if form.instance.pk %}Edit Patient Record{% else %}Patient
+                            Registration{% endif %}</h4>
+                        <p class="small text-muted mb-0">Complete the details below to manage the patient account.</p>
                     </div>
                 </div>
-            </form>
+
+                <form method="post">
+                    {% csrf_token %}
+
+                    <!-- Section: Personal Info -->
+                    <div class="row g-4 mb-5">
+                        <div class="col-12">
+                            <h6 class="text-primary text-uppercase tracking-widest small fw-bold mb-3">Personal
+                                Information</h6>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label text-muted small text-uppercase fw-bold">Full Name</label>
+                            {{ form.name }}
+                            {% if form.name.errors %}<div class="text-danger small mt-1">{{ form.name.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label text-muted small text-uppercase fw-bold">Date of Birth</label>
+                            {{ form.date_of_birth }}
+                            {% if form.date_of_birth.errors %}<div class="text-danger small mt-1">{{
+                                form.date_of_birth.errors.0 }}</div>{% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label text-muted small text-uppercase fw-bold">Gender</label>
+                            {{ form.gender }}
+                            {% if form.gender.errors %}<div class="text-danger small mt-1">{{ form.gender.errors.0 }}
+                            </div>{% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Section: Contact Info -->
+                    <div class="row g-4 mb-5">
+                        <div class="col-12">
+                            <h6 class="text-info text-uppercase tracking-widest small fw-bold mb-3">Contact Details</h6>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label text-muted small text-uppercase fw-bold">Phone Number</label>
+                            <div class="input-group">
+                                {{ form.country_code }}
+                                {{ form.phone }}
+                            </div>
+                            {% if form.phone.errors %}<div class="text-danger small mt-1">{{ form.phone.errors.0 }}
+                            </div>{% endif %}
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label text-muted small text-uppercase fw-bold">Residential
+                                Address</label>
+                            {{ form.address }}
+                            {% if form.address.errors %}<div class="text-danger small mt-1">{{ form.address.errors.0 }}
+                            </div>{% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Section: Medical Info -->
+                    <div class="row g-4 mb-5">
+                        <div class="col-12">
+                            <h6 class="text-danger text-uppercase tracking-widest small fw-bold mb-3">Medical Profile
+                            </h6>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label text-muted small text-uppercase fw-bold">Blood Type</label>
+                            {{ form.blood_type }}
+                            {% if form.blood_type.errors %}<div class="text-danger small mt-1">{{
+                                form.blood_type.errors.0 }}</div>{% endif %}
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label text-muted small text-uppercase fw-bold">Medical History</label>
+                            {{ form.medical_history }}
+                            {% if form.medical_history.errors %}<div class="text-danger small mt-1">{{
+                                form.medical_history.errors.0 }}</div>{% endif %}
+                            <p class="tiny-text text-muted mt-2">Include known allergies, chronical conditions, or past
+                                surgeries.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-12 mt-4 pt-3 border-top">
+                        <button type="submit" class="btn btn-gradient px-5 py-3 shadow hover-scale">
+                            {% if form.instance.pk %}Update Record{% else %}Register Patient{% endif %}
+                        </button>
+                        <a href="{% url 'patient-list' %}" class="btn btn-link text-muted ms-3">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Sidebar Info -->
+        <div class="col-lg-4">
+            <div class="magic-card p-4">
+                <div class="d-flex align-items-center gap-3 mb-4">
+                    <div class="bg-warning-subtle text-warning p-2 rounded-3">
+                        <span class="fs-4">ℹ️</span>
+                    </div>
+                    <h5 class="mb-0 fw-bold">Information</h5>
+                </div>
+
+                <div class="alert alert-soft-primary border-0 rounded-4 p-4 mb-4">
+                    <h6 class="fw-bold mb-2">Staff Note</h6>
+                    <p class="small mb-0">Ensure all information is accurate. Some fields like Date of Birth may be
+                        locked after initial entry to maintain medical record integrity.</p>
+                </div>
+
+                {% if form.instance.pk %}
+                <div class="p-3 bg-light rounded-4 mb-4">
+                    <h6 class="fw-bold small text-uppercase mb-2">Patient ID</h6>
+                    <p class="font-monospace text-primary mb-0">#PAT-{{ form.instance.id|stringformat:"04d" }}</p>
+                    <p class="tiny-text text-muted mt-1">First registered on {{ form.instance.created_at|date:"d M Y" }}
+                    </p>
+                </div>
+                {% endif %}
+
+                <div class="mt-5 text-center opacity-50">
+                    <span class="fs-1">⚕️</span>
+                    <p class="tiny-text text-uppercase tracking-widest mt-2">Aetheria Management System</p>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
+<style>
+    .form-control-custom {
+        background: #f8f9fa;
+        border: 2px solid #eee;
+        border-radius: 12px;
+        padding: 12px 16px;
+        transition: all 0.3s ease;
+    }
+
+    .form-control-custom:focus {
+        background: #fff;
+        border-color: var(--accent-color, #6a11cb);
+        box-shadow: 0 0 0 4px rgba(106, 17, 203, 0.1);
+        outline: none;
+    }
+
+    .hover-scale {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .hover-scale:hover {
+        transform: translateY(-2px);
+    }
+
+    .alert-soft-primary {
+        background-color: rgba(13, 110, 253, 0.05);
+        color: #084298;
+    }
+
+    .tracking-widest {
+        letter-spacing: 0.1em;
+    }
+
+    .tiny-text {
+        font-size: 0.75rem;
+    }
+</style>
 {% endblock %}
