@@ -18,6 +18,7 @@ class Appointment(models.Model):
         related_name='appointments'
     )
     date_time = models.DateTimeField()
+    reason = models.TextField(blank=True, null=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Scheduled')
 
     def __str__(self):

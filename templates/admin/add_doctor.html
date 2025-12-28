@@ -1,0 +1,37 @@
+{% extends 'layouts/admin_base.html' %}
+{% load static %}
+
+{% block admin_content %}
+<div class="row justify-content-center animate-fade-in">
+    <div class="col-md-8">
+        <div class="d-flex align-items-center mb-4">
+            <a href="{% url 'manage-users' %}" class="btn btn-sm btn-outline-light rounded-pill me-3">← Back</a>
+            <div>
+                <h2 class="h4 mb-0 text-white fw-bold">Add New Doctor</h2>
+                <p class="text-accent small mb-0">Register a new medical professional.</p>
+            </div>
+        </div>
+
+        <div class="magic-card p-5">
+            <form method="post">
+                {% csrf_token %}
+                <div class="row g-4">
+                    {% for field in form %}
+                    <div class="col-md-12">
+                        <label class="form-label text-muted small text-uppercase fw-bold">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}
+                            <div class="text-danger small mt-1">{{ field.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                    
+                    <div class="col-12 mt-4">
+                        <button type="submit" class="btn btn-gradient w-100 py-2">Add Doctor</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

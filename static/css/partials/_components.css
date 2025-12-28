@@ -1,0 +1,145 @@
+/* _components.css - UI Elements & Effects */
+
+/* --- The Magic Gradient Frame Card --- */
+.magic-card {
+    position: relative;
+    background: var(--white);
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    box-shadow: var(--shadow-soft);
+    isolation: isolate;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
+    overflow: hidden;
+    height: 100%;
+}
+
+.magic-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 3px; /* Border thickness */
+    background: var(--gradient-primary);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.magic-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-hover);
+}
+
+.magic-card h5 {
+    font-family: var(--font-heading);
+    color: var(--primary-dark);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+/* --- Gradient Buttons --- */
+.btn-gradient {
+    background: var(--gradient-primary);
+    border: none;
+    color: var(--white);
+    border-radius: 50px;
+    padding: 0.8rem 2.5rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    display: inline-block;
+    box-shadow: 0 4px 15px rgba(142, 68, 173, 0.3);
+    text-decoration: none;
+    text-align: center;
+}
+
+.btn-gradient:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(142, 68, 173, 0.4);
+    color: var(--white);
+    opacity: 0.95;
+}
+
+/* --- Custom Form Controls --- */
+.form-control-custom {
+    border: none;
+    background: #f4f6f8;
+    border-radius: 8px;
+    padding: 1rem;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.form-control-custom:focus {
+    background: var(--white);
+    border-bottom-color: var(--purple);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    outline: none;
+}
+
+/* --- Medical Data Table --- */
+.medical-table {
+    width: 100%;
+    background: var(--white);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-soft);
+}
+
+.medical-table thead {
+    background-color: rgba(142, 68, 173, 0.05); /* Tinted Purple */
+}
+
+.medical-table th {
+    padding: 1.2rem;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    color: var(--purple);
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    border: none;
+}
+
+.medical-table td {
+    padding: 1rem;
+    border-bottom: 1px solid #f0f0f0;
+    vertical-align: middle;
+}
+
+.medical-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* --- Gradient Hover Effect for Outline Buttons --- */
+.btn-gradient-hover {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s ease;
+}
+
+.btn-gradient-hover::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--gradient-primary);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    z-index: -1;
+}
+
+.btn-gradient-hover:hover {
+    color: var(--white) !important;
+    border-color: transparent !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(142, 68, 173, 0.3);
+}
+
+.btn-gradient-hover:hover::before {
+    opacity: 1;
+}

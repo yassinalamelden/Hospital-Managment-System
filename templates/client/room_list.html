@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+
+{% block title %}Room Availability | Aetheria{% endblock %}
+
+{% block extra_css %}
+<style>
+    .room-card {
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+    }
+    
+    .room-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1) !important;
+        border-color: var(--purple);
+    }
+    
+    .room-card.available:hover {
+        border-color: var(--turquoise);
+    }
+    
+    .btn-book-room {
+        background: var(--gradient-primary);
+        color: white;
+        border: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(142, 68, 173, 0.3);
+    }
+    
+    .btn-book-room:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(142, 68, 173, 0.5);
+        color: white;
+        filter: brightness(1.1);
+    }
+    
+    .room-icon {
+        width: 70px;
+        height: 70px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: linear-gradient(135deg, rgba(142, 68, 173, 0.1), rgba(1, 165, 198, 0.1));
+        margin-bottom: 1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .room-card:hover .room-icon {
+        background: linear-gradient(135deg, rgba(142, 68, 173, 0.2), rgba(1, 165, 198, 0.2));
+        transform: scale(1.1);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5 animate-fade-in">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <div>
+            <h1 class="display-5 fw-bold" style="color: var(--primary-dark);">
+                Room <span style="background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Availability</span>
+            </h1>
+            <p class="lead text-muted">Find the perfect room for your stay</p>
+        </div>
+        <a href="{% url 'client-portal' %}" class="btn btn-outline-dark rounded-pill px-4">
+            <i class="fas fa-arrow-left me-2"></i>Back to Portal
+        </a>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for room in rooms %}
+        <div class="col">
+            <div class="magic-card room-card h-100 d-flex flex-column p-4 {% if not room.is_occupied %}available{% endif %}">
+                <!-- Room Header -->
+                <div class="d-flex justify-content-between align-items-start mb-4">
+                    <div>
+                        <div class="room-icon">
+                            <i class="fas fa-bed fa-2x" style="color: var(--purple);"></i>
+                        </div>
+                        <h4 class="fw-bold mb-0" style="color: var(--primary-dark);">Room {{ room.room_number }}</h4>
+                    </div>
+                    {% if room.is_occupied %}
+                    <span class="badge bg-danger rounded-pill px-3 py-2">
+                        <i class="fas fa-times-circle me-1"></i>Occupied
+                    </span>
+                    {% else %}
+                    <span class="badge bg-success rounded-pill px-3 py-2">
+                        <i class="fas fa-check-circle me-1"></i>Available
+                    </span>
+                    {% endif %}
+                </div>
+
+                <!-- Room Details -->
+                <div class="mb-4 flex-grow-1">
+                    <div class="mb-3">
+                        <small class="text-muted text-uppercase fw-bold d-block mb-1" style="font-size: 0.7rem; letter-spacing: 1px;">Room Type</small>
+                        <p class="fw-bold mb-0" style="color: var(--primary-dark); font-size: 1.1rem;">
+                            <i class="fas fa-door-open me-2" style="color: var(--turquoise);"></i>{{ room.room_type }}
+                        </p>
+                    </div>
+
+                    <div class="p-3 rounded-3" style="background: linear-gradient(135deg, rgba(142, 68, 173, 0.05), rgba(1, 165, 198, 0.05));">
+                        <small class="text-muted text-uppercase fw-bold d-block mb-1" style="font-size: 0.7rem; letter-spacing: 1px;">Rate per Night</small>
+                        <p class="fw-bold mb-0 fs-4" style="color: var(--purple);">
+                            ${{ room.price_per_night }} <span class="fs-6 text-muted fw-normal">/ night</span>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Action Button -->
+                {% if not room.is_occupied %}
+                <form method="post" action="{% url 'book-room' room.pk %}" class="mt-auto">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-book-room w-100 rounded-pill py-3">
+                        <i class="fas fa-check-circle me-2"></i>Book This Room
+                    </button>
+                </form>
+                {% else %}
+                <button class="btn btn-light w-100 rounded-pill py-3 mt-auto" disabled>
+                    <i class="fas fa-ban me-2"></i>Currently Unavailable
+                </button>
+                {% endif %}
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="magic-card text-center py-5">
+                <i class="fas fa-bed fa-4x mb-4 opacity-25" style="color: var(--primary-dark);"></i>
+                <h4 class="text-muted mb-3">No Rooms Available</h4>
+                <p class="text-muted">Please check back later or contact administration.</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="row mb-4 animate-fade-in">
+    <div class="col-12">
+        <h1 class="display-5 text-primary-dark">My <span class="text-accent">Reviews</span></h1>
+        <p class="lead text-muted">History of your feedback for our medical specialists.</p>
+    </div>
+</div>
+
+<div class="magic-card p-0 overflow-hidden animate-fade-in delay-1">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0 medical-table">
+            <thead class="bg-light">
+                <tr>
+                    <th class="ps-4">Doctor</th>
+                    <th>Rating</th>
+                    <th>Your Comment</th>
+                    <th>Date</th>
+                    <th class="text-end pe-4">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for review in reviews %}
+                <tr>
+                    <td class="ps-4">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="avatar-sm bg-primary-subtle rounded-circle d-flex align-items-center justify-content-center text-primary fw-bold">
+                                {{ review.doctor.name|first }}
+                            </div>
+                            <div>
+                                <span class="fw-bold d-block">Dr. {{ review.doctor.name }}</span>
+                                <span class="tiny-text text-muted">{{ review.doctor.specialty }}</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="text-warning small">
+                            {% get_range 5 as star_range %}
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= review.rating %}
+                                <i class="fas fa-star"></i>
+                                {% else %}
+                                <i class="far fa-star text-muted opacity-25"></i>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </td>
+                    <td style="max-width: 300px;">
+                        <p class="mb-0 text-muted small text-truncate">{{ review.comment }}</p>
+                    </td>
+                    <td class="text-muted small">
+                        {{ review.created_at|date:"M d, Y" }}
+                    </td>
+                    <td class="text-end pe-4">
+                        <span class="badge bg-success-subtle text-success rounded-pill px-3">Published</span>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center py-5">
+                        <div class="opacity-50">
+                            <i class="far fa-comment-alt fa-3x mb-3 text-muted"></i>
+                            <p class="text-muted mb-0">You haven't written any reviews yet.</p>
+                            <a href="{% url 'doctor-search' %}" class="btn btn-sm btn-outline-primary mt-3 rounded-pill">Find a Doctor</a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Pagination (Optional) -->
+{% if is_paginated %}
+<div class="d-flex justify-content-center mt-4">
+    <nav>
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+            <li class="page-item"><a class="page-link rounded-start-pill" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
+            {% endif %}
+            <li class="page-item active"><span class="page-link">{{ page_obj.number }}</span></li>
+            {% if page_obj.has_next %}
+            <li class="page-item"><a class="page-link rounded-end-pill" href="?page={{ page_obj.next_page_number }}">Next</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+{% endif %}
+{% endblock %}

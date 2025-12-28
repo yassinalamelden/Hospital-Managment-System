@@ -1,0 +1,44 @@
+{% extends 'layouts/admin_base.html' %}
+{% load static %}
+
+{% block title %}Assign Patient{% endblock %}
+{% block page_title %}Assign Room{% endblock %}
+{% block page_subtitle %}Assign patient to room {{ object.room_number }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="d-flex align-items-center mb-4">
+            <a href="{% url 'room-list' %}" class="btn btn-sm btn-outline-secondary rounded-pill me-3">← Back</a>
+        </div>
+
+        <div class="magic-card p-5">
+            <form method="post">
+                {% csrf_token %}
+                <div class="row g-4">
+                    {% for field in form %}
+                    <div class="col-md-12">
+                        <label class="form-label text-muted small text-uppercase fw-bold">{{ field.label }}</label>
+                        {{ field }}
+                         <div class="form-text small">Select a patient to assign to this room.</div>
+                        {% if field.errors %}
+                            <div class="text-danger small mt-1">{{ field.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                    
+                    <div class="col-12 mt-4">
+                        <button type="submit" class="btn btn-gradient w-100 py-2">Confirm Assignment</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+        padding: 0.375rem 0.75rem;
+        font-size: 1rem;
+        border: 1px solid #ced4da;
+        border-radius: 0.375rem;
+    }
+</style>
+{% endblock %}

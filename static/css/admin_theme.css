@@ -1,0 +1,578 @@
+@import url('partials/_variables.css');
+
+
+body {
+    font-family: var(--font-body) !important;
+    background-color: #f4f6f8 !important;
+}
+
+#header {
+    background: var(--gradient-primary) !important;
+    color: white !important;
+    padding: 15px 20px !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1) !important;
+}
+
+#site-name {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+#site-name a {
+    color: white !important;
+    text-decoration: none !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    font-family: var(--font-heading) !important;
+    font-size: 1.8rem !important;
+    font-weight: 700 !important;
+}
+
+#site-name .hospital-icon {
+    font-size: 2rem !important;
+}
+
+#site-name .hospital-title {
+    letter-spacing: 1px !important;
+}
+
+#site-name a:hover {
+    opacity: 0.9 !important;
+}
+
+.user-tools {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    color: white !important;
+}
+
+.user-tools a,
+.user-tools button {
+    color: white !important;
+    text-decoration: none !important;
+    padding: 8px 15px !important;
+    border-radius: 20px !important;
+    background: rgba(255, 255, 255, 0.15) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    transition: all 0.3s ease !important;
+    font-size: 0.9rem !important;
+    cursor: pointer !important;
+}
+
+.user-tools a:hover,
+.user-tools button:hover {
+    background: rgba(255, 255, 255, 0.25) !important;
+    transform: translateY(-2px) !important;
+}
+
+.user-tools .separator {
+    display: none !important;
+}
+
+.custom-dashboard-link {
+    background: rgba(255, 255, 255, 0.25) !important;
+    font-weight: 600 !important;
+}
+
+#logout-form {
+    display: inline !important;
+    margin: 0 !important;
+}
+
+.breadcrumbs {
+    background: white !important;
+    padding: 15px 20px !important;
+    border-bottom: 1px solid #e0e0e0 !important;
+    font-size: 0.9rem !important;
+}
+
+.breadcrumbs a {
+    color: var(--primary-color) !important;
+    text-decoration: none !important;
+}
+
+.breadcrumbs a:hover {
+    text-decoration: underline !important;
+}
+
+/* Page Titles */
+#content h1,
+.dashboard h1 {
+    font-family: var(--font-heading) !important;
+    color: var(--primary-dark) !important;
+    font-size: 2rem !important;
+    margin-bottom: 20px !important;
+    font-weight: 700 !important;
+}
+
+/* Module Styling (Magic Card Effect) */
+.module,
+.model-group {
+    background: white !important;
+    border-radius: 15px !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08) !important;
+    border: none !important;
+    margin-bottom: 20px !important;
+    overflow: hidden !important;
+    position: relative !important;
+}
+
+.module::before {
+    content: '' !important;
+    position: absolute !important;
+    inset: 0 !important;
+    border-radius: 15px !important;
+    padding: 2px !important;
+    background: var(--gradient-primary) !important;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
+    -webkit-mask-composite: xor !important;
+    mask-composite: exclude !important;
+    opacity: 0.3 !important;
+    pointer-events: none !important;
+}
+
+.module h2,
+.module caption {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--turquoise) 100%) !important;
+    color: white !important;
+    padding: 15px 20px !important;
+    font-family: var(--font-heading) !important;
+    font-size: 1.2rem !important;
+    font-weight: 600 !important;
+    margin: 0 !important;
+    border: none !important;
+}
+
+/* Tables */
+table {
+    border: none !important;
+}
+
+thead th {
+    background: #f8f9fa !important;
+    color: var(--primary-dark) !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    font-size: 0.85rem !important;
+    letter-spacing: 0.5px !important;
+    padding: 12px !important;
+    border-bottom: 2px solid var(--primary-color) !important;
+}
+
+tbody tr {
+    transition: all 0.2s ease !important;
+}
+
+tbody tr:hover {
+    background: #f8f9fa !important;
+}
+
+tbody td {
+    padding: 12px !important;
+    border-bottom: 1px solid #e0e0e0 !important;
+}
+
+/* Buttons - Gradient Style */
+.button,
+.submit-row input,
+input[type="submit"],
+input[type="button"],
+.object-tools a {
+    background: var(--gradient-primary) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 25px !important;
+    padding: 10px 25px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    text-decoration: none !important;
+    display: inline-block !important;
+    font-family: var(--font-body) !important;
+}
+
+.button:hover,
+.submit-row input:hover,
+input[type="submit"]:hover,
+input[type="button"]:hover,
+.object-tools a:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 5px 15px rgba(139, 92, 246, 0.3) !important;
+}
+
+.button.default,
+.submit-row input[type="submit"] {
+    background: var(--gradient-primary) !important;
+}
+
+/* Delete Button */
+.deletelink,
+.deletelink-box a {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+}
+
+.deletelink:hover,
+.deletelink-box a:hover {
+    box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3) !important;
+}
+
+/* Links */
+a,
+.module a {
+    color: var(--primary-color) !important;
+    transition: color 0.2s ease !important;
+}
+
+a:hover,
+.module a:hover {
+    color: var(--turquoise) !important;
+}
+
+/* Form Fields */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="url"],
+input[type="number"],
+input[type="date"],
+input[type="time"],
+textarea,
+select {
+    border: 1px solid #d1d5db !important;
+    border-radius: 8px !important;
+    padding: 10px 15px !important;
+    font-family: var(--font-body) !important;
+    transition: all 0.2s ease !important;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus,
+input[type="url"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus,
+input[type="time"]:focus,
+textarea:focus,
+select:focus {
+    border-color: var(--primary-color) !important;
+    outline: none !important;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1) !important;
+}
+
+/* Custom Checkboxes and Radios */
+input[type="checkbox"],
+input[type="radio"] {
+    accent-color: var(--purple) !important;
+    width: 1.2em !important;
+    height: 1.2em !important;
+    cursor: pointer !important;
+    vertical-align: text-bottom !important;
+}
+
+/* Custom Select Dropdown Arrow */
+select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%238e44ad' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 0.75rem center !important;
+    background-size: 16px 12px !important;
+    appearance: none !important;
+    padding-right: 2.5rem !important; /* Make room for the arrow */
+}
+
+/* Dashboard Modules */
+#content-main {
+    padding: 20px !important;
+}
+
+.dashboard .module table th {
+    background: transparent !important;
+    color: var(--primary-dark) !important;
+    font-weight: 600 !important;
+}
+
+/* Sidebar */
+#content-related {
+    background: transparent !important;
+}
+
+#content-related .module {
+    background: white !important;
+}
+
+/* Pagination */
+.paginator {
+    padding: 15px !important;
+    background: white !important;
+    border-radius: 10px !important;
+    margin-top: 20px !important;
+}
+
+.paginator a {
+    padding: 8px 12px !important;
+    border-radius: 8px !important;
+    background: #f3f4f6 !important;
+    margin: 0 3px !important;
+    display: inline-block !important;
+}
+
+.paginator a:hover {
+    background: var(--primary-color) !important;
+    color: white !important;
+}
+
+/* Messages/Alerts */
+.messagelist li {
+    border-radius: 10px !important;
+    padding: 15px 20px !important;
+    margin-bottom: 10px !important;
+    font-weight: 500 !important;
+}
+
+.messagelist .success {
+    background: #d1fae5 !important;
+    color: #065f46 !important;
+    border-left: 4px solid #10b981 !important;
+}
+
+.messagelist .warning {
+    background: #fef3c7 !important;
+    color: #92400e !important;
+    border-left: 4px solid #f59e0b !important;
+}
+
+.messagelist .error {
+    background: #fee2e2 !important;
+    color: #991b1b !important;
+    border-left: 4px solid #ef4444 !important;
+}
+
+/* Change List Filters */
+#changelist-filter {
+    background: white !important;
+    border-radius: 15px !important;
+    padding: 20px !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08) !important;
+}
+
+#changelist-filter h2 {
+    font-family: var(--font-heading) !important;
+    color: var(--primary-dark) !important;
+    font-size: 1.2rem !important;
+    margin-bottom: 15px !important;
+}
+
+#changelist-filter h3 {
+    color: var(--primary-color) !important;
+    font-weight: 600 !important;
+    margin-top: 15px !important;
+}
+
+/* Object Tools */
+.object-tools {
+    margin-bottom: 20px !important;
+}
+
+.object-tools li {
+    margin-left: 10px !important;
+}
+
+#footer {
+    background: var(--primary-dark) !important;
+    color: white !important;
+    padding: 15px !important;
+    text-align: center !important;
+    margin-top: 40px !important;
+}
+
+.quick-action-card {
+    background: #fff;
+    border: 1px solid #e3e6f0;
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none; /* عشان اللينك */
+}
+
+.quick-action-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+    border-color: transparent;
+}
+
+.icon-circle {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+    font-size: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.quick-action-title {
+    color: #5a5c69;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+/* --- 2. Dashboard Boxes (Stats) Styles (Full Gradient Background) --- */
+.stats-box {
+    border-radius: 15px;
+    padding: 20px;
+    color: white;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: transform 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.stats-box:hover {
+    transform: scale(1.02);
+}
+
+.stats-info h3 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.stats-info p {
+    margin: 0;
+    font-size: 0.9rem;
+    opacity: 0.8;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.stats-icon {
+    font-size: 2.5rem;
+    opacity: 0.3; /* شفاف شوية عشان ما يزحمش الرقم */
+}
+
+
+/* Doctor Theme (Blue/Purple) */
+.theme-doctor .icon-circle { background: rgba(78, 115, 223, 0.1); color: #4e73df; }
+.quick-action-card:hover .theme-doctor .icon-circle { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; }
+.bg-gradient-doctor { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+
+/* Patient Theme (Green/Teal) */
+.theme-patient .icon-circle { background: rgba(28, 200, 138, 0.1); color: #1cc88a; }
+.quick-action-card:hover .theme-patient .icon-circle { background: linear-gradient(135deg, #2af598 0%, #009efd 100%); color: #fff; }
+.bg-gradient-patient { background: linear-gradient(135deg, #2af598 0%, #009efd 100%); }
+
+/* Appt Theme (Orange) */
+.theme-appt .icon-circle { background: rgba(246, 194, 62, 0.1); color: #f6c23e; }
+.quick-action-card:hover .theme-appt .icon-circle { background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); color: #fff; }
+.bg-gradient-appt { background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); }
+
+/* Room Theme (Cyan) */
+.theme-room .icon-circle { background: rgba(54, 185, 204, 0.1); color: #36b9cc; }
+.quick-action-card:hover .theme-room .icon-circle { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: #fff; }
+.bg-gradient-room { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+
+/* Billing Theme (Red) */
+.theme-bill .icon-circle { background: rgba(231, 74, 59, 0.1); color: #e74a3b; }
+.quick-action-card:hover .theme-bill .icon-circle { background: linear-gradient(135deg, #ff0844 0%, #ffb199 100%); color: #fff; }
+.bg-gradient-bill { background: linear-gradient(135deg, #ff0844 0%, #ffb199 100%); }
+
+/* Admin Theme (Grey/Dark) */
+.theme-admin .icon-circle { background: rgba(90, 92, 105, 0.1); color: #5a5c69; }
+.quick-action-card:hover .theme-admin .icon-circle { background: linear-gradient(135deg, #485563 0%, #29323c 100%); color: #fff; }
+.bg-gradient-admin { background: linear-gradient(135deg, #485563 0%, #29323c 100%); }
+
+
+[class^="btn-gradient-border-"] {
+    display: inline-block;
+    padding: 10px 25px;
+    border-radius: 50px;
+    font-weight: 600;
+    text-decoration: none;
+    text-align: center;
+    border: 2px solid transparent; /* Space for the gradient border */
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+[class^="btn-gradient-border-"]:hover {
+    color: #fff !important; /* Force white text on hover */
+    background-clip: border-box; /* Fill the whole button */
+    border-color: transparent;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+}
+
+/* 1. Doctor Theme Button */
+.btn-gradient-border-doctor {
+    color: #4e73df;
+    /* White padding-box, Gradient border-box */
+    background-image: linear-gradient(#fff, #fff), linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+.btn-gradient-border-doctor:hover {
+    background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    box-shadow: 0 5px 15px rgba(118, 75, 162, 0.4);
+}
+
+/* 2. Patient Theme Button */
+.btn-gradient-border-patient {
+    color: #1cc88a;
+    background-image: linear-gradient(#fff, #fff), linear-gradient(135deg, #2af598 0%, #009efd 100%);
+}
+.btn-gradient-border-patient:hover {
+    background-image: linear-gradient(135deg, #2af598 0%, #009efd 100%);
+    box-shadow: 0 5px 15px rgba(0, 158, 253, 0.4);
+}
+
+/* 3. Appointment Theme Button */
+.btn-gradient-border-appt {
+    color: #f6c23e;
+    background-image: linear-gradient(#fff, #fff), linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+}
+.btn-gradient-border-appt:hover {
+    background-image: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+    box-shadow: 0 5px 15px rgba(253, 160, 133, 0.4);
+}
+
+/* 4. Room Theme Button */
+.btn-gradient-border-room {
+    color: #36b9cc;
+    background-image: linear-gradient(#fff, #fff), linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+.btn-gradient-border-room:hover {
+    background-image: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    box-shadow: 0 5px 15px rgba(0, 242, 254, 0.4);
+}
+
+/* 5. Bill Theme Button */
+.btn-gradient-border-bill {
+    color: #e74a3b;
+    background-image: linear-gradient(#fff, #fff), linear-gradient(135deg, #ff0844 0%, #ffb199 100%);
+}
+.btn-gradient-border-bill:hover {
+    background-image: linear-gradient(135deg, #ff0844 0%, #ffb199 100%);
+    box-shadow: 0 5px 15px rgba(255, 8, 68, 0.4);
+}
+
+/* 6. Admin Theme Button */
+.btn-gradient-border-admin {
+    color: #5a5c69;
+    background-image: linear-gradient(#fff, #fff), linear-gradient(135deg, #485563 0%, #29323c 100%);
+}
+.btn-gradient-border-admin:hover {
+    background-image: linear-gradient(135deg, #485563 0%, #29323c 100%);
+    box-shadow: 0 5px 15px rgba(41, 50, 60, 0.4);
+}

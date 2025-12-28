@@ -1,0 +1,140 @@
+{% extends 'layouts/admin_base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Header Stats -->
+<div class="row g-4 mb-4 animate-fade-in">
+    <div class="col-md-4">
+        <div class="magic-card text-center">
+            <div class="fs-1 text-primary mb-2">{{ reviews.count }}</div>
+            <div class="text-muted small text-uppercase">Total Reviews</div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="magic-card h-100 d-flex align-items-center">
+            <div>
+                <h4 class="fw-bold text-primary mb-1">Patient Feedback Control</h4>
+                <p class="text-muted mb-0 small">Monitor and moderate reviews to maintain service quality.</p>
+            </div>
+            <div class="ms-auto display-6 text-primary opacity-25">
+                <i class="fas fa-comments"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Reviews Table -->
+<div class="magic-card animate-fade-in">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h5 class="fw-bold mb-0" style="color: var(--primary-dark);">All Reviews</h5>
+        
+        <!-- Optional filter could go here -->
+    </div>
+
+    <div class="table-responsive">
+        <table class="medical-table">
+            <thead>
+                <tr>
+                    <th>Patient</th>
+                    <th>Doctor</th>
+                    <th>Rating</th>
+                    <th style="width: 40%;">Comment</th>
+                    <th>Date</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for review in reviews %}
+                <tr>
+                    <td>
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="avatar bg-purple-light text-accent rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; font-weight: bold;">
+                                {{ review.patient.name|slice:":1"|upper }}
+                            </div>
+                            <div>
+                                <h6 class="mb-0 fw-bold" style="color: var(--primary-dark);">{{ review.patient.name }}</h6>
+                                <small class="text-muted">Patient</small>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="d-flex align-items-center gap-2">
+                             <div class="avatar bg-soft-blue text-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; font-size: 0.8rem;">
+                                <i class="fas fa-user-md"></i>
+                            </div>
+                            <span class="fw-medium text-dark">Dr. {{ review.doctor.name }}</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="d-flex align-items-center gap-1 text-warning">
+                             <span class="fw-bold text-dark me-1">{{ review.rating }}.0</span>
+                             {% for i in "12345" %}
+                                {% if forloop.counter <= review.rating %}
+                                    <i class="fas fa-star fa-sm"></i>
+                                {% else %}
+                                    <i class="far fa-star fa-sm text-muted opacity-25"></i>
+                                {% endif %}
+                             {% endfor %}
+                        </div>
+                    </td>
+                    <td>
+                        <div class="p-3 bg-light rounded-3 border border-light">
+                            <p class="mb-0 text-muted fst-italic small text-break">"{{ review.comment }}"</p>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="d-flex align-items-center gap-2 text-muted small">
+                            <i class="far fa-calendar-alt"></i>
+                            {{ review.created_at|date:"M d, Y" }}
+                        </div>
+                    </td>
+                    <td class="text-center">
+                        <form method="post" action="{% url 'delete-review' review.id %}" class="d-inline" onsubmit="return confirm('Are you sure you want to PERMANENTLY delete this review?');">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill px-3 shadow-sm hover-scale" title="Delete Review">
+                                <i class="fas fa-trash-alt me-1"></i> Delete
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center py-5">
+                        <div class="opacity-50 mb-3">
+                            <i class="fas fa-comment-slash fa-3x text-muted"></i>
+                        </div>
+                        <h6 class="text-muted fw-bold">No reviews found</h6>
+                        <p class="small text-muted">Patient reviews will appear here once submitted.</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- Pagination -->
+    {% if is_paginated %}
+    <div class="d-flex justify-content-center mt-4">
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link rounded-pill me-1" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                </li>
+                {% endif %}
+                
+                <li class="page-item active">
+                    <span class="page-link rounded-pill mx-1">{{ page_obj.number }}</span>
+                </li>
+                
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link rounded-pill ms-1" href="?page={{ page_obj.next_page_number }}">Next</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -17,6 +17,7 @@ class Room(models.Model):
         blank=True, 
         related_name='room'
     )
+    admission_date = models.DateField(null=True, blank=True)
 
     @property
     def is_occupied(self):
@@ -25,3 +26,9 @@ class Room(models.Model):
     def __str__(self):
         status = "Occupied" if self.is_occupied else "Available"
         return f"Room {self.room_number} ({self.room_type}) - {status}"
+
+    def vacate(self):
+        self.current_patient = None
+        self.admission_date = None
+        self.save()
+

@@ -3,12 +3,12 @@ from .models import Doctor, Patient
 
 @admin.register(Doctor)
 class DoctorAdmin(admin.ModelAdmin):
-    list_display = ('name', 'specialty', 'is_active', 'phone')
-    search_fields = ('name', 'doctor_id')
+    list_display = ('name', 'specialty', 'phone', 'is_active')
     list_filter = ('specialty', 'is_active')
+    search_fields = ('name',)
 
 @admin.register(Patient)
 class PatientAdmin(admin.ModelAdmin):
-    list_display = ('name', 'age', 'gender', 'blood_type', 'phone')
-    search_fields = ('name', 'patient_id')
-    list_filter = ('blood_type', 'gender')
+    list_display = ('name', 'phone', 'gender', 'blood_type')
+    list_filter = ('gender', 'blood_type')
+    search_fields = ('name', 'user__username')

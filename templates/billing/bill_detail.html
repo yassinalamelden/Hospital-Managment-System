@@ -1,43 +1,393 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-8">
-        <div class="card mt-4">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h4 class="mb-0">Bill #{{ bill.id }}</h4>
-                {% if bill.is_paid %}
-                <span class="badge bg-success">Paid</span>
-                {% else %}
-                <span class="badge bg-danger">Unpaid</span>
-                {% endif %}
+<div class="container py-5 animate-fade-in">
+    <!-- Action Bar -->
+    <div class="row justify-content-center no-print mb-4">
+        <div class="col-md-10">
+            <div
+                class="d-flex justify-content-between align-items-center bg-white p-3 rounded-4 shadow-sm border border-light-subtle">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="bg-primary-subtle text-primary p-2 rounded-3">
+                        <img src="{% static 'images/logo.png' %}" alt="Logo" style="height: 30px; width: auto;">
+                    </div>
+                    <div>
+                        <h5 class="mb-0 fw-bold">Financial Statement</h5>
+                        <p class="small text-muted mb-0">Invoice #{{ bill.id|stringformat:"05d" }}</p>
+                    </div>
+                </div>
+                <div class="d-flex gap-2">
+                    <button onclick="window.print()" class="btn btn-dark rounded-pill px-4 transition-all hover-scale">
+                        <span class="me-2">🖨️</span>Print Invoice
+                    </button>
+                    {% if user.is_staff %}
+                    {% if bill.payment_status != 'PAID' %}
+                    <form action="{% url 'bill-status-update' bill.pk %}" method="post" class="d-inline">
+                        {% csrf_token %}
+                        <input type="hidden" name="status" value="PAID">
+                        <button type="submit" class="btn btn-success rounded-pill px-4 transition-all hover-scale">
+                            Mark as Paid
+                        </button>
+                    </form>
+                    {% endif %}
+                    {% if bill.payment_status == 'PENDING' %}
+                    <form action="{% url 'bill-status-update' bill.pk %}" method="post" class="d-inline">
+                        {% csrf_token %}
+                        <input type="hidden" name="status" value="PARTIAL">
+                        <button type="submit" class="btn btn-warning rounded-pill px-4 transition-all hover-scale">
+                            Partial Payment
+                        </button>
+                    </form>
+                    {% endif %}
+                    <a href="{% url 'bill-list' %}" class="btn btn-outline-secondary rounded-pill px-4">Back to
+                        Registry</a>
+                    {% else %}
+                    <a href="{% url 'client-portal' %}" class="btn btn-outline-secondary rounded-pill px-4">Back to
+                        Portal</a>
+                    {% endif %}
+                </div>
             </div>
-            <div class="card-body">
-                <h5 class="card-title">Patient: {{ bill.patient.name }}</h5>
-                <h6 class="card-subtitle mb-3 text-muted">Issued Date: {{ bill.issued_date }}</h6>
-                
-                <ul class="list-group list-group-flush mb-3">
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        Room Charges
-                        <span>${{ bill.room_charges }}</span>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        Doctor Fees
-                        <span>${{ bill.doctor_fees }}</span>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        Medicine Costs
-                        <span>${{ bill.medicine_cost }}</span>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center bg-light fw-bold">
-                        Total Amount
-                        <span>${{ bill.total_amount }}</span>
-                    </li>
-                </ul>
+        </div>
+    </div>
 
-                <a href="{% url 'bill-list' %}" class="btn btn-primary">Back to List</a>
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <!-- Professional Invoice Card -->
+            <div class="invoice-container overflow-hidden p-0">
+                <!-- Watermark for Authenticity -->
+                <div class="print-watermark">OFFICIAL STATEMENT</div>
+
+                <!-- Modern Header -->
+                <div class="invoice-header d-flex justify-content-between align-items-center">
+                    <div class="brand-section">
+                        <div class="d-flex align-items-center gap-3 mb-2">
+                            <img src="{% static 'images/logo.png' %}" alt="Logo" style="height: 50px; width: auto;">
+                            <div class="brand-text">
+                                <h1 class="mb-0">AETHERIA</h1>
+                                <p class="text-uppercase tracking-widest">Medical Sanctuary</p>
+                            </div>
+                        </div>
+                        <div class="contact-info-strip opacity-75">
+                            <span>123 Medical Plaza, Cairo</span> • <span>+20 221 121 573</span>
+                        </div>
+                    </div>
+                    <div class="invoice-status-section text-end">
+                        <h2 class="display-6 fw-bold mb-0">INVOICE</h2>
+                        <div class="mt-2">
+                            {% if bill.payment_status == 'PAID' %}
+                            <span class="status-seal status-paid">PAID</span>
+                            {% else %}
+                            <span class="status-seal status-pending">PENDING</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Meta Details Grid -->
+                <div class="invoice-meta-grid">
+                    <div class="meta-item">
+                        <label>INVOICE NUMBER</label>
+                        <p>#HMS-BILL-{{ bill.id|stringformat:"05d" }}</p>
+                    </div>
+                    <div class="meta-item">
+                        <label>DATE ISSUED</label>
+                        <p>{{ bill.issued_date|date:"F j, Y" }}</p>
+                    </div>
+                    <div class="meta-item">
+                        <label>PATIENT ACCOUNT</label>
+                        <p>{{ bill.patient.name }}</p>
+                        <small>#PAT-{{ bill.patient.id|stringformat:"04d" }}</small>
+                    </div>
+                    <div class="meta-item text-end">
+                        <label>PAYMENT METHOD</label>
+                        <p>{{ bill.get_payment_method_display }}</p>
+                    </div>
+                </div>
+
+                <!-- Billing Content -->
+                <div class="invoice-body p-5">
+                    <div class="table-responsive">
+                        <table class="item-table w-100">
+                            <thead>
+                                <tr>
+                                    <th class="text-start">Service Description</th>
+                                    <th class="text-end" style="width: 150px;">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if bill.doctor_fees > 0 %}
+                                <tr>
+                                    <td>
+                                        <div class="item-name">Consultation Services</div>
+                                        <div class="item-sub">Professional medical evaluation and diagnostics</div>
+                                    </td>
+                                    <td class="text-end price-cell">${{ bill.doctor_fees }}</td>
+                                </tr>
+                                {% endif %}
+                                {% if bill.room_charges > 0 %}
+                                <tr>
+                                    <td>
+                                        <div class="item-name">Facility & Room Accommodations</div>
+                                        <div class="item-sub">Clinical environment and nursing support</div>
+                                    </td>
+                                    <td class="text-end price-cell">${{ bill.room_charges }}</td>
+                                </tr>
+                                {% endif %}
+                                {% if bill.medicine_cost > 0 %}
+                                <tr>
+                                    <td>
+                                        <div class="item-name">Pharmaceutical Supplies</div>
+                                        <div class="item-sub">Prescribed medications and clinical materials</div>
+                                    </td>
+                                    <td class="text-end price-cell">${{ bill.medicine_cost }}</td>
+                                </tr>
+                                {% endif %}
+
+                                {% for item in bill.items.all %}
+                                <tr>
+                                    <td>
+                                        <div class="item-name">{{ item.item_name }}</div>
+                                        <div class="item-sub">Quantity: {{ item.quantity }} units</div>
+                                    </td>
+                                    <td class="text-end price-cell">${{ item.total_price }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot>
+                                <tr class="border-top-2 border-dark">
+                                    <td class="h4 fw-bold py-4">Total Payable Amount</td>
+                                    <td class="h4 fw-bold text-end py-4 text-accent font-monospace">
+                                        ${{ bill.total_amount }}
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                    <!-- Totals Section -->
+                    <div class="totals-area mt-5 pt-4 border-top">
+                        <div class="row g-0">
+                            <div class="col-8">
+                                <div class="legal-notice p-3 rounded-4 bg-light">
+                                    <h6>Important Documentation</h6>
+                                    <p class="mb-0 opacity-75">This document serves as an official proof of medical
+                                        services rendered. For insurance reimbursement, please present this statement in
+                                        its entirety. This is a computer-validated statement.</p>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="total-summary text-end">
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span class="text-muted">Net Amount</span>
+                                        <span class="fw-bold fs-5">${{ bill.total_amount }}</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between pt-2 border-top border-dark">
+                                        <span class="h6 fw-bold">TOTAL PAYABLE</span>
+                                        <span class="h4 fw-bold text-primary">${{ bill.total_amount }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer / Validation Strip -->
+                <div class="invoice-footer bg-light p-4 d-flex justify-content-between align-items-center">
+                    <div class="validation-stamp d-flex align-items-center gap-3">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=60x60&data=HMS-BILL-{{ bill.id }}&color=212529"
+                            alt="Verification QR" width="60" height="60">
+                        <div>
+                            <p class="small fw-bold mb-0">SECURE VALIDATION</p>
+                            <p class="tiny-text mb-0 opacity-50">Scan for instant verification</p>
+                        </div>
+                    </div>
+                    <div class="system-meta text-end opacity-50 tiny-text">
+                        <p class="mb-0">System ID: HMS-661-VX9</p>
+                        <p class="mb-0">Printed on: {% now "Y-m-d H:i" %}</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    /* Global Invoice Styles */
+    .invoice-container {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 40px 100px rgba(0, 0, 0, 0.05);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        position: relative;
+        min-height: 1000px;
+    }
+
+    .invoice-header {
+        background: #212529;
+        color: #fff;
+        padding: 60px 50px;
+    }
+
+    .brand-text h1 {
+        font-size: 2rem;
+        font-weight: 800;
+        letter-spacing: 4px;
+        line-height: 1;
+    }
+
+    .tracking-widest {
+        letter-spacing: 6px;
+        font-size: 0.7rem;
+        margin: 0;
+    }
+
+    .status-seal {
+        display: inline-block;
+        padding: 5px 20px;
+        border-radius: 50px;
+        font-weight: 800;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+
+    .status-paid {
+        background: #28a745;
+        color: #fff;
+    }
+
+    .status-pending {
+        background: #ffc107;
+        color: #000;
+    }
+
+    .invoice-meta-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        padding: 30px 50px;
+        background: #f8f9fa;
+        border-bottom: 1px solid #eee;
+    }
+
+    .meta-item label {
+        display: block;
+        font-size: 0.6rem;
+        font-weight: 800;
+        color: #888;
+        letter-spacing: 1.5px;
+        margin-bottom: 5px;
+    }
+
+    .meta-item p {
+        margin: 0;
+        font-weight: 700;
+        color: #212529;
+    }
+
+    .item-table th {
+        background: transparent;
+        color: #888;
+        text-transform: uppercase;
+        font-size: 0.7rem;
+        font-weight: 800;
+        letter-spacing: 2px;
+        padding-bottom: 20px;
+    }
+
+    .item-table tr td {
+        padding: 25px 0;
+        border-bottom: 1px solid #f1f1f1;
+    }
+
+    .item-name {
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: #212529;
+        margin-bottom: 4px;
+    }
+
+    .item-sub {
+        font-size: 0.85rem;
+        color: #888;
+    }
+
+    .price-cell {
+        font-family: 'Courier New', monospace;
+        font-weight: 800;
+        font-size: 1.2rem;
+        color: #212529;
+    }
+
+    .legal-notice h6 {
+        font-size: 0.8rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .legal-notice p {
+        font-size: 0.75rem;
+        line-height: 1.6;
+    }
+
+    .print-watermark {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(-45deg);
+        font-size: 8rem;
+        font-weight: 900;
+        color: rgba(0, 0, 0, 0.02);
+        z-index: 0;
+        pointer-events: none;
+        white-space: nowrap;
+    }
+
+    .hover-scale:hover {
+        transform: scale(1.02);
+    }
+
+    @media print {
+        .no-print {
+            display: none !important;
+        }
+
+        body {
+            background: #fff !important;
+            padding: 0 !important;
+        }
+
+        .invoice-container {
+            box-shadow: none !important;
+            border: none !important;
+            min-height: auto !important;
+            margin: 0 !important;
+            border-radius: 0 !important;
+        }
+
+        .invoice-header {
+            background: #212529 !important;
+            color: #fff !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        .bg-light {
+            background: #f8f9fa !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        .text-primary {
+            color: #0d6efd !important;
+        }
+
+        .invoice-meta-grid {
+            background: #f8f9fa !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+    }
+</style>
 {% endblock %}

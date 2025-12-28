@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow border-danger">
+            <div class="card-header bg-danger text-white">
+                <h4 class="mb-0">Delete Room</h4>
+            </div>
+            <div class="card-body">
+                <p>Are you sure you want to delete <strong>Room {{ object.room_number }}</strong>?</p>
+
+                {% if object.is_occupied %}
+                <div class="alert alert-warning">
+                    <i class="bi bi-exclamation-triangle"></i> Warning: This room is currently occupied by {{
+                    object.current_patient.name }}.
+                </div>
+                {% endif %}
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                        <a href="{% url 'room-list' %}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

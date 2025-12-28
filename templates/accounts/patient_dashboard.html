@@ -1,0 +1,127 @@
+{% extends 'layouts/admin_base.html' %}
+
+{% block title %}Patient Detail{% endblock %}
+{% block page_title %}{{ patient.name }}{% endblock %}
+{% block page_subtitle %}Patient Overview & History{% endblock %}
+
+{% block header_actions %}
+<a href="{% url 'patient-list' %}" class="btn btn-outline-primary rounded-pill btn-sm">
+    <i class="fas fa-arrow-left me-1"></i> Back to List
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Patient Info Card -->
+    <div class="col-md-4 mb-4">
+        <div class="magic-card p-4 h-100">
+            <div class="d-flex flex-column align-items-center mb-4">
+                <div class="avatar bg-blue-light text-primary rounded-circle d-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px; font-size: 2rem;">
+                    {{ patient.name|slice:":1"|upper }}
+                </div>
+                <h5 class="fw-bold mb-1">{{ patient.name }}</h5>
+                <span class="badge bg-secondary rounded-pill">Patient</span>
+            </div>
+            
+            <hr class="opacity-10 my-3">
+            
+            <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted">Age:</span>
+                <span class="fw-bold">{{ patient.age }}</span>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted">Gender:</span>
+                <span class="fw-bold">{{ patient.get_gender_display }}</span>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted">Blood Type:</span>
+                <span class="fw-bold">{{ patient.blood_type|default:"-" }}</span>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted">Phone:</span>
+                <span class="fw-bold">{{ patient.phone }}</span>
+            </div>
+            
+            <div class="mt-4">
+                <h6 class="text-uppercase text-muted small fw-bold mb-2">Medical History</h6>
+                <div class="bg-light p-3 rounded-3 small text-muted">
+                    {{ patient.medical_history|default:"No history recorded."|linebreaks }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="col-md-8">
+        <!-- Appointments Section -->
+        <div class="magic-card mb-4">
+            <h5 class="mb-3 text-primary fw-bold">Appointments</h5>
+            {% if appointments %}
+            <div class="table-responsive">
+                <table class="medical-table">
+                    <thead>
+                        <tr>
+                            <th>Date & Time</th>
+                            <th>Doctor</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for appt in appointments %}
+                        <tr>
+                            <td>{{ appt.date_time|date:"M d, Y H:i" }}</td>
+                            <td>{{ appt.doctor.name }}</td>
+                            <td>
+                                <span class="badge rounded-pill {% if appt.status == 'Completed' %}bg-success{% elif appt.status == 'Cancelled' %}bg-danger{% else %}bg-warning text-dark{% endif %}">
+                                    {{ appt.status }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-muted">No appointments found.</p>
+            {% endif %}
+        </div>
+
+        <!-- Bills Section -->
+        <div class="magic-card">
+            <h5 class="mb-3 text-success fw-bold">Billing History</h5>
+            {% if bills %}
+            <div class="table-responsive">
+                <table class="medical-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for bill in bills %}
+                        <tr>
+                            <td>{{ bill.issued_date }}</td>
+                            <td>${{ bill.total_amount }}</td>
+                            <td>
+                                <span class="badge rounded-pill {% if bill.payment_status == 'PAID' or bill.is_paid %}bg-success{% elif bill.payment_status == 'PARTIAL' %}bg-warning text-dark{% else %}bg-danger{% endif %}">
+                                    {{ bill.payment_status|default:"Pending" }}
+                                </span>
+                            </td>
+                            <td>
+                                <a href="{% url 'bill-detail' bill.pk %}" class="btn btn-sm btn-outline-primary rounded-pill">View</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-muted">No bills found.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
