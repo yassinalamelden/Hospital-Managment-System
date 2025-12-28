@@ -161,7 +161,7 @@ from operations.models import Appointment
 
 class AppointmentForm(forms.ModelForm):
     PAYMENT_LOCATION_CHOICES = [
-        ('platform', 'Pay on the Platform'),
+        ('platform', 'Pay on the Platform (Coming Soon)'),
         ('counter', 'Pay at the Counter'),
     ]
     
