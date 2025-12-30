@@ -155,3 +155,18 @@ Here is a detailed breakdown of the project files and directories:
 
 ### 📁 static/
 *   Contains CSS stylesheets, JavaScript files, and images used in the application.
+
+### 👥 Contributors & Responsibilities
+* **Youssef Sanafawy (120230130)**
+  Appointment scheduling logic, room management features, and backend support.
+* **Yassin Alam (120230122)**
+  System architecture, Django models, authentication, and admin dashboard implementation.
+* **Amr Mohsen (120230247)**
+  Billing module, invoice generation, bill items logic, and billing validation scripts.
+* **Ahmed Gaber (120230096)**
+  Frontend development, Django templates, UI/UX enhancements, and patient portal pages.
+* **Abdallah ElBarawy (120230261)**
+  Doctor management features, review system, and functional testing/debugging.
+* **Mohamed ElGendy (120230154)**
+  Database setup, migrations, project configuration, and system testing/optimization.
+
