@@ -2,6 +2,8 @@
 
 A comprehensive web-based application designed to streamline hospital operations, including patient management, appointment scheduling, billing, and staff administration. Built using the Django framework.
 <img width="1917" height="924" alt="image" src="https://github.com/user-attachments/assets/35cb2c2a-3869-4669-89fb-e254b55ba9e2" />
+<img width="1898" height="909" alt="image" src="https://github.com/user-attachments/assets/d9dccca7-ac97-48b4-b1fa-684fcfc6548d" />
+
 
 ## Features
 
